@@ -187,7 +187,8 @@ public function levels(){
 	$db=&$this->model->db;$dbo=PDBO;$dbg=PDBG;	
 	$data['rows']=fetchRows($db,"{$dbo}.`05_levels`","*","id");
 	$data['count']=count($data['rows']);
-	$this->view->render($data,'gset/levelsGset');	
+	$vfile="gset/levelsGset";vfile($vfile);
+	$this->view->render($data,$vfile);	
 }	/* fxn */
 
 public function classrooms(){ 
