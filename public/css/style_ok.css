@@ -1,0 +1,79 @@
+html{height:100%;width:100%; font-family: Arial,Helmet,Freesans,sans-serif; }
+body{width:inherit;margin:0 auto;background:#ffffff; color: #00000f; }
+#content{ min-width:90%;  min-height:500px;  margin: 0 auto 0 auto;padding:10px 25px;background-color: fff; }
+@media print{ .screen{display:none;} } @media print{ div.portrait {size: portrait;}} @media print{ div.landscape {size: landscape;}}
+div#header a{padding-left:8px; }div#header img{outline:none; border:0;}
+#header{ background-color:#0174DF;margin: 0 auto 0 auto;padding: 0px;width:100%;height:46px;	}
+#smartlinks{background-color:#56A5EC;border-top:2px solid #ccc;margin: 0 auto 0 auto;padding: 0px;width:100%;height:30px;	}
+#smartlinks tr td, #smartlinks tr td a { color: white;padding-top: 5px;font-size: 18px; }	
+#footer{color:#3399FF;font-size:11px;padding-top:120px;font-family:Arial,Helvetica,sans-serif;	}
+.logo { float: left;height: 120px;width: 700px;background:#000000;	}
+.accordParent div {background-color:lightblue; width:200px;border-bottom:2px solid #cfc;padding:2px 20px;}
+div.center,div.center > table,div.center > div {  margin-left: auto; margin-right: auto;}
+div.page{ height:1020px;border:1px solid white; }
+.pagebreak {page-break-after:always;} .textwide{width:100%;min-height:100px;}
+tr.headrow > td,tr.headrow > th,tr.bgheadrow > th { color:blue; background:#ccc;}
+.headrow,.current,.bg-blue2 {background: #B4CFEC; }
+
+#hc{margin-left:700px;} .full,.clear{clear:both;}
+div.divider {float:left;width:5px;padding:2px 2px;}
+div.half {float:left;width:50%;padding:5px 3px;} div.third {float:left;width:25%;padding:3px 0;}
+div.fourth {float:left;width:22%;padding:3px 0;} div.fifth{float:left;width:18%;padding:3px 0;}
+.ht50{min-height:50px;} .ht100{min-height:100px;} .ht150{min-height:150px;}
+.ht200{min-height:200px;} .ht300{min-height:300px;}  .ht500{min-height:500px;}
+span.links{ display:inline-block; } /*makes links underline not touching the text */
+.scroll{overflow:scroll; min-height:10px; border:1px solid black;}
+
+/* general */
+.center{text-align:center;margin:0 auto;} .right{text-align:right;float:right;} .left{text-align:left;float:left;}
+tr.rc > td:first-child { width:20px;  }
+.vc20{width:20px;} .vc25{width:25px;} .vc30{width:30px;} .vc40{width:40px;}  .vc75{width:75px;}
+.vc50{width:50px;} .vc60{width:60px;} .vc70{width:70px;}  .vc80{width:80px;} .vc90{width:90px;} 
+.vc100{width:100px;}  .vc120{width:120px;}  .vc150{width:150px;} .vc250{width:250px;} 
+.iw200,.vc200{width:200px;} .iw250,.vc250{width:250px;} .vc300{width:300px;} .vc350{width:350px;} 
+.vc500{width:500px;} .vc1000{width:1000px;}	.vc1100{width:1100px;} 	.vc1200{width:1200px;}
+.border-red{ border-color:red; } .bordered {border:1px solid #000;} .unbordered{border:none;}
+/*  padding left, pdls padding right */
+.pdl05 { padding-left: 5px;} .pdl10 { padding-left: 10px; margin-left:10;}
+.pdr05 { padding-right: 5px;} .pdr10 { padding-right: 10px;}
+/*  --- tables and divs --- */
+.table-altrow tr:nth-child(even) {background: #f8f8f8; } .odd{background:#f8f8f8;}	
+table.tdbordered tr td, table.tdbordered tr th{border:1px solid black}
+.gis-table-bordered { border: 1px solid #dddddd; border-left: 0; border-top: 0; }
+.gis-table-bordered th, .gis-table-bordered td, .tdbordered tr td, .tdbordered tr td  
+{ border-left: 1px solid #dddddd;  border-top: 1px solid #dddddd; padding:3px 10px; }
+.gis-table-bordered th {color:#181818; }
+border-top: 1px solid #dddddd; padding:0px 3px; color:;}
+.table-center th, .table-center td, .table-center td  input { text-align:center; }
+.table-vcenter th, .table-vcenter td, .table-vcenter td { vertical-align:middle; }
+.no-gis-table-bordered {border-left:0;border-top:0; } .no-gis-table-bordered th, .no-gis-table-bordered td { padding:3px 10px; }
+tr.red > td,tr.red > th { color:#FF3300; }	
+tr.no-padding > th,tr.no-padding > td{ padding: 0px; }
+table.center tr td, table.center tr th { text-align:center; }
+table.right tr td, table.right tr th { text-align:right; }
+table.left tr td, table.left tr th { text-align:left; }
+tr.center > th,tr.center > td{text-align:center; }tr.right > th,tr.right > td {text-align:right; }
+tr.b > td,tr.b > th,tr.bold > td,tr.bold > th { font-weight:bold; }	
+.table-fx tr:hover th {background: ccc; }.highlightedRow{background: #E8E8E8; }
+.bg-gray {background-color:#E8E8E8; } .bg-lightgray{background:#E8E8E8; } .headrow-gray {background-color:#E8E8E8;; }
+.bg-lightblue{background:lightblue;} .bg-blue{background:blue;}
+.unbordered{border:none;} .bold{font-weight:bold;}
+.b{font-weight:bold;} .ub{font-weight:normal;} .i{font-style:italic;} 
+.u {text-decoration:underline;} .nu,.no-underline {text-decoration:none;}
+.white{color:#fff;} .blue{color:blue;} .red{color:#FF3300;} .green{color:green;} .orange{color:orange;}	.pink{color:pink;} 
+.gray{color:gray;}	.brown{color:brown;} .yellow{color:yellow;}	.maroon{color:#800000;}  .gold{color:gold;}
+.bg-green{background:#00FF00;} .bg-lightgreen{background:lightgreen;} .bg-yellow{background:yellow;} 
+.bg-lightyellow{background:lightyellow;} .bg-white{background:white;}	.bg-black{background:black;}		
+.selected{font-weight:bold;}  .flashMessage{padding:0 50px;margin:0;} 
+table,tr,td,th{border-collapse:collapse;vertical-align:top;text-align:left;padding:0em .3em;}
+/* etc */
+h1,h2,h3,h4,h5,h6{margin:3;padding:3;}
+a{ font-family:Arial,Helmet,sans-serif; } button{font-family:Arial,Helmet,sans-serif;color:#333333; }
+.button{ font: 11px Arial; font-family: Arial,Helmet,Freesans,sans-serif; text-decoration: none;background-color: #EEEEEE;color: #333333;padding: 2px 6px 2px 6px;
+border-top: 1px solid #CCCCCC;border-right: 1px solid #333333;border-bottom: 1px solid #333333;border-left: 1px solid #CCCCCC;}
+/*forms */
+input[type='button'], input[type='submit']{min-width:50px;} input[type='file']{min-width:200px;}
+.checkbox{width:20px;check:true;} input.qty{width:50px;} input.memo{width:300px;height:60px;}
+.full,textarea.full,input.full, select.full{width:100%;}
+.checkbox tr td {border:1px solid ccc; } .checkbox tr td {min-width:16px;}
+#names{padding-left:30px;width:500px;background-color:white;overflow:auto;top:120px;bottom:20px; }

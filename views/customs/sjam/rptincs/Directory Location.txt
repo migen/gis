@@ -1,0 +1,3 @@
+lahat po ng patch sa rptincs.
+
+gis\views\customs\sjam\rptincs

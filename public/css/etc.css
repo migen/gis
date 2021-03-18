@@ -1,0 +1,38 @@
+/* percentage */
+.pct20{ width:20%;} .pct30{ width:30%;} .pct40{ width:40%;} .pct50{ width:50%;} .pct60{ width:60%;} 
+.pct70{ width:70%;} .pct80{ width:80%;} .pct90{ width:90%;}
+
+/* double rule or double underline */
+.dr{ text-decoration:underline;border-bottom:1px solid #000; }	
+/*  scores & grade  */
+input.grade,input.fg{width:50px;}		
+.colshadingbg{ background:#E8E8E8; }.table-fx tr:hover td{ background: #E8E8E8; } .table-scores { font-size: 0.9em; }
+.vcenter,.colshading{ vertical-align: middle; }
+.tqg{width:50px;color:yellow;} .failed{color:#FF3300;} .fail{ background:#FF3300; } 
+
+/* horizontal ruler */
+hr.double{border-top:double; } hr.triple{ border-top:double;border-bottom:double ;	}
+.vertical {writing-mode:tb-rl; }
+.diagonal{ -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); }
+.ui-autocomplete { background:#c0c0c0; width:50px;} .ui-datepicker{background:#fffff0;}
+#results,.jasmin{background:#c0c0c0;position:absolute;z-index:100;}
+.ez{color:red;font-weight:bold;font-size:17px;background:yellow;padding:1px 5px;}
+.u,.underline{ text-decoration:underline; } .nu,.no-underline{ text-decoration:none; }
+.chatmsg a{margin-left:350px; color:red;}
+.lip{text-decoration:underline; border:none;background:none;}
+
+/* tables and divs */
+tr > th.bgbcell,tr > td.bgbcell {background:#ccc;color:blue;}
+tr > th.bbwcell,tr > td.bbwcell {background:#B4CFEC;color:white;}
+
+/* reports rcards */
+.gis-table-bordered-print th {color:#181818; }
+.no-gis-table-bordered-print { border-left: 0; border-top: 0; }
+.no-gis-table-bordered-print th, .no-gis-table-bordered-print td  { padding:1px 5px; }
+.no-gis-table-bordered th,.no-gis-table-bordered-print th {color:#181818; }
+.gis-table-bordered-print { border: 1px solid #dddddd; border-left: 0; border-top: 0; }
+.gis-table-bordered-print th, .gis-table-bordered-print td  { border-left: 1px solid #dddddd;  
+
+/* axis */
+.money{padding-right:20px; text-align:right;}
+

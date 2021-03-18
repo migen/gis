@@ -1,0 +1,306 @@
+
+<script type='text/javascript' src="<?php echo URL; ?>views/js/excel01.js"></script>
+<script type='text/javascript' src="<?php echo URL; ?>views/js/excel02.js"></script>
+<script type='text/javascript' src="<?php echo URL; ?>views/js/excel03.js"></script>
+
+
+
+<?php 
+
+
+$decigrades=($_SESSION['settings']['decicard']);
+$decigenave=($_SESSION['settings']['decigenave']);
+$attdtype=($_SESSION['settings']['attd_qtr']!=1)? 1:2;
+
+$cr = $data['classroom'];
+$qtr = $data['qtr'];
+	
+$size=isset($_GET['size'])? $_GET['size']:1;
+$hidecode=isset($_GET['hidecode'])? true:false;
+$get=sages($_GET);
+	
+
+?>
+
+
+
+<h5 class="screen" >
+	<span ondblclick="tracehd();"  >LSM Custom Matrix 
+		(<?php echo (isset($_GET['sort']) && $_GET['sort']=='c.position')? 'Position':'Alphabetical'; ?>)</span>
+	<a href="<?php echo URL.$home; ?>">Home</a>
+<?php if(isset($_GET['sort'])): ?>	
+	| <a href='<?php echo URL."matrix/grades/$crid/$sy/$qtr"; ?>' >Name</a> 		
+<?php else: ?>
+	| <a href='<?php echo URL."matrix/grades/$crid/$sy/$qtr?sort=c.position"; ?>' >Position</a> 			
+<?php endif; ?>
+		
+	| <a href="<?php echo URL.'classlists/classroom/'.$data['classroom']['id'].DS.$sy; ?>" />Classlist</a>	
+	| <a href='<?php echo URL."summarizers/genave/$crid/$sy/$qtr"; ?>' />Summarizer</a>	
+	| <a class="u" id="btnExport" >Excel</a> 
+	| <a href='<?php echo URL."matrix/grades/$crid/$sy"; ?>' />Default</a>	
+	<?php if($trait): ?>
+		| <a href='<?php echo URL."cav/traits/".$trait['course_id']."/$sy/$qtr"; ?>' />Traits</a>		
+	<?php endif; ?>
+	<?php if($conduct): ?>
+		| <a href='<?php echo URL."conducts/records/".$conduct['course_id']."/$sy/$qtr"; ?>' />Conducts</a>		
+	<?php endif; ?>	
+	
+	<?php if($_SESSION['srid']==RMIS): ?>
+		| <a href="<?php echo URL.'rcards/crid/'.$data['classroom']['id']; ?>" />RCards</a>	
+		| <a href="<?php echo URL.'reports/ecr/'.$data['classroom']['id']; ?>" />ECR</a>	
+		| <a href='<?php echo URL."classrooms/courses/$crid"; ?>' />Setup</a>	
+		| <a href='<?php echo URL."mis/syncGrades/".$classroom['id']; ?>' />Sync</a>	
+	<?php endif; ?>
+		
+	
+	
+<?php if(!isset($_GET['hidecode'])): ?>	
+	| <a href='<?php echo URL."matrix/grades/".$data['classroom']['id']."/$sy/$qtr$get&hidecode"; ?>' />Hide ID</a>	
+<?php endif; ?>	
+<form method="GET" >
+   Size <input class="center vc50" id="size" name="size" value="<?php echo (isset($_GET['size']))? $_GET['size']:1; ?>"  />
+<input type="submit" name="submit" value="Go" >	
+</form>	
+	
+</h5>
+
+<?php $this->shovel('hdpdiv'); ?>
+
+
+
+<div class="screen" >
+	<table class='gis-table-bordered table-fx'>
+		<tr><th class='white headrow'>Classroom (Size) | Adviser</th><td class="" >
+				<?php echo $cr['level'].' - '.$cr['section']; ?>
+				<?php echo "($num_students)"; ?>
+				<?php echo ' | '.$cr['adviser']; ?>		
+			</td></tr>
+		<tr><th class='white headrow'>Status </th><td><?php echo 'Q'.$data['qtr'].' - '; echo ($is_locked  == 1)? 'Closed' : 'Open' ; ?> </td></tr>
+		<tr class="hd" ><th class='white bg-blue2' >Locking</th> 
+			<th>
+				<?php if($is_locked): ?>
+					<a href='<?php echo URL."finalizers/openClassroom/".$cr['crid']."/$sy/$qtr"; ?>' > Unlock </a>
+				<?php else: ?>
+					<a href='<?php echo URL."finalizers/closeClassroom/".$cr['crid']."/$sy/$qtr"; ?>' > Lock </a>
+				<?php endif; ?>				
+			</th>
+		</tr>
+	</table>
+</div>	<!-- table classroom details -->
+
+<p class="screen brown" >*Courses to the Right of Genave - Setup Not InGA and Not Child (Supsubj > 0)</p>
+
+<div class='' >
+
+<div class="center clear" style="" >
+	<?php 			
+		$inc = SITE.'views/advisers/incs/letterhead_logo_datetime_matrix.php';include($inc); 		
+	?>
+	
+</div>
+
+<!------------------------------------------------------------------------------->
+
+
+<br />
+
+<table id="tblExport" class='gis-table-bordered table-fx' style="width:1200px;float:left;font-size:<?php echo $size; ?>em;" >
+<tr class='bg-blue2'>
+	<th>#</th>	
+	<th class="hd" >PCID</th>
+	
+	<?php if(!$hidecode): ?>
+		<th>ID No</th>
+	<?php endif; ?>
+	<th>Student</th>
+	<!-- left to right,iterate thru subjects -->
+<?php 
+	$ninga=array();
+	$numninga=0;	
+	$indexninga=array();
+	$s=0; 
+	foreach($courses AS $row): 
+
+	$inga = ($row['in_genave']); 
+	$child 	= ($row['supsubject_id']>0)? true:false; 
+	if(($inga!=1) && (!$child)){
+		$crsninga[$numninga]=$row['course_id'];
+		$numninga+=1;
+		$ninga[$numninga] = $row;		
+		continue;
+	} 
+	$s++;
+	
+		
+?>	
+		<th class='center'>
+			<?php echo "($s)<br /><br />"; ?>
+			<span class="vertical" ><a href='<?php echo URL."averages/course/".$row['course_id']; ?>'>
+				<?php echo $row['label']; ?></a></span><br />
+			<span class="hd" ><?php echo $row['course_id'].'-'.$row['subject_id']; ?><br /></span>
+				<?php if($row['supsubject_id']!=0): ?>
+					<?php echo $row['course_weight'].'%'; ?>
+				<?php endif; ?>			
+			<span class="hd" ><?php echo $row['course_id']; ?></span>
+		</th>
+	<?php endforeach; ?>
+
+	<th class="center" ><span class="vertical" >GenAve</span>Q<?php echo $qtr; ?></th>
+	
+<?php	
+	foreach($ninga AS $row): 	
+		
+?>	
+		<?php $s++; ?>
+		<th class='center'>
+			<?php echo "($s)<br /><br />"; ?>
+			<span class="vertical" ><a href='<?php echo URL."averages/course/".$row['course_id']; ?>'>
+				<?php echo $row['label']; ?></a></span><br />
+			<span class="hd" ><?php echo $row['course_id'].'-'.$row['subject_id']; ?><br /></span>
+				<?php if($row['supsubject_id']!=0): ?>
+					<?php echo $row['course_weight'].'%'; ?>
+				<?php endif; ?>			
+		</th>
+	<?php endforeach; ?>
+	
+	
+	
+	
+	<?php  
+		if($attdtype==1){		
+			$total_days=0;  	
+			for($t=0;$t<$num_months;$t++){
+				$mc=$month_names[$t]['code']; 
+				$total_days+=$months[$mc.'_days_total'];			
+			}  			
+		} else {
+			$total_days=$months["q{$qtr}_days_total"];
+		}			
+	?>		
+		
+	<th class="ht100" ><span class="vertical" >Present (<?php echo $total_days; ?>)</span></th>
+	<th class="ht100" ><span class="vertical" >Tardy</span></th>	
+	<th class="center" >Cond<br />Q<?php echo $qtr; ?></th>	
+	<th class="ht100" ><span class="vertical" >Rank</span></th>	
+	<th class="hd" >SCID</th>
+	<th class="hd" >Sum<br />ID</th>
+	<th class="hd" >ID Number</th>	
+</tr>
+
+<?php $num_students = $data['num_students']; ?>		
+<?php $courses = $data['courses']; ?>
+<?php for($is=0;$is<$num_students;$is++): ?> 	<!-- loop thru num_students,top down -->
+
+<?php $nb = count($grades[$is]); ?>
+<?php if($nb == $num_courses): ?>
+<tr>
+	<td><?php echo $is+1; ?></td>
+	<td class="hd" ><?php echo $students[$is]['pcid']; ?>
+<?php if(!$hidecode): ?>	
+	<td><?php echo $students[$is]['code']; ?>
+<?php endif; ?>
+	<td><?php echo $students[$is]['student']; ?>
+	</td>
+
+<?php 
+	$ninga=array();
+	
+?>	
+<?php for($ic=0;$ic<$num_courses;$ic++): ?> 	
+
+<?php 
+
+if((in_array($grades[$is][$ic]['course_id'],$crsninga))){
+	$ninga[] = $grades[$is][$ic];
+	continue;
+} 
+
+
+?>
+
+<td class='center' style='vertical-align:middle;' >
+<?php echo ($grades[$is][$ic]['is_num']==1)? number_format($grades[$is][$ic]['q'.$qtr],$decigrades):$grades[$is][$ic]['dg'.$qtr];?>
+	<br /></td>	
+<?php endfor; ?>
+	
+<td class="vcenter" ><?php echo number_format($students[$is]['ave_q'.$qtr],$decigenave); ?></td>
+
+<?php foreach($ninga AS $row): ?>
+<td class='center vcenter' >
+<?php echo ($row['is_num']==1)? number_format($row['q'.$qtr],$decigrades):$row['dg'.$qtr];?>
+	<br /></td>
+<?php endforeach; ?>
+
+	
+	<?php 
+		if($attdtype==1){
+			$attd[$is]['total_present']=0; 
+			$attd[$is]['total_tardy']=0; 	
+			for($t=0;$t<$num_months;$t++){
+				$mc=$month_names[$t]['code']; 
+				$attd[$is]['total_present']+=$attd[$is][$mc.'_days_present'];
+				$attd[$is]['total_tardy']+=$attd[$is][$mc.'_days_tardy'];	
+			}		
+		} else {		
+			$attd[$is]['total_present'] = $attd[$is]['q'.$qtr.'_days_present'];
+			$attd[$is]['total_tardy'] = $attd[$is]['q'.$qtr.'_days_tardy'];
+		}
+	?>
+	
+	<td class="vcenter" ><?php echo $attd[$is]['total_present']; ?></td>
+	<td class="vcenter" ><?php echo $attd[$is]['total_tardy']; ?></td>		
+	<td class="vcenter" ><?php echo $students[$is]['conduct_q'.$qtr].'<br />'.$students[$is]['conduct_dg'.$qtr]; ?></td>
+	
+	<td class="vcenter" ><?php echo $students[$is]['rank_classroom_q'.$qtr]; ?></td>		
+	<td class="hd" ><?php echo $students[$is]['scid']; ?></td>
+	<td class="hd" ><?php echo $students[$is]['sumid']; ?></td>
+	<td class="hd" ><?php echo $students[$is]['student_code']; ?></td>	
+	<td class="hd" ><a href='<?php echo URL."gtools/msg/$crid/".$students[$is]['scid']; ?>' >Grades</a></td>
+	
+</tr>
+
+<?php else: ?>
+<tr><td class="red" colspan="<?php echo $num_courses+5; ?>" > Please check with Registrars / MIS to update 
+		<a href='<?php echo URL."gtools/msg/$crid/".$students[$is]['scid']; ?>' >Grades</a> of 
+		<?php echo $students[$is]['student'].' with ID # '.$students[$is]['student_code']; ?> 
+	
+	</td></tr>
+<?php endif; ?>
+<?php endfor; ?>		<!-- endloop row num_students -->
+</table>
+
+</div>
+
+<div class="clear" style="height:100px; " >&nbsp;</div>
+
+<div class="center" >	<!-- footer --> 
+<table class="xgis-table-bordered" >
+<tr>
+	<th class="center vc200" >___<span class="u" ><?php echo $classroom['adviser']; ?></span>___<br />Adviser</th>
+	<th class="vc100" >&nbsp;</th>
+	<th class="center vc200" ><?php echo '____________________________'; ?><br />Principal</th>
+	<th class="vc100" >&nbsp;</th>
+	<th class="center vc200" ><?php echo '____________________________'; ?><br />Registrar</th>
+</tr>
+
+
+</table></div>
+
+
+<!------------------------------------------------------------------------------------------------------------>
+<script>
+
+var hdpass 	= '<?php echo HDPASS; ?>';
+var gurl 	= 'http://<?php echo GURL; ?>';
+
+$(function(){
+	$('#hdpdiv').hide();
+	hd();
+	excel();
+	
+})
+
+
+
+
+</script>

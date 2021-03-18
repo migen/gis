@@ -1,0 +1,42 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: inherit;
+/*	font-family:Arial,Helmet,Freesans,sans-serif;*/
+	background:ffffff;
+	color:00000f;
+}
+.certificate {
+	background-image: url('../img/border-img.png');
+	background-size: cover;
+	padding-left: 100px;
+	padding-right: 100px;
+	padding-bottom: 93px;
+	padding-top: 70px;
+	text-align: center;
+}
+.school {
+	margin-left: -300px;
+}
+.school-name {
+	font-size: 25px;
+}
+.bed {
+	font-size: 18px;
+}
+.adjPadding {
+	margin-top: -8px;
+}
+.acadAward {
+	margin-top: 10px;
+	letter-spacing: 30px;
+	font-size: 35px;
+}	
+.stud-name,
+.teacher-name {
+	text-decoration: underline;
+}
+.section {
+	margin-top: -20px;
+}

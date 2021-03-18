@@ -1,0 +1,5 @@
+#header{ min-height:50px;color:#fff; }
+#header div { font-size:2em;float:left; }
+#header div.block { font-size:1.2em;padding-top:0.8em; }
+#header div.right{ float:right;padding-right:10%; }
+.slogan{ font-size:2em; padding-left:0.6em;padding-right:0.6em; }	

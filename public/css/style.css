@@ -1,0 +1,112 @@
+html{height:100%;width:100%; font-family: Arial,Helmet,Freesans,sans-serif; 
+	font-size:16px; }
+body{width:inherit;margin:0 auto;background:#ffffff; color: #00000f; }
+#content{ min-width:90%;  min-height:500px;  margin: 0 auto 0 auto;padding:10px 25px;background-color: fff; }
+@media print{ .screen{display:none;} } @media print{ div.portrait {size: portrait;}} @media print{ div.landscape {size: landscape;}}
+div#header a{padding-left:8px; }div#header img{outline:none; border:0;}
+#header{ background-color:#0174DF;margin: 0 auto 0 auto;padding: 0px;width:100%;height:46px;	}
+#smartlinks{background-color:#56A5EC;border-top:0px solid #ccc;margin: 0 auto 0 auto;padding: 0px;width:100%;height:32px;	}
+#smartlinks tr td, #smartlinks tr td a { color: #fff;font-size: 1.1em; }	
+#footer{color:#3399FF;font-size:11px;padding-top:120px;font-family:Arial,Helvetica,sans-serif;	}
+.logo { float: left;height: 120px;width: 700px;background:#000000;	}
+.accordParent div {background-color:lightblue; width:200px;border-bottom:2px solid #cfc;padding:2px 20px;}
+div.center,div.center > table,div.center > div {  margin-left: auto; margin-right: auto;}
+div.page{ height:1020px;border:1px solid white; }
+.pagebreak {page-break-after:always;} .textwide{width:100%;min-height:100px;}
+tr.headrow > td,tr.headrow > th,tr.bgheadrow > th { color:blue; background:#ccc;}
+.headrow,.current,.bg-blue2 {background: #B4CFEC; }
+
+#hc{margin-left:700px;} .full,.clear{clear:both;}
+div.divider {float:left;width:5px;padding:2px 2px;}
+div.half {float:left;width:50%;padding:5px 3px;} div.third {float:left;width:25%;padding:3px 0;}
+div.fourth {float:left;width:22%;padding:3px 0;} div.fifth{float:left;width:18%;padding:3px 0;}
+.ht50{min-height:50px;} .ht100{min-height:100px;} .ht150{min-height:150px;}
+.ht200{min-height:200px;} .ht300{min-height:300px;}  .ht500{min-height:500px;}
+span.links{ display:inline-block; } /*makes links underline not touching the text */
+.scroll{overflow:scroll; min-height:10px; border:1px solid black;}
+
+/* fonts or font-sizes */
+.rem1-25{ font-size:1.25rem; } 	.rem1-5{ font-size:1.5rem; }	.rem1-75{ font-size:1.75rem; }
+.rem2-25{ font-size:2.25rem; }	.rem2-5{ font-size:2.5rem; }	.rem2-75{ font-size:2.75rem; }
+.rem2{ font-size:2rem; }	.rem3{ font-size:3rem; }	.rem4{ font-size:4rem; }
+
+
+/* general */
+div.left{float:left;} .left{text-align:left;}
+div.right{float:right;} .right{text-align:right;}
+table.center tr td, table.center tr th { text-align:center; }
+table.right tr td, table.right tr th { text-align:right; }
+table.left tr td, table.left tr th { text-align:left; }
+
+.center{text-align:center;margin:0 auto;} 
+tr.rc > td:first-child { width:20px;  }
+.vc20{width:20px;} .vc25{width:25px;} .vc30{width:30px;} .vc40{width:40px;}  .vc75{width:75px;}
+.vc50{width:50px;} .vc60{width:60px;} .vc70{width:70px;}  .vc80{width:80px;} .vc90{width:90px;} 
+.vc100{width:100px;}  .vc120{width:120px;}  .vc150{width:150px;} .vc250{width:250px;} 
+.iw200,.vc200{width:200px;} .iw250,.vc250{width:250px;} .vc300{width:300px;} .vc350{width:350px;} 
+.vc500{width:500px;} .vc1000{width:1000px;}	.vc1100{width:1100px;} 	.vc1200{width:1200px;}
+.border-red{ border-color:red; } .bordered {border:1px solid #000;} .unbordered{border:none;}
+/*  padding left, pdls padding right */
+.pdl05 { padding-left: 5px;} .pdl10 { padding-left: 10px; margin-left:10;}
+.pdr05 { padding-right: 5px;} .pdr10 { padding-right: 10px;}
+/*  --- tables and divs --- */
+.trleft th, .trleft td{ text-align:left; } td.tdhleft,th.tdhleft{text-align:left; }
+.gis-table-bordered { border: 1px solid #ddd;  } .gis-table-bordered th {color:#181818; }
+.gis-table-bordered th, .gis-table-bordered td { border: 1px solid #ddd; padding:3px 10px; }
+.gis-table-bordered thead th,.gis-table-bordered thead td { border-bottom-width: 2px; }
+
+.table-bordered { border: 1px solid #ddd;  } .table-bordered th {color:#181818; }
+.table-bordered th, .table-bordered td { border: 1px solid #ddd; padding:3px 10px; }
+.table-bordered thead th,.table-bordered thead td { border-bottom-width: 2px; }
+
+
+.table-padding-none th,.table-padding-none td{ padding:0;} .table-padding-lg th,.table-padding-lg td{ padding:0;}
+.table-fx tr:hover td,.table-fx tr:hover th { background-color: #e8e8e8; } .highlightedRow{background: #E8E8E8; }
+.table-altrow tr:nth-child(even) {background-color: #f9f9f9; } .odd{background-color:#ccc;}	
+/* bg-colors rainbows: VIBGYOR */
+.bg-violet{background-color:#9400D3; } .headrow-indigo {background-color:#4B0082; }
+.bg-blue{background-color:#0000FF; } .headrow-green {background-color:#00FF00; }
+.bg-yellow{background-color:#FFFF00; } .headrow-orange {background-color:#FF7F00; }
+.bg-red {background-color:red; } .bg-pink {background-color:pink; } 
+.bg-gray {background-color:#E8E8E8; } .bg-lightgray{background-color:#E8E8E8; } .headrow-gray {background-color:#E8E8E8;; }
+.bg-lightblue{background-color:lightblue;}  .bg-lightgreen{background-color:lightgreen;} 
+.bg-lightyellow{background-color:lightyellow;} .bg-white{background-color:white;}	.bg-black{background-color:black;}	
+
+table.tdbordered tr td, table.tdbordered tr th{border:1px solid black}
+border-top: 1px solid #dddddd; padding:0px 3px; color:;}
+.table-center th, .table-center td, .table-center td  input { text-align:center; }
+.table-vcenter th, .table-vcenter td, .table-vcenter td { vertical-align:middle; }
+.no-gis-table-bordered {border-left:0;border-top:0; } .no-gis-table-bordered th, .no-gis-table-bordered td { padding:3px 10px; }
+tr.red > td,tr.red > th { color:#FF3300; }	
+tr.no-padding > th,tr.no-padding > td{ padding: 0px; }
+
+
+tr.center > th,tr.center > td{text-align:center; }tr.right > th,tr.right > td {text-align:right; }
+tr.b > td,tr.b > th,tr.bold > td,tr.bold > th { font-weight:bold; }	
+.unbordered{border:none;} .bold{font-weight:bold;}
+.b{font-weight:bold;} .ub{font-weight:normal;} .i{font-style:italic;} 
+.u {text-decoration:underline;} .nu,.no-underline {text-decoration:none;}
+.white{color:#fff;} .blue{color:blue;} .red{color:#FF3300;} .green{color:green;} .orange{color:orange;}	.pink{color:pink;} 
+.gray{color:gray;}	.brown{color:brown;} .yellow{color:yellow;}	.maroon{color:#800000;}  .gold{color:gold;}
+	
+.selected{font-weight:bold;}  .flashMessage{padding:0 50px;margin:0;} 
+table,tr,td,th{border-collapse:collapse;vertical-align:top;text-align:left;padding:0em .3em;}
+/* etc */
+h1,h2,h3,h4,h5,h6{margin:3;padding:3;}
+a{ font-family:Arial,Helmet,sans-serif; } button{font-family:Arial,Helmet,sans-serif;color:#333333; }
+
+.button{ font: 1em Arial; font-family: Arial,Helmet,Freesans,sans-serif; text-decoration: none;padding: 6px 8px;border-top: 1px solid #CCCCCC;
+border-right: 1px solid #333333;border-bottom: 1px solid #333333;border-left: 1px solid #CCCCCC;background-color: #f8f8f8;color: #080808; }
+
+/*forms */
+input[type='button'], input[type='submit']{min-width:50px;} input[type='file']{min-width:200px;}
+.checkbox{width:20px;check:true;} input.qty{width:50px;} input.memo{width:300px;height:60px;}
+.full,textarea.full,input.full, select.full{width:100%;}
+.checkbox tr td {border:1px solid ccc; } .checkbox tr td {min-width:16px;}
+#names{overflow:auto;color:blue; }	/* scroll */
+
+/* accordion */
+.accorHeadrow{ height:38px; vertical-align:middle;text-align:center;width:256px;background-color:lightblue; }
+
+
+

@@ -1,0 +1,154 @@
+.certificate-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 528px;
+}
+
+.certificate-wrapper .certificate-image {
+  position: absolute;
+  margin: auto;
+  text-align: center;
+}
+
+.certificate-wrapper .certificate-image .image img {
+  width: 816px;
+  height: 528px;
+}
+
+.certificate-wrapper .certificate-details {
+  position: relative;
+  top: 66px;
+  left: 100px;
+  width: 693px;
+  height: 426px;
+}
+
+.certificate-wrapper .certificate-details .header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.certificate-wrapper .certificate-details .header .school-logo {
+  text-align: right;
+}
+
+.certificate-wrapper .certificate-details .header .school-logo img {
+  width: 100px;
+  height: 100px;
+}
+
+.certificate-wrapper .certificate-details .header .school-info {
+  width: 300px;
+  margin-left: -70px;
+  text-align: center;
+}
+
+.certificate-wrapper .certificate-details .header .school-info .name {
+  font-size: 23px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.certificate-wrapper .certificate-details .header .school-info .credit {
+  font-weight: 500;
+}
+
+.certificate-wrapper .certificate-details .header .school-info .basicEd {
+  font-weight: 600;
+}
+
+.certificate-wrapper .certificate-details .header .school-info .level {
+  font-weight: 600;
+}
+
+.certificate-wrapper .certificate-details .header .school-info .sy {
+  font-weight: 600;
+}
+
+.certificate-wrapper .certificate-details .content {
+  margin: 15px 0 20px 0;
+  text-align: center;
+}
+
+.certificate-wrapper .certificate-details .content .this {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.certificate-wrapper .certificate-details .content .acadAwards {
+  padding: 5px 0;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+.certificate-wrapper .certificate-details .content .givenTo {
+  padding: 5px 0 10px 0;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.certificate-wrapper .certificate-details .content .student-name {
+  padding-bottom: 3px;
+  font-size: 27px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.certificate-wrapper .certificate-details .content .rank {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.certificate-wrapper .certificate-details .footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  text-align: center;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item:nth-child(1) {
+  padding-right: 30px;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item:nth-child(2) {
+  padding-left: 30px;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item .school-head {
+  margin-bottom: 10px;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item .school-head u {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item .school-head small {
+  font-weight: 600;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item .qtr {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.certificate-wrapper .certificate-details .footer .data-item .date {
+  font-weight: 700;
+}
+/*# sourceMappingURL=style.css.map */

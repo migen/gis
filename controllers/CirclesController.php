@@ -1,0 +1,14 @@
+<?php
+/**
+ * @copyright MIDASGEN
+ */
+
+Class CirclesController extends Controller{
+public function __construct(){
+	parent::__construct();	parent::loginRedirect();
+}
+
+public function beforeFilter(){}
+public function index(){		$data = NULL;	$this->view->render($data,'circles/index');}	/* fxn */public function edit($params){$dbo=PDBO;$this->view->js = array('js/jquery.js','js/jqueryui.js','js/vegas.js');	$rid = $params[0];if(isset($_POST['submit'])){	unset($_POST['submit']);	$row = $_POST;	$this->Circle->db->update(DBO.".rooms",$row," `id` = $rid ");	redirect('users/reset/circles');}$data['room'] = $this->Circle->fetchRow(DBO.'.rooms',$rid);$data['ctc']  = $this->Circle->fetchRows(DBO.'.ctagcategories');$this->view->render($data,'circles/edit');}public function members($params){$dbo=PDBO;$room_id = $params[0];if(isset($_POST['add'])){	$rows 	 = $_POST['members'];	$room_id = $_POST['room_id'];	$q = "";	foreach($rows AS $row){		$q .= " INSERT INTO {$dbo}.rooms_contacts (`room_id`,`contact_id`) VALUES ('$room_id','".$row['ucid']."');  "; 	}	$this->Circle->db->query($q);	redirect('circles/members/'.$room_id);	}$q = "	SELECT 		c.`id` AS `ucid`, c.`name` AS `member`, rc.`id` AS `rcid`	FROM {$dbo}.`00_contacts` AS c 		INNER JOIN {$dbo}.rooms_contacts AS rc ON rc.`contact_id` = c.`id`	WHERE rc.`room_id` = '$room_id'";$sth = $this->Circle->db->querysoc($q);$data['members'] = $sth->fetchAll();$data['numrows'] = count($data['members']);$data['room'] = $this->Circle->fetchRow(PDBO.'.rooms',$room_id);$data['contacts'] = $this->Circle->fetchRows(PDBO.'.`00_contacts`',"id,name","name"," WHERE id=parent_id AND `is_active` = '1' ");$this->view->render($data,'circles/members');}	/* fxn */public function removeMember($params){$dbo=PDBO;$room_id 	= $params[0];$rcid 		= $params[1];$user	= $_SESSION['user'];$urid 	= $user['role_id'];if($urid!=RMIS){ redirect('circles/members/'.$room_id); }$this->Circle->db->delete($rcid, DBO.".rooms_contacts");redirect('circles/members/'.$room_id);}	/* fxn */public function membersByBatch($params=NULL){$dbo=PDBO;$circle_id = $params[0];$q = " SELECT * FROM {$dbo}.rooms WHERE `id` = '$circle_id' LIMIT 1; ";$sth = $this->model->db->querysoc($q);$data['circle']	= $circle = $sth->fetch();$this->view->render($data,'mis/membersByBatch');}	/* fxn */public function deleteRoom($params=NULL){$dbo=PDBO;$room_id = isset($params[0])? $params[0]:false;if(!$room_id){ $this->flashRedirect('rooms','No room selected'); }$q  = " DELETE FROM {$dbo}.rooms_contacts WHERE `room_id` = '$room_id'; ";$q .= " DELETE FROM {$dbo}.rooms WHERE `id` = '$room_id' LIMIT 1; ";$this->model->db->query($q);$this->flashRedirect('rooms','Room & Members Deleted!');}	/* fxn */
+} /* CirclesCtlr */
+

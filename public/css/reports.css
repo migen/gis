@@ -1,0 +1,28 @@
+
+/* border:thin solid black;  
+	border:1px solid black;
+
+*/
+
+
+div.rcard{
+	width:1000px;
+	min-height:760px;
+	
+}
+
+.gis-table-bordered { border: 1px solid #dddddd; border-left: 0; border-top: 0; }
+.gis-table-bordered th, .gis-table-bordered td, .tdbordered tr td, .tdbordered tr td  { 
+	border-left: 1px solid #dddddd;  border-top: 1px solid #dddddd; padding:3px 10px;}
+.gis-table-bordered th {color:#181818; }
+
+
+table.rptcard { 
+	border: 1px solid #dddddd; border-left: 0; border-top: 0; 
+}
+
+.rptcard th, .rptcard td { 
+	border-left: 1px solid #dddddd;  border-top: 1px solid #dddddd; padding:1px 6px;font-size:0.6em;
+}
+
+

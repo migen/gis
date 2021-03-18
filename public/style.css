@@ -1,0 +1,14 @@
+.red{color:red;}
+body{background-color:fff;color:000;}
+#outline{border-right: 10px solid 663333;border-left: 10px solid 663333;margin:0px;padding:0px;width:900px;margin-left:auto;margin-right:auto;}
+#wrapper{width:900px;clear:both;}
+#footer{width:900px;background-color:663333;text-align:center;color:fff;clear:both;min-height:20px;padding-bottom:5px;}
+
+#header{width:auto;background-color:663333;margin:0px;padding:10px;color:fff;margin-bottom:20px;}
+
+#side1,#side2{width:200px;padding:20px 10px;}
+#side1{float:left;}
+#side2{float:right;}
+#main{margin-left:0px;padding-left:15px;border-right:3px solid 663333; margin-right:205px;width:650px;overflow:visible;min-height:200px;}
+
+#header a{background-color:ccc;padding:10px 20px;padding-bottom:5px;}

@@ -1,0 +1,10 @@
+@github - create a repo
+git init
+git config --global core.autocrlf false
+git add .
+git commit -m "s"
+git status
+git remote add origin https://github.com/migen/gis.git
+git push --set-upstream origin master
+
+

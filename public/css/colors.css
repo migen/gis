@@ -1,0 +1,47 @@
+/* colors */
+.blue{color:blue; }
+.blue1 {color: #33CCCC; }
+.blue2 {color: #B4CFEC; }
+.blue3 {color: #99CCCC; }
+.blue4 {color: #56A5EC; }
+
+
+.txt-red{color:#f00; } .txt-blue{color:blue; } .txt-black{color:#000; } .txt-white{color:#fff; }
+
+
+.bg-olive {background: #808000; }
+.bg-blue1 {background: #56A5EC; }
+
+tr.tdwhite td, tr.thwhite th { color:white; }
+tr.row-white td, tr.row-white th { color:white; }
+tr.tdgray td, tr.thgray th { color:#ccc; }
+
+.bg-blue3 {background: #99CCCC; }
+.bg-blue4 {background: #33CCCC; }
+
+.gray1 {color: #A8A8A8; }
+.gray2 {color: #B0B0B0; }
+.gray3 {color: #C8C8C8; }
+
+.bg-gray1 {background-color: #B0B0B0; }
+.bg-gray2 {background-color: #C8C8C8; }
+.bg-gray3 {background-color: #E8E8E8; }
+.bg-gray4 {background-color: #A8A8A8; }
+.bg-flesh{background:#FFFACD;}
+
+/* hierarch, inherit trtd */
+tr.red > td,tr.red > th { color:#FF3300; }	
+tr.white > td,tr.white > th { color:#fff; }	
+tr.gray > td,tr.gray > th { color:#666; }	
+th.gray, td.gray { color:#666; }
+tr.green > td,tr.green > td { color:green; }	
+tr.blue > td,tr.blue > td { color:blue; }	
+tr.darkgray > td, tr.darkgray > th  { color: #5C5858; }	
+
+ .gold{color:gold;} .violet{color:violet;}
+.bglightgreen{background:lightgreen;} .bglightblue{background:#eff;} 
+
+.black{color:#000;}
+td.white,th.white,.white{color:#fff;}
+.indigo{color:indigo;}
+.darkblue{color:#0000A0;} .darkgray{ color: #5C5858; }
