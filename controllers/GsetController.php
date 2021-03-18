@@ -14,6 +14,9 @@ public function beforeFilter(){
 	parent::beforeFilter();			
 }
 
+
+
+
 public function index(){
 	$dbo=PDBO;	
 	$data['sy']=DBYR;$data['qtr']=$_SESSION['qtr'];

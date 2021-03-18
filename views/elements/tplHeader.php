@@ -4,6 +4,7 @@
 <head>
 <title>Grading | RFID | POS & Inventory | GIS</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="school software, enterprise resource planning, accounting, registration, enrollment">
 <meta name="keywords" content="automation, grading system, business software,information technology">
 <meta name="author" content="aizent.com">

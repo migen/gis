@@ -3,7 +3,7 @@
 
 
 <h3>
-    Bootstrap
+    Bootstrap Modal
     | <?php $this->shovel('homelinks'); ?>
 
 

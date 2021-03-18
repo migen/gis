@@ -1,6 +1,9 @@
 <?php 
 // pr($rows[0]);
 ?>
+
+
+
 <h5>
 	Levels
 	| <?php $this->shovel('homelinks'); ?>	
@@ -16,7 +19,6 @@
 <th>ID</th>
 <th>Code</th>
 <th class="vc300" >Level</th>
-<th class="" ></th>
 </tr>
 
 <?php for($i=0;$i<$count;$i++): ?>
@@ -25,7 +27,6 @@
 	<td><?php echo $rows[$i]['id']; ?></td>
 	<td><?php echo $rows[$i]['code']; ?></td>
 	<td><?php echo $rows[$i]['name']; ?></td>
-	<td>Edit</td>
 </tr>
 <?php endfor; ?>
 </table>

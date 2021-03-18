@@ -19,10 +19,17 @@ public function beforeFilter(){
 public function index(){
 	
 	$data="Bootstrap";	
-	$this->view->render($data,'bs/indexBs');
+
+	$this->view->render($data,'bs/indexBs','bootstrap');
 }	/* fxn */
 
 
+public function modal(){
+	
+	$data="Bootstrap";	
+	
+	$this->view->render($data,'bs/modalBs','bootstrap');
+}	/* fxn */
 
 
 
