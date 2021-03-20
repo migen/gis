@@ -4,8 +4,9 @@ class Controller{
 	public $layout=LAYOUT;	
 	
 	
-public function __construct(){ $this->init(); 
-	$this->view->css=array('bootstrap.min.css');
+public function __construct(){ 
+	$this->init(); 
+	// $this->view->css=array('bootstrap.min.css');
 
 }
 

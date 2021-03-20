@@ -191,7 +191,7 @@ public function levels(){
 	$data['rows']=fetchRows($db,"{$dbo}.`05_levels`","*","id");
 	$data['count']=count($data['rows']);
 	$vfile="gset/levelsGset";vfile($vfile);
-	$this->view->render($data,$vfile);	
+	$this->view->render($data,$vfile,'bootstrap');	
 }	/* fxn */
 
 public function classrooms(){ 

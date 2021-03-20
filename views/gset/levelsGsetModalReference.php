@@ -6,7 +6,7 @@ $dbtable=PDBO.".05_levels";
 
 ?>
 
-<div class="containered" >
+<div class="container" >
 
 <h5>
 	Levels
@@ -18,7 +18,7 @@ $dbtable=PDBO.".05_levels";
 </h5>
 
 <div align="left">
-	<button type="button" name="add" id="add" data-toggle="modal" data-target="#formModal" 
+	<button type="button" name="add" id="add" data-toggle="modal" data-target="#addDataModal" 
 		class="btn btn-primary btn-xs " />Add</button>
 </div>
 <br>
@@ -49,12 +49,33 @@ $dbtable=PDBO.".05_levels";
 </table>
 
 
-<!-- Add Modal -->
-<div class="modal" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="dataModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="formModalLabel">Add Level</h5>
+        <h5 class="modal-title" id="dataModalLabel">Level Details</h5>
+	    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    	    <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="row-details" >
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="addDataModal" tabindex="-1" role="dialog" aria-labelledby="addDataModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addDataModalLabel">Add Level</h5>
 	    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
     	    <span aria-hidden="true">&times;</span>
         </button>
@@ -126,9 +147,10 @@ function openEditModal(i,model_id){
 			$('#name').val(s.name);
 			$('#model_id').val(model_id);
 
-			// modal
 			$('#insert').val('Update');
-			$('#formModal').modal('show');
+
+			$('#addDataModal').modal('show');
+
 		}		  
 
     });				

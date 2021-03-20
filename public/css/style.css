@@ -1,7 +1,8 @@
 html{height:100%;width:100%; font-family: Arial,Helmet,Freesans,sans-serif; 
 	font-size:16px; }
 body{width:inherit;margin:0 auto;background:#ffffff; color: #00000f; }
-#content{ min-width:90%;  min-height:500px;  margin: 0 auto 0 auto;padding:10px 25px;background-color: fff; }
+#content{ min-width:90%;  min-height:500px;  margin: 0 auto;padding:10px 25px;background-color: fff; }
+.containered { width: 100%; }
 @media print{ .screen{display:none;} } @media print{ div.portrait {size: portrait;}} @media print{ div.landscape {size: landscape;}}
 div#header a{padding-left:8px; }div#header img{outline:none; border:0;}
 #header{ background-color:#0174DF;margin: 0 auto 0 auto;padding: 0px;width:100%;height:46px;	}
@@ -104,6 +105,11 @@ input[type='button'], input[type='submit']{min-width:50px;} input[type='file']{m
 .full,textarea.full,input.full, select.full{width:100%;}
 .checkbox tr td {border:1px solid ccc; } .checkbox tr td {min-width:16px;}
 #names{overflow:auto;color:blue; }	/* scroll */
+
+/* modal */
+
+
+
 
 /* accordion */
 .accorHeadrow{ height:38px; vertical-align:middle;text-align:center;width:256px;background-color:lightblue; }

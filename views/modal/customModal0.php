@@ -9,7 +9,7 @@ $dbtable=PDBO.".05_levels";
 <div class="containered" >
 
 <h5>
-	Levels
+	Custom Modal - Levels
 	| <?php $this->shovel('homelinks'); ?>	
 	| <a href="<?php echo URL.'mis/levels'; ?>">*Levels</a> 	
 	| <a href="<?php echo URL.'levels/set'; ?>" >Full</a>	
@@ -18,7 +18,7 @@ $dbtable=PDBO.".05_levels";
 </h5>
 
 <div align="left">
-	<button type="button" name="add" id="add" data-toggle="modal" data-target="#formModal" 
+	<button type="button" name="add" id="add" onclick="toggle('#modal');" 
 		class="btn btn-primary btn-xs " />Add</button>
 </div>
 <br>
@@ -49,18 +49,18 @@ $dbtable=PDBO.".05_levels";
 </table>
 
 
-<!-- Add Modal -->
-<div class="modal" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="formModalLabel">Add Level</h5>
-	    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    	    <span aria-hidden="true">&times;</span>
+        <h5 class="modal-title" id="modalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="row-details" >
-		<form method="POST" id="insert_form">
+      <div class="modal-body">
+          <form method="POST" id="insert_form">
 			<label for="">Level Code</label>			
 			<input type="text" name="name" id="code" class="form-control">		
 			<label for="">Level Name</label>		
@@ -69,9 +69,10 @@ $dbtable=PDBO.".05_levels";
 			<input type="submit" name="insert" id="insert" value="Insert" 
 				class="btn btn-primary" >
 		</form>
-      </div>
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
@@ -86,6 +87,12 @@ $dbtable=PDBO.".05_levels";
 var gurl="http://<?php echo GURL; ?>";
 var dbtable="<?php echo $dbtable; ?>";
 
+
+$(function(){
+
+    alert(123);
+
+})
 
 function enterStudcode(dbtable){
     $('#part').bind("keydown",function(e) {
@@ -128,7 +135,7 @@ function openEditModal(i,model_id){
 
 			// modal
 			$('#insert').val('Update');
-			$('#formModal').modal('show');
+			$('#modal').modal('show');
 		}		  
 
     });				
@@ -139,19 +146,6 @@ function openEditModal(i,model_id){
 }	/* fxn */
 
 
-
-$(document).ready(function(){
-
-	// alert(dbtable);
-
-
-
-
-
-
-
-
-});
 
 
 </script>

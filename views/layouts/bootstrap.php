@@ -1,12 +1,12 @@
 <?php 
 	/* $ts1 = time(); */
-	$this->shovel('tplHeader'); 
+	$this->shovel('tplHeaderBootstrap'); 
 	include_once(SITE."views/elements/smartlinks.php");
 	
 ?>
 
 <!-- Bootstrap CSS -->
-<link type='text/css' rel='stylesheet' href="<?php echo URL.'externals/bootstrap4/css/bootstrap.min.css'; ?> />
+<link type='text/css' rel='stylesheet' href="<?php echo URL.'externals/bootstrap4/css/bootstrap.min.css'; ?>" />
 
 
 
@@ -32,10 +32,14 @@
 
 </div> <!-- #content -->
 
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- comment
 <script type='text/javascript' src="<?php echo URL; ?>views/js/jquery.js"></script>
-<script type='text/javascript' src="<?php echo URL; ?>externals/bootstrap4/js/popper.min.js"></script>
-<script type='text/javascript' src="<?php echo URL; ?>externals/bootstrap4/js/bootstrap.min.js"></script>
+
+-->
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+
 
 
 <?php $this->shovel('tplFooter'); ?>

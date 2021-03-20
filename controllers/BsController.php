@@ -27,9 +27,13 @@ public function index(){
 public function modal(){
 	
 	$data="Bootstrap";	
+
+
 	
 	$this->view->render($data,'bs/modalBs','bootstrap');
 }	/* fxn */
+
+
 
 
 
