@@ -1,106 +1,40 @@
-<script>
+<?php
 
-var gurl = "http://<?php echo GURL; ?>";
-var sy = "<?php echo $sy; ?>";
-var limits='20';
+if($scid){	
 
 
-$(function(){
-	nextViaEnter();
-	selectFocused();
-	$('#names').hide();
+	// $contact=fetchRow($db,"{$dbcontacts}",$scid,"id,code,name");
+	// $profile=fetchRecord($db,"{$dbprofiles}","contact_id=$scid","first_name,last_name");
+	// pr($contact);
+	// prx($profile);
+
+	$contact=fetchRow($db,"{$dbcontacts}",$scid);
+	$profile=fetchRecord($db,"{$dbprofiles}","contact_id=$scid");
 	
-})
-
-function redirContact(ucid){
-	var url = gurl+'/students/datasheet/'+ucid;	
-	window.location = url;		
-}
-
-
-
-
-</script>
-
-
-<script type="text/javascript" src='<?php echo URL."views/js/filters.js"; ?>' ></script>
-
-
-
-<?php 
-
-
-debug($student);
-$promlvl=$student['promlvl'];
-
-?>
-
-<h3>
-	SJAM Datasheet | <?php $this->shovel('homelinks'); ?>
+	
+	if(empty($profile)){ 
+		$profile=array('contact_id'=>$scid);$db->add("{$dbo}.00_profiles",$profile);
+		flashRedirect("students/datasheet/$scid","Synced profile.");
+	}
 		
-</h3>
-
-<p class="brown" >
-	Notes:<br />
-	1. Birthdate - follow strict format: 2010-12-25 (i.e. Dec 25, 2010) <br />
+	// $names='first_name','middle_name','last_name',	
+	$except="'id','contact_id','profile_finalized','birthdate','is_male',";	
+	$except.="'is_scholar_pta','is_scholar_academic','is_employee_child','is_grantee_fape',";
+	$except.="'address','siblings_info','other_info','remarks'";
 	
-</p>
-
-<style>
-
-.divleft{ float:left;width:40%; border:1px solid white; }
-
-
-</style>
-
-<?php if($srid!=RSTUD): ?>
-	<p><?php require_once(SITE.'/views/elements/filter_codename.php'); ?></p>
-	<div id="names" >names</div>
-	<?php if(!isset($params) && ($srid!=RSTUD)){ exit; } ?>
-<?php endif; ?>
-
-<form method="POST" >
-<div class="divleft" >
-<table class="gis-table-bordered" >
-<tr><th colspan=2>Profile Master Data</th></tr>
-<?php for($i=0;$i<$profiles_count;$i++): ?>
-	<?php 
-		$key=$profiles_cols[$i];
-		$label=ucfirst($key);
-		$label=str_replace("_"," ",$label);
 	
-	?>
-	<tr><th><?php echo $label; ?></th><td>
-		<?php if(in_array($key,$text_array)): ?>
-			<textarea cols=30 rows=5 name="profile[<?php echo $key; ?>]" ><?php echo $profile[$key]; ?></textarea>
-		<?php else: ?>
-			<input name="profile[<?php echo $key; ?>]" value="<?php echo $profile[$key]; ?>" >
-		<?php endif; ?>					
-	</td></tr>
-<?php endfor; ?>
-<tr><td colspan=2>Save &nbsp; <input type="submit" name="submit" value="Profile"  ></td></tr>
-</table>
+	$dr=getDbtableColumnsByArray($db,$dbo,"00_profiles",$except);		
+	$profiles_cols=$dr['field_array'];
+	$profiles_field_str=$dr['field_string'];
+	$profiles_count=$dr['count'];
+	
+	$constants=array('last_name','first_name','middle_name');
+	$constants=&$constants;
 
-<div class="ht100" >&nbsp;</div>
-
-</div>
-
-</form>
-
-<form method="POST" >
-<div class="divleft" >
-<table class="gis-table-bordered" >
-<tr><th colspan=2>Custom Data</th></tr>
-<tr><th>Date</th><td><input name="custom[date]" value="<?php echo $_SESSION['today']; ?>" ></td></tr>
-<tr><th>Name</th><td><input name="custom[name]" value="<?php ; ?>" ></td></tr>
-<tr><td colspan=2>Save &nbsp; <input type="submit" name="submit_custom" value="Custom"  ></td></tr>
-</table>
-
-<div class="ht100" >&nbsp;</div>
-
-</div>
+	$skip_array=array('id','contact_id','profile_finalized');
+	$text_array=array('address','siblings_info','other_info','remarks');
 
 
-</form>
-
-
+	extract($contact);
+	extract($profile);
+}	/* scid */

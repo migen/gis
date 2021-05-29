@@ -48,7 +48,8 @@ public function trails($params=NULL){
 	$data['end']=$end=!empty($params['end'])? $params['end']:false;
 	
 	$dbtable="{$dbo}.`logs`";
-	$cond="1=1";	
+	// $cond="1=1";	
+	$cond="l.module_id=2";	
 	$srid=$_SESSION['srid'];
 	if (!empty($params['search'])){ $cond .= " AND l.details LIKE '%".$search."%' "; }				
 	if (!empty($params['start'])){ $cond .= " AND DATE(l.datetime) >= '".$params['start']."'"; }				

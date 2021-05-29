@@ -1,6 +1,13 @@
 <h3>
-	<?php echo $level['name']; ?> Books | <?php $this->shovel('homelinks'); ?>
+	<?php echo $level['name']; ?> Books SY<?php echo $sy; ?>
+	| <?php $this->shovel('homelinks'); ?>
 	<?php include('linksBooklists.php'); ?>
+	| <a href="<?php echo URL.'booklists/level/'.$lvl.'?num='.$num.'&edit'; ?>" >Edit</a>
+
+	<?php ?>
+		| Num <input type="number" value="<?php echo $num; ?>" min=1 max=5 
+			onchange='jsredirect("booklists/level/<?php echo $lvl; ?>?num="+this.value);'  >
+	<?php ?>
 
 </h3>
 

@@ -55,6 +55,7 @@ function getLevelCourses($db,$dbg=PDBG,$lvl){
 			crs.position AS crspos,sub.position AS subpos,
 			crs.indent AS crsindent,sub.indent AS subindent,
 			crs.semester AS crssem,sub.semester AS subsem,
+			crs.is_primary AS crspri,sub.is_primary AS subpri,
 			crs.course_weight AS crswt,sub.weight AS subwt
 		FROM {$dbg}.05_courses AS crs 
 			LEFT JOIN {$dbg}.05_classrooms AS cr ON crs.crid=cr.id
@@ -84,6 +85,7 @@ $is_aggregate=$post['is_aggregate'];
 $position=$post['position'];
 $indent=$post['indent'];
 $semester=$post['semester'];
+$is_primary=$post['is_primary'];
 $weight=$post['weight'];
 $is_displayed=$post['is_displayed'];
 $in_genave=$post['in_genave'];
@@ -92,8 +94,8 @@ $q="UPDATE {$dbg}.05_courses AS crs
 		LEFT JOIN {$dbg}.05_classrooms AS cr ON crs.crid=cr.id
 	SET crs.`code`='$code',crs.`label`='$label',crs.`with_scores`='$with_scores',crs.`crstype_id`='$crstype_id',
 		crs.`supsubject_id`='$supsubject_id',crs.`course_weight`='$weight',crs.`is_aggregate`='$is_aggregate',
-		crs.`position`='$position',crs.`indent`='$indent',crs.`semester`='$semester',crs.`in_genave`='$in_genave',
-		crs.`on_reports`='$on_reports',crs.`is_num`='$is_num',crs.`is_displayed`='$is_displayed'
+		crs.`position`='$position',crs.`indent`='$indent',crs.`semester`='$semester',crs.`is_primary`='$is_primary',
+		crs.`in_genave`='$in_genave',crs.`on_reports`='$on_reports',crs.`is_num`='$is_num',crs.`is_displayed`='$is_displayed'
 	WHERE cr.level_id='$lvl' AND crs.subject_id='$sub';	";
 return $q;
 

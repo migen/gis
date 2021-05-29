@@ -13,8 +13,13 @@ public function __construct(){
 		$this->permit($acl);				
 	}	
 	
+	if($this->only(['datasheet','paymode','assessment','booklist','tuitions'])){
+		if($_SESSION['srid']==RSTUD){ require_once(SITE."functions/schedulesFxn.php"); }
+	}
+	
 	
 }	/* fxn */
+
 
 
 public function beforeFilter(){
@@ -32,8 +37,24 @@ public function dashboard(){
 }	/* fxn */
 
 
+public function abc($params=NULL){
+	$scid=isset($params[0])? $params[0]:false;
+	require_once(SITE.'functions/abcFxn.php');
+	$db=&$this->baseModel->db;$sy=DBYR;
+	
+	$data=syScidAccess($db,$scid);
+
+
+	$this->view->render($data,'students/abcStudent');
+	
+}	/* fxn */
+
+
 
 public function index(){
+	
+	
+	
 	// $data['sy']=$sy=DBYR;
 	$data['sy']=$sy=$_SESSION['settings']['sy_grading'];
 	$data['prevsy']=$prevsy=($sy-1);
@@ -46,9 +67,12 @@ public function index(){
 	require_once(SITE."functions/sessionize_student.php");
 
 	$scid=false;
+
+
+	
 	if($user_is_student){
 		$scid=$_SESSION['ucid'];
-		$student=getStudinfo($db,$sy,$scid);			
+		$student=getStudinfo($db,$sy,$scid);					
 		$user=array_merge($user,$student);				
 	} else {
 		$scid=isset($_GET['scid'])? $_GET['scid']:false;
@@ -72,6 +96,13 @@ public function index(){
 	$one="homeStudent_{$sch}";$two="students/homeStudent";
 	$vfile=cview($one,$two,$sch);vfile($vfile);		
 	$data['flash_message']=isset($_SESSION['message'])? $_SESSION['message']:false;
+
+	/* syScidAccess */
+	require_once(SITE.'functions/enrollmentFxn.php');
+	$data_syScid=syScidAccess($db,$scid);
+	$data=array_merge($data_syScid,$data);
+	// prx($data);
+	
 	$this->view->render($data,$vfile);
 	
 }	/* fxn */
@@ -116,6 +147,51 @@ public function links($params=NULL){
 	
 	$vfile=isset($_GET['sch'])? "students/linksSch":"students/linksStudents";vfile($vfile);
 	$this->view->render($data,$vfile);
+}	/* fxn */
+
+
+
+public function encrid($params=NULL){
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
+	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
+	$data['srid']=$srid=$_SESSION['srid'];
+	
+	if($srid==RSTUD){ $data['scid']=$scid=$_SESSION['ucid']; }
+	
+	if(isset($_POST['submit'])){
+		$post=$_POST['post'];
+		// pr($post);exit;		
+		$encrid=$post['encrid'];$summcrid=$post['summcrid'];		
+		$enid=$post['enid'];$summid=$post['summid'];
+	
+		$q="UPDATE {$dbo}.05_enrollments SET crid=$encrid WHERE id=$enid LIMIT 1; ";
+		$q.="UPDATE {$dbg}.05_summaries SET crid=$summcrid WHERE id=$summid LIMIT 1; ";
+		$sth=$db->query($q);
+		$msg=($sth)? "Success":"Fail";
+		flashRedirect("students/encrid/$scid/$sy",$msg);
+		
+	}	/* post */
+	
+if($scid){
+	$q="SELECT
+			en.id AS enid,summ.id AS summid,c.name AS studname,c.id AS scid,
+			en.crid AS encrid,summ.crid AS summcrid,cr.name AS classroom,cr.level_id,cr.num			
+		FROM {$dbo}.00_contacts AS c 
+		LEFT JOIN {$dbo}.05_enrollments AS en ON (en.sy=$sy AND en.scid=c.id)
+		LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
+		LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+		WHERE c.id=$scid LIMIT 1;
+	";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['row']=$sth->fetch();
+		
+}	/* scid */
+
+
+	$this->view->render($data,"students/encridStudent");
+	
 }	/* fxn */
 
 
@@ -346,139 +422,6 @@ public function reps($params=NULL){
 }	/* fxn */
 
 
-public function encrid($params=NULL){
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
-	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
-	
-	if(isset($_POST['submit'])){
-		$post=$_POST['post'];
-		// pr($post);exit;		
-		$encrid=$post['encrid'];$summcrid=$post['summcrid'];		
-		$enid=$post['enid'];$summid=$post['summid'];
-	
-		$q="UPDATE {$dbo}.05_enrollments SET crid=$encrid WHERE id=$enid LIMIT 1; ";
-		$q.="UPDATE {$dbg}.05_summaries SET crid=$summcrid WHERE id=$summid LIMIT 1; ";
-		$sth=$db->query($q);
-		$msg=($sth)? "Success":"Fail";
-		flashRedirect("students/encrid/$scid/$sy",$msg);
-		
-	}	/* post */
-	
-if($scid){
-	$q="SELECT
-			en.id AS enid,summ.id AS summid,c.name AS studname,c.id AS scid,
-			en.crid AS encrid,summ.crid AS summcrid,cr.name AS classroom,cr.level_id,cr.num			
-		FROM {$dbo}.00_contacts AS c 
-		LEFT JOIN {$dbo}.05_enrollments AS en ON (en.sy=$sy AND en.scid=c.id)
-		LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
-		LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
-		WHERE c.id=$scid LIMIT 1;
-	";
-	debug($q);
-	$sth=$db->querysoc($q);
-	$data['row']=$sth->fetch();
-		
-}	/* scid */
-
-
-	$this->view->render($data,"students/encridStudent");
-	
-}	/* fxn */
-
-
-public function paymode($params=NULL){
-	// if(!isset($params)){ pr("param[0]-scid is required"); exit; }
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['srid']=$srid=$_SESSION['srid'];
-	if($srid==RSTUD){ $data[$scid]=$scid=$_SESSION['ucid']; }
-	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
-	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
-	$dbtable="{$dbg}.05_summaries";
-	
-	if(isset($_POST['submit'])){
-		$post=$_POST['summ'];$id=$post['id'];		
-		$db->update("{$dbtable}",$post,"id=$id");
-		flashRedirect("students/paymode/$scid/$sy","Saved.");
-		exit;
-	}
-	
-	if($scid){
-		/* getData */
-		$q="SELECT summ.scid,c.code AS studcode,c.name AS studname,pm.name AS paymode,
-				summ.paymode_id,summ.id AS pkid,summ.paymode_finalized,
-				cr.name AS classroom,cr.level_id,l.name AS level
-			FROM {$dbg}.05_summaries AS summ 
-			INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
-			INNER JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
-			INNER JOIN {$dbo}.00_contacts AS c ON summ.scid=c.id
-			INNER JOIN {$dbo}.03_paymodes AS pm ON summ.paymode_id=pm.id
-			WHERE summ.scid=$scid LIMIT 1;
-		";
-		$sth=$db->querysoc($q);
-		$data['row']=$sth->fetch();
-		if(!isset($_SESSION['paymodes'])){ $_SESSION['paymodes']=fetchRows($db,"{$dbo}.03_paymodes","*","position"); }
-		$data['paymodes']=$_SESSION['paymodes'];	
-	}	/* scid */
-	$sch=VCFOLDER;$one="paymode_{$sch}";$two="students/paymodeStudent";
-	$vfile=cview($one,$two,$sch);vfile($vfile);	
-	$this->view->render($data,$vfile);
-	
-}	/* fxn */
-
-
-
-public function tuitions($params=NULL){
-	$dbo=PDBO;$db=&$this->model->db;$sch=VCFOLDER;
-	$srid=$_SESSION['srid'];
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
-	$dbg=VCPREFIX.$sy.US.DBG;
-	
-	if($srid==RSTUD){ $data['scid']=$scid=$_SESSION['ucid']; }		
-	$schema=$dbo;
-	$table="03_tuitions";
-	
-	if(!$scid){ pr("<h3>Parameter scid required.</h3>"); exit; }
-	// 1
-	$q="SELECT cr.level_id,cr.num
-		FROM {$dbg}.05_summaries AS summ 
-		INNER JOIN {$dbg}.05_classrooms AS cr ON cr.id=summ.crid
-		WHERE summ.scid=$scid LIMIT 1;";
-	$sth=$db->querysoc($q);
-	$data['student']=$student=$sth->fetch();
-	$data['lvl']=$lvl=$student['level_id'];
-	$num=$student['num'];
-	
-	// 2
-	$data['num']=$num=isset($_GET['num'])? $_GET['num']:$num;
-	$q="SELECT d.*,d.id AS pkid,f.name AS feetype,f.parent_id
-		FROM {$dbo}.03_tfeedetails AS d
-		LEFT JOIN {$dbo}.03_feetypes AS f ON d.feetype_id=f.id
-		WHERE d.sy=$sy AND d.level_id=$lvl AND d.num=$num AND d.is_displayed=1 
-		ORDER BY d.position;";
-	debug($q);
-	$sth=$db->querysoc($q);
-	$data['rows']=$sth->fetchAll();
-	$data['count']=$sth->rowCount();
-	
-	// $data['level']=fetchRow($db,"{$dbo}.05_levels",$lvl);
-	$q="SELECT l.name,t.level_id,t.num,l.id,t.total AS amount,t.id AS pkid,t.notes,t.num,t.major
-		FROM {$dbo}.05_levels AS l
-		LEFT JOIN {$dbo}.`03_tuitions` AS t ON l.id=t.level_id
-		WHERE t.sy=$sy AND t.level_id=$lvl AND t.num=$num;";
-	$sth=$db->querysoc($q);
-	$data['level']=$sth->fetch();
-	$data['total']=$data['level']['amount'];
-	debug($q);debug($data['level']);
-
-	$sch=VCFOLDER;$one="tuitions_{$sch}";$two="students/tuitionsStudent";
-	$vfile=cview($one,$two,$sch);vfile($vfile);
-	
-	$this->view->render($data,$vfile,'blank');
-
-}	/* fxn */
-
 public function ucfstr($a){
 	$b=explode(" ",trim($a));
 	$x='';
@@ -532,7 +475,7 @@ public function register(){
 		// pr($contact);pr($ctp);pr($profile);exit;
 		// prx($contact);
 		/* dbadd */
-		$s1=$db->add($dbcontacts,$contact);
+		$s1=$db->add("{$dbo}.00_contacts",$contact);
 		$s2=$db->add("{$dbo}.00_ctp",$ctp);
 		$s3=$db->add("{$dbo}.00_profiles",$profile);
 		flashRedirect("students/leveler/$new_ucid","$fullname student registered.");
@@ -1013,79 +956,6 @@ if($lvl){
 }	/* fxn */
 
 
-public function booklist($params=NULL){
-	$db=&$this->baseModel->db;$dbo=PDBO;
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
-	$data['qtr']=$qtr=isset($params[2])? $params[2]:$_SESSION['qtr'];
-	
-	
-	$data['srid']=$srid=$_SESSION['srid'];
-	if($srid==RSTUD){ $data['scid']=$scid=$_SESSION['ucid']; }
-	$dbg=VCPREFIX.$sy.US.DBG;
-
-	if(isset($_POST['submit'])){
-		$q="UPDATE {$dbg}.05_summaries SET booklist_finalized=1 WHERE scid=$scid LIMIT 1; ";
-		$db->query($q);
-		flashRedirect("students/booklist/$scid","Finalized.");		
-	}	/* post */
-
-	if(isset($_POST['unlock'])){
-		$q="UPDATE {$dbg}.05_summaries SET booklist_finalized=0 WHERE scid=$scid LIMIT 1; ";
-		$db->query($q);
-		flashRedirect("students/booklist/$scid","Opened.");		
-	}	/* post */
-
-
-if($scid){
-	/* data-1 */	
-	$q="SELECT summ.scid,c.code,c.name,summ.booklist_finalized,cr.name AS classroom,
-			cr.level_id,l.name AS level,cr.num,s.name AS section 
-		FROM {$dbo}.00_contacts AS c 
-		INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
-		INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
-		INNER JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
-		INNER JOIN {$dbo}.05_sections AS s ON cr.section_id=s.id
-		WHERE summ.scid=$scid LIMIT 1;";
-	$sth=$db->querysoc($q);
-	$data['student']=$sth->fetch();
-	$lvl=$data['student']['level_id'];
-	$num=$data['student']['num'];
-	
-	
-	
-	$semcond='';
-	if($lvl>13){
-		$sem=($qtr<2)? 1:2;
-		$semcond=" AND (b.semester=0 OR b.semester=$sem) ";
-	}
-
-	/* data-2 */
-	$qx="SELECT sb.*,sb.id AS pkid,b.name AS book,b.*,s.name AS subjname FROM {$dbg}.50_students_books AS sb 
-		INNER JOIN {$dbg}.05_books AS b ON sb.book_id=b.id LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
-		WHERE sb.scid=$scid ORDER BY b.name;";
-		
-	$q="SELECT lb.*,lb.id AS pkid,b.name AS book,b.*,s.name AS subjname
-		FROM {$dbg}.05_level_books AS lb 
-		INNER JOIN {$dbg}.05_books AS b ON lb.book_id=b.id
-		LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
-		WHERE lb.level_id=$lvl AND lb.num=$num $semcond ORDER BY b.name;";
-	debug($q);
-	$sth=$db->querysoc($q);
-	$data['rows']=$sth->fetchAll();
-	$data['count']=$sth->rowCount();
-
-	
-	
-}	/* scid */
-	
-	$vfile="students/booklistStudentCss";vfile($vfile);
-	$this->view->render($data,$vfile);
-
-	
-}	/* fxn */
-
-
 public function unsetter($params=NULL){
 	$dbo=PDBO;
 	$key=$params[0];
@@ -1120,47 +990,6 @@ public function discempl($params=NULL){
 
 
 
-
-public function assessment($params=NULL){	// tuition assessment and other fees
-
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['ucid']=$_SESSION['ucid'];
-	$sy=isset($params[1])? $params[1]:$_SESSION['year'];
-	$sy=isset($_GET['sy'])? $_GET['sy']:$sy;	
-	$data['sy']=$sy;$sch=VCFOLDER;
-	$data['today']=$_SESSION['today'];
-	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
-	$data['db']=&$db;
-		
-	$acl = array(array(5,0),array(2,0),array(4,0),array(9,0),array(1,0));
-	$this->permit($acl);				
-	include_once(SITE.'views/elements/dbsch.php');
-	
-	if($scid){
-		include_once(SITE.'functions/syncFxn.php');		
-		include_once(SITE.'functions/enrollmentFxn.php');
-		$data1=getAssessmentDataForClearance($db,$sy,$scid);
-		$data=array_merge($data,$data1);
-		
-		$data['prevaccts']=checkPreviousAccounts($db,$sy,$scid);
-
-		
-	}	/* scid */
-	
-	if(!isset($_SESSION['paytypes'])){ $_SESSION['paytypes']=fetchRows($db,"{$dbo}.03_paytypes","id,code,name",$order="id"); }
-	$data['paytypes']=$_SESSION['paytypes'];
-
-	$data['lvl']=($scid)? $data['student']['level_id']:4;
-	$sch=VCFOLDER;$one="assessmentStudent_{$sch}";$two="students/assessmentStudent";
-	$vfile=cview($one,$two,$sch);vfile($vfile);
-
-	if(isset($_GET['data'])){ $vfile="students/assessmentRaw"; }
-	$layout=($scid)? "empty":"full";
-	$this->view->render($data,$vfile,$layout);	
-	
-}	/* fxn */
-
-
 public function clearance($params=NULL){
 	$srid=$_SESSION['srid'];
 	$scid=($srid==RSTUD)? $_SESSION['ucid']:false;
@@ -1177,55 +1006,6 @@ public function clearance($params=NULL){
 
 
 public function datasheetOK($params=NULL){	
-	require_once(SITE."functions/dbtools.php");	
-	$db=&$this->baseModel->db;$dbo=PDBO;
-	$data['scid']=$scid=isset($params[0])? $params[0]:false;
-	$data['srid']=$srid=$_SESSION['srid'];
-	if($srid==RSTUD){ $data['scid']=$scid=$_SESSION['ucid']; }
-	$dbcontacts="{$dbo}.`00_contacts`";
-	$dbprofiles="{$dbo}.`00_profiles`";	
-	
-	/* post */
-	if(isset($_POST['submit'])){
-		$contact=$_POST['contact'];
-		$profile=$_POST['profile'];			
-		$sth=$db->update("{$dbcontacts}",$contact,"id=$scid"); // ps($sth);
-		$sth=$db->update("{$dbprofiles}",$profile,"contact_id=$scid"); // ps($sth);
-		flashRedirect("students/datasheet/$scid","Updated datasheet.");					
-		
-	}	/* post */
-	
-	/* data */
-	if($scid){
-		$data['contact']=fetchRow($db,"{$dbcontacts}",$scid,"*");
-		$data['profile']=fetchRecord($db,"{$dbprofiles}","contact_id=$scid");
-			
-		// $names='first_name','middle_name','last_name',	
-		$except="'id','contact_id','profile_finalized','birthdate','is_male',";	
-		$except.="'is_scholar_pta','is_scholar_academic','is_employee_child','is_grantee_fape',";
-		$except.="'address','siblings_info','other_info','remarks'";
-		
-		$dr=getDbtableColumnsByArray($db,$dbo,"00_profiles",$except);		
-		$data['profiles_cols']=$dr['field_array'];
-		$data['profiles_field_str']=$dr['field_string'];
-		$data['profiles_count']=$dr['count'];
-		
-		$constants=array('last_name','first_name','middle_name');
-		$data['constants']=&$constants;
-
-		$data['skip_array']=array('id','contact_id','profile_finalized');
-		$data['text_array']=array('address','siblings_info','other_info','remarks');
-			
-	}	/* scid */
-		
-	$vfile="students/datasheet";vfile($vfile);
-	$this->view->render($data,$vfile);
-
-}	/* fxn */
-
-
-
-public function datasheet($params=NULL){	
 	require_once(SITE."functions/dbtools.php");	
 	$db=&$this->baseModel->db;$dbo=PDBO;
 	$data['scid']=$scid=isset($params[0])? $params[0]:false;
@@ -1253,6 +1033,414 @@ public function datasheet($params=NULL){
 
 }	/* fxn */
 
+
+public function ds($params=NULL){	
+	require_once(SITE."functions/dbtools.php");	
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['srid']=$srid=$_SESSION['srid'];
+	if($srid==RSTUD){ $data['scid']=$scid=$_SESSION['ucid']; }
+	$sch=VCFOLDER;
+	$data['db']=&$db;
+	$data['dbcontacts']=$dbcontacts="{$dbo}.`00_contacts`";
+	$data['dbprofiles']=$dbprofiles="{$dbo}.`00_profiles`";
+	$data['dbo']=&$dbo;
+	
+	/* ensteps */ 
+	$data['axn']=$axn=$this->axn();
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+	if(is_readable($incfile)){ require_once($incfile);  } 		
+	$data['controls']=isset($controls)? $controls:null;
+		
+	/* post */
+	if(isset($_POST['submit'])){
+		$contact=$_POST['contact'];
+		$profile=$_POST['profile'];			
+		if($_POST['submit']=='Finalize'){ $profile['profile_finalized']=1; }
+		$sth1=$db->update("{$dbcontacts}",$contact,"id=$scid"); // ps($sth);
+		$sth2=$db->update("{$dbprofiles}",$profile,"contact_id=$scid"); // ps($sth);
+		flashRedirect("students/datasheet/$scid","Updated datasheet.");							
+	}	/* post */
+	
+
+	$one="ds_{$sch}";$two="students/datasheet";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	// $this->view->render($data,$vfile,'blank');
+	$this->view->render($data,$vfile);
+
+}	/* fxn */
+
+
+
+/* enstep-2: paymode */
+public function paymode($params=NULL){	/* enstep-2 */
+	// if(!isset($params)){ pr("param[0]-scid is required"); exit; }	
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['srid']=$srid=$_SESSION['srid'];
+	if($srid==RSTUD){ $data[$scid]=$scid=$_SESSION['ucid']; }
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$db=&$this->baseModel->db;
+	$data['dbo']=$dbo=PDBO;
+	$data['dbg']=$dbg=VCPREFIX.$sy.US.DBG;
+	$data['db']=&$db;
+	$dbtable="{$dbg}.05_summaries";
+	$data['controls']=null;
+		
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+		
+		/* schedule */ 	
+		$data['ensched']=$ensched=getScheduleEnstep($db,$sy,$scid);
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+	}	/* if-student-account */
+	
+	/* post */
+	if(isset($_POST['submit'])){
+		$post=$_POST['summ'];$id=$post['id'];		
+		
+		if($_POST['submit']=='Finalize'){ 
+			$contact=$_POST['contact'];
+			$db->update("{$dbo}.00_contacts",$contact,"id=$scid"); // ps($sth);			
+			
+			$step=$_POST['step'];
+			$db->update("{$dbo}.05_steps",$step,"scid=$scid AND type='enrollment'");			
+		}	/* finalize */		
+
+		$db->update("{$dbtable}",$post,"id=$id");
+		flashRedirect("students/paymode/$scid/$sy","Saved.");
+		exit;
+	}
+	
+	if($scid){
+		/* getData */
+		$q="SELECT summ.scid,c.code AS studcode,c.name AS studname,pm.name AS paymode,
+				summ.paymode_id,summ.id AS pkid,s.name AS section,
+				cr.name AS classroom,cr.level_id,l.name AS level
+			FROM {$dbg}.05_summaries AS summ 
+			INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+			INNER JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+			INNER JOIN {$dbo}.05_sections AS s ON cr.section_id=s.id
+			INNER JOIN {$dbo}.00_contacts AS c ON summ.scid=c.id
+			INNER JOIN {$dbo}.03_paymodes AS pm ON summ.paymode_id=pm.id
+			WHERE summ.scid=$scid LIMIT 1;
+		";
+		$sth=$db->querysoc($q);
+		$data['row']=$sth->fetch();
+		if(!isset($_SESSION['paymodes'])){ $_SESSION['paymodes']=fetchRows($db,"{$dbo}.03_paymodes","*","position"); }
+		$data['paymodes']=$_SESSION['paymodes'];	
+	}	/* scid */
+	$sch=VCFOLDER;$one="paymode_{$sch}";$two="students/paymodeStudent";
+	$vfile=cview($one,$two,$sch);vfile($vfile);	
+	$this->view->render($data,$vfile);
+	
+}	/* fxn */
+
+
+
+
+/* enstep-1: paymode */
+public function datasheet($params=NULL){	
+	require_once(SITE."functions/dbtools.php");	
+	require_once(SITE."functions/stepFxn.php");	
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$data['srid']=$srid=$_SESSION['srid'];
+	$sch=VCFOLDER;
+	$data['db']=&$db;
+	$data['dbcontacts']=$dbcontacts="{$dbo}.`00_contacts`";
+	$data['dbprofiles']=$dbprofiles="{$dbo}.`00_profiles`";
+	$data['dbo']=&$dbo;
+	$data['controls']=null;
+
+
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+
+		/* schedule */ 	
+		$data['ensched']=$ensched=getScheduleEnstep($db,$sy,$scid);
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+
+		
+	}	/* if-student-account */
+		
+	
+
+	/* post */
+	if(isset($_POST['submit'])){
+		$contact=$_POST['contact'];
+		$profile=$_POST['profile'];			
+		
+		if($_POST['submit']=='Finalize'){ 
+			$step=$_POST['step'];
+			$db->update("{$dbo}.05_steps",$step,"scid=$scid AND type='enrollment'");			
+		}	/* finalize */
+		
+		$sth1=$db->update("{$dbo}.00_contacts",$contact,"id=$scid"); // ps($sth);
+		$sth2=$db->update("{$dbo}.00_profiles",$profile,"contact_id=$scid"); // ps($sth);		
+		flashRedirect("students/datasheet/$scid","Updated datasheet.");							
+	}	/* post */
+
+	if($scid){ syncStudStep($db,$scid,$type='enrollment'); }
+
+	$one="datasheet_{$sch}";$two="students/datasheet";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	// $this->view->render($data,$vfile,'blank');
+	$this->view->render($data,$vfile);
+
+}	/* fxn */
+
+
+
+
+/* enstep-4: assessment */
+public function assessment($params=NULL){	/* tuition assessment and other fees */
+
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['ucid']=$_SESSION['ucid'];
+	$data['srid']=$srid=$_SESSION['srid'];	
+	$sy=isset($params[1])? $params[1]:$_SESSION['year'];
+	$sy=isset($_GET['sy'])? $_GET['sy']:$sy;	
+	$data['sy']=$sy;$sch=VCFOLDER;
+	$data['today']=$_SESSION['today'];
+	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
+	$data['db']=&$db;
+		
+	$acl = array(array(5,0),array(2,0),array(4,0),array(9,0),array(1,0));
+	$this->permit($acl);				
+	include_once(SITE.'views/elements/dbsch.php');
+	$data['controls']=null;
+
+
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+		
+		/* schedule */ 	
+		$data['ensched']=$ensched=getScheduleEnstep($db,$sy,$scid);
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+	}	/* if-student-account */
+	
+	if($scid){
+		include_once(SITE.'functions/syncFxn.php');		
+		include_once(SITE.'functions/enrollmentFxn.php');
+		$data1=getAssessmentDataForClearance($db,$sy,$scid);
+		$data=array_merge($data,$data1);
+		
+		$data['prevaccts']=checkPreviousAccounts($db,$sy,$scid);
+
+		
+	}	/* scid */
+	
+	if(!isset($_SESSION['paytypes'])){ $_SESSION['paytypes']=fetchRows($db,"{$dbo}.03_paytypes","id,code,name",$order="id"); }
+	$data['paytypes']=$_SESSION['paytypes'];
+
+	$data['lvl']=($scid)? $data['student']['level_id']:4;
+	$sch=VCFOLDER;$one="assessmentStudent_{$sch}";$two="students/assessmentStudent";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+
+	if(isset($_GET['data'])){ $vfile="students/assessmentRaw"; }
+	$layout=($scid)? "empty":"full";
+	$this->view->render($data,$vfile,$layout);	
+	
+}	/* fxn */
+
+
+
+
+public function tuitions($params=NULL){
+	$dbo=PDBO;$sch=VCFOLDER;
+	$data['db']=$db=&$this->model->db;
+	$data['srid']=$srid=$_SESSION['srid'];
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$data['controls']=null;
+
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+	
+		/* schedule */ 	
+		$data['sched']=$sched=getScheduleByModule($db,$sy,$scid,'tuition');
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+		
+	}	/* studacct */
+
+
+	$schema=$dbo;
+	
+	if(!$scid){ pr("<h3>Parameter scid required.</h3>"); exit; }
+	// 1
+	$q="SELECT cr.level_id,cr.num
+		FROM {$dbg}.05_summaries AS summ 
+		INNER JOIN {$dbg}.05_classrooms AS cr ON cr.id=summ.crid
+		WHERE summ.scid=$scid LIMIT 1;";
+	$sth=$db->querysoc($q);
+	$data['student']=$student=$sth->fetch();
+	$data['lvl']=$lvl=$student['level_id'];
+	$num=$student['num'];
+	
+	// 2
+	$data['num']=$num=isset($_GET['num'])? $_GET['num']:$num;
+	$q="SELECT d.*,d.id AS pkid,f.name AS feetype,f.parent_id
+		FROM {$dbo}.03_tfeedetails AS d
+		LEFT JOIN {$dbo}.03_feetypes AS f ON d.feetype_id=f.id
+		WHERE d.sy=$sy AND d.level_id=$lvl AND d.num=$num AND d.is_displayed=1 
+		ORDER BY d.position;";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+	
+	// $data['level']=fetchRow($db,"{$dbo}.05_levels",$lvl);
+	$q="SELECT l.name,t.level_id,t.num,l.id,t.total AS amount,t.id AS pkid,t.notes,t.num,t.major
+		FROM {$dbo}.05_levels AS l
+		LEFT JOIN {$dbo}.`03_tuitions` AS t ON l.id=t.level_id
+		WHERE t.sy=$sy AND t.level_id=$lvl AND t.num=$num;";
+	$sth=$db->querysoc($q);
+	$data['level']=$sth->fetch();
+	$data['total']=$data['level']['amount'];
+	debug($q);debug($data['level']);
+
+	$sch=VCFOLDER;$one="tuitions_{$sch}";$two="students/tuitionsStudent";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	
+	$this->view->render($data,$vfile,'blank');
+
+}	/* fxn */
+
+
+/* enstep-3: booklist */
+public function booklist($params=NULL){
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$data['scid']=$scid=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$data['qtr']=$qtr=isset($params[2])? $params[2]:$_SESSION['qtr'];	
+	$data['srid']=$srid=$_SESSION['srid'];
+	$data['db']=&$db;
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$data['controls']=null;
+
+
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+	
+		/* schedule */ 	
+		$data['sched']=$sched=getScheduleByModule($db,$sy,$scid,'booklist');
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+		
+	}	/* studacct */
+
+
+
+
+	/* post */
+	if(isset($_POST['submit'])){
+		// prx($_POST);
+		$contact=$_POST['contact'];		
+		$step=$_POST['step'];
+		$db->update("{$dbo}.00_contacts",$contact,"id=$scid"); 
+		$db->update("{$dbo}.05_steps",$step,"scid=$scid AND type='enrollment'");							
+		flashRedirect("students/booklist/$scid/$sy","Booklist Finalized.");		
+	}	/* post */
+
+	if(isset($_POST['unlock'])){
+		$q="UPDATE {$dbg}.05_summaries SET booklist_finalized=0 WHERE scid=$scid LIMIT 1; ";
+		$db->query($q);
+		flashRedirect("students/booklist/$scid","Opened.");		
+	}	/* post */
+
+
+if($scid){
+	/* data-1 */	
+	$q="SELECT summ.scid,c.code,c.name,cr.name AS classroom,
+			cr.level_id,l.name AS level,cr.num,s.name AS section 
+		FROM {$dbo}.00_contacts AS c 
+		INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
+		INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+		INNER JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+		INNER JOIN {$dbo}.05_sections AS s ON cr.section_id=s.id
+		WHERE summ.scid=$scid LIMIT 1;";
+	$sth=$db->querysoc($q);
+	$data['student']=$sth->fetch();
+	$lvl=$data['student']['level_id'];
+	$num=$data['student']['num'];
+	
+	
+	
+	$semcond='';
+	if($lvl>13){
+		$sem=($qtr<2)? 1:2;
+		$sem=isset($_GET['sem'])? $_GET['sem']:$sem;
+		$semcond=" AND (b.semester=0 OR b.semester=$sem) ";
+	}
+	
+
+	/* data-2 */
+	$qx="SELECT sb.*,sb.id AS pkid,b.name AS book,b.*,s.name AS subjname FROM {$dbg}.50_students_books AS sb 
+		INNER JOIN {$dbg}.05_books AS b ON sb.book_id=b.id LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
+		WHERE sb.scid=$scid ORDER BY b.name;";
+		
+	$q="SELECT lb.*,lb.id AS pkid,b.name AS book,b.*,s.name AS subjname
+		FROM {$dbg}.05_level_books AS lb 
+		INNER JOIN {$dbg}.05_books AS b ON lb.book_id=b.id
+		LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
+		WHERE lb.level_id=$lvl AND lb.num=$num $semcond ORDER BY b.name;";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+
+	
+	
+}	/* scid */
+	
+	// $vfile="students/booklistStudentCss";vfile($vfile);
+	// $this->view->render($data,$vfile);
+
+	$data['sem']=($data['student']['level_id']>13)? $sem:1;		
+	$sch=VCFOLDER;$one="booklist_{$sch}";$two="students/booklistStudentCss";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	
+	$this->view->render($data,$vfile,'blank');
+
+	
+}	/* fxn */
 
 
 

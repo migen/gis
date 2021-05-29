@@ -3,6 +3,7 @@
 ?>
 
 
+
 <form method="GET" >
 
 <div class="screen" style="width:30%;float:left;" >
@@ -49,8 +50,16 @@
 					<?php echo ($sy==(DBYR+1))? 'selected':NULL; ?>
 				><?php echo (DBYR+1); ?></option>			
 			<?php endif; ?>			
-			<option value="" <?php echo (!isset($_GET['sy']))? 'selected':NULL; ?> >All school years</option>			
+			<option value=""  >All school years</option>			
 		</select>	
+	</td></tr>	
+
+	<tr><th>Balance Option</th><td>
+		<select class="vc100" name="balance_option" >		
+			<option value="0" >All</option>
+			<option value="1" selected >Cutoff</option>
+		</select>	
+		<span class="b" >Amount: </span><input class="vc50" type="number" name="balance" value=0 >
 	</td></tr>	
 
 	
@@ -67,7 +76,7 @@
 	array('key'=>'p.date','value'=>'Date'),
 	array('key'=>'cr.level_id,cr.name','value'=>'Classroom'),
 	array('key'=>'ft.name','value'=>'Feetype'),
-	array('key'=>'cc.name','value'=>'Customer'),			
+	array('key'=>'c.name','value'=>'Customer'),			
 ); ?>
 
 

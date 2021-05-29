@@ -22,12 +22,12 @@ public function beforeFilter(){ parent::beforeFilter();		}
 
 
 public function index($params=NULL){	
-$dbo=PDBO;
-	$db =& $this->model->db;	
-	$home=$_SESSION['home'];
-	if($_SESSION['srid']!=RREG) redirect($home);
-		
-	$data=$_SESSION['registrar']; 
+	$dbo=PDBO;
+	$db=&$this->model->db;	
+	$home=$_SESSION['home'];$srid=$_SESSION['srid'];
+	if(($srid!=RREG) && ($srid!=RMIS)){ redirect($home); }
+			
+	if($srid==RREG){ $data=$_SESSION['registrar']; }
 	$data['user']=$_SESSION['user'];		
 	$data['ssy']=$ssy=DBYR;
 	$data['sqtr']=$sqtr= $_SESSION['qtr'];

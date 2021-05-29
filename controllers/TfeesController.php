@@ -144,11 +144,12 @@ public function table($params=NULL){
 $dbo=PDBO;
 $db=&$this->model->db;
 $dbyr=DBYR;
-$sy=isset($params[0])? $params[0]:$dbyr;
+$data['sy']=$sy=isset($params[0])? $params[0]:$dbyr;
 $dbg=VCPREFIX.$sy.US.DBG;
 $dbg=&$dbg;
 
-$q = "SELECT *,level_id AS lvlid,id AS tid FROM {$dbo}.`03_tuitions` ORDER BY level_id ASC;";
+$q = "SELECT *,level_id AS lvlid,id AS tid FROM {$dbo}.`03_tuitions` WHERE sy=$sy ORDER BY level_id ASC;";
+debug($q);
 $sth = $db->querysoc($q);
 $data['rows'] = $rows = $sth->fetchAll();
 $data['count'] = count($rows);

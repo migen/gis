@@ -54,15 +54,21 @@ public function table($params=NULL){
 public function level($params=NULL){
 	$data['lvl']=$lvl=isset($params[0])? $params[0]:4;
 	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$data['num']=$num=isset($_GET['num'])? $_GET['num']:1;
+	$data['sy_enrollment']=$sy_enrollment=$_SESSION['settings']['sy_enrollment'];
+	$data['is_current']=$is_current=($sy==$sy_enrollment)? true:false;
 	
 	$order=isset($_GET['order'])? $_GET['order']:"b.semester,b.name";
-	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
-	$q="SELECT b.*,lb.*,s.name AS subjname 
+	$data['db']=$db=&$this->baseModel->db;
+	$data['dbo']=$dbo=PDBO;
+	$data['dbg']=$dbg=VCPREFIX.$sy.US.DBG;
+	$q="SELECT b.*,lb.*,s.name AS subjname,b.id AS book_id,lb.id AS lbid 
 		FROM {$dbg}.05_level_books AS lb
 		INNER JOIN {$dbg}.05_books AS b ON lb.book_id=b.id
 		LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
-		WHERE lb.level_id=$lvl		
+		WHERE lb.level_id=$lvl AND lb.num=$num		
 		ORDER BY $order; ";
+	// pr($q);
 	debug($q);
 	$sth=$db->querysoc($q);
 	$data['rows']=$sth->fetchAll();
@@ -70,9 +76,10 @@ public function level($params=NULL){
 	
 	/* data-2 */
 	$data['level']=fetchRow($db,"{$dbo}.05_levels",$lvl,"id,code,name");
-	// pr($data['level']);
-	// $this->view->render($data,"booklists/level");
-	$this->view->render($data,"booklists/levelBooklists");
+	$vfile=(isset($_GET['edit']))? "booklists/levelBooklistsEdit":"booklists/levelBooklists";
+	vfile($vfile);
+	
+	$this->view->render($data,$vfile);
 	
 }	/* fxn */
 
@@ -246,10 +253,11 @@ public function edit($params=NULL){
 	
 }	/* fxn */
 
-public function levels(){
-	
+public function levels($params=NULL){
+	$data['sy']=$sy=isset($params[0])? $params[0]:$_SESSION['settings']['sy_enrollment'];
 	$data['levels']=$_SESSION['levels'];
-	$this->view->render($data,"booklists/levelsBooklists");
+	$vfile="booklists/levelsBooklists";vfile($vfile);
+	$this->view->render($data,$vfile);
 	
 }	/* fxn */
 
@@ -365,6 +373,73 @@ public function editLevelBook($params){
 	
 }	/* fxn */
 
+
+
+/* enstep-3: booklist */
+public function view($params=NULL){
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$data['lvl']=$lvl=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$data['num']=$num=isset($_GET['num'])? $_GET['num']:1;	
+	$data['srid']=$srid=$_SESSION['srid'];
+	$data['db']=&$db;
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$data['controls']=null;
+
+
+	if($srid==RSTUD){ 
+		$data['scid']=$scid=$_SESSION['ucid']; 
+	
+		/* schedule */ 	
+		$data['sched']=$sched=getScheduleByModule($db,$sy,$scid,'booklist');
+		
+		/* ensteps */ 
+		$data['axn']=$axn=$this->axn();
+		$db=&$this->baseModel->db;$dbo=PDBO;
+		$incfile=SITE.'views/customs/'.VCFOLDER.'/enstepFxn_'.VCFOLDER.'.php';
+		if(is_readable($incfile)){ require_once($incfile); } 		
+		$data['controls']=isset($controls)? $controls:null;
+		
+		
+	}	/* studacct */
+
+	
+	$data['level']=fetchRow($db,"{$dbo}.05_levels","$lvl");
+	$q="SELECT cr.name AS crname,l.name AS lvlname 
+		FROM {$dbg}.05_classrooms AS cr 
+		INNER JOIN {$dbo}.05_levels AS l ON l.id=cr.level_id 
+		WHERE cr.level_id=$lvl AND cr.num=$num LIMIT 1;";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['classroom']=$sth->fetch();
+	// prx($data['level']);
+	
+	$semcond='';
+	if($lvl>13){
+		$sem=($qtr<2)? 1:2;
+		$semcond=" AND (b.semester=0 OR b.semester=$sem) ";
+	}
+
+		
+	$q="SELECT lb.*,lb.id AS pkid,b.name AS book,b.*,s.name AS subjname
+		FROM {$dbg}.05_level_books AS lb 
+		INNER JOIN {$dbg}.05_books AS b ON lb.book_id=b.id
+		LEFT JOIN {$dbo}.05_subjects AS s ON b.subject_id=s.id
+		WHERE lb.level_id=$lvl AND lb.num=$num $semcond ORDER BY b.name;";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+
+	
+
+	$sch=VCFOLDER;$one="booklistView_{$sch}";$two="students/booklistStudentCss";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	
+	$this->view->render($data,$vfile,'blank');
+
+	
+}	/* fxn */
 
 
 

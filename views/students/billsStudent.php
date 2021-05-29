@@ -18,9 +18,29 @@ $is_admin=(($role_id==RMIS) || ($role_id==RAXIS && $privilege_id==0))? true:fals
 
 ?>
 <h3>
-	Student Bills (<?php echo ($scid)? $count:null; ?>) | <?php $this->shovel('homelinks'); ?>
+	Student Bills 
+	SY <select style="font-size:1.2em;" onchange="jsredirect(`students/bills/${scid}/${this.value}`)" >
+		<option value="<?php echo DBYR; ?>" 
+			<?php echo ($sy==(DBYR))? 'selected':NULL; ?>
+		><?php echo DBYR; ?></option>
+		<?php if($_SESSION['settings']['sy_enrollment']>DBYR): ?>
+			<option value="<?php echo (DBYR+1); ?>" 
+				<?php echo ($sy==(DBYR+1))? 'selected':NULL; ?>
+			><?php echo (DBYR+1); ?></option>		
+		<?php else: ?>
+			<option value="<?php echo (DBYR-1); ?>" 
+				<?php echo ($sy==(DBYR-1))? 'selected':NULL; ?>
+			><?php echo (DBYR-1); ?></option>		
+		<?php endif; ?>
+	</select>
+	
+	
+	| <?php $this->shovel('homelinks'); ?>
 	| <a href='<?php echo URL."enrollment/ledger/$scid/$sy"; ?>' >Ledger</a>
 	| <span class="u" onclick="traceshd();" >Outsider</span>
+
+
+
 
 </h3>
 
@@ -170,6 +190,7 @@ $is_admin=(($role_id==RMIS) || ($role_id==RAXIS && $privilege_id==0))? true:fals
 <script>
 var gurl = "http://<?php echo GURL; ?>";
 var sy = "<?php echo $sy; ?>";
+var scid = "<?php echo $scid; ?>";
 var dbyr = "<?php echo DBYR; ?>";
 var dbcontacts = "<?php echo $dbcontacts; ?>";
 var dbpayments = "<?php echo $dbpayments; ?>";

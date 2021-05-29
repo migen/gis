@@ -151,7 +151,7 @@ Q <input class="vc50" id="qtr" type="number" value="<?php echo $qtr; ?>" min=1 m
 		<?php $s++; ?>
 		<th class="center <?php echo ($s%2)?'bg-blue1':NULL; ?> <?php echo ($row['on_reports']==0)?'shd':NULL; ?> " >
 			<?php echo $s.'<br />'; ?>
-<a href='<?php echo URL."teachers/grades/".$row['course_id']; ?>'><?php echo $row['course_code']; ?></a><br />
+<a href='<?php echo URL."teachers/grades/".$row['course_id'].DS.$sy.DS.$qtr; ?>'><?php echo $row['course_code']; ?></a><br />
 			<span class="hd" ><?php echo $row['course_id'].'-'.$row['subject_id']; ?><br /></span>
 				<?php if($row['supsubject_id']!=0): ?>
 					<?php echo $row['course_weight'].'%'; ?>

@@ -1,3 +1,8 @@
+<style>
+
+
+</style>
+
 <?php 
 	$_SESSION['accor'] = isset($_SESSION['accor'])? $_SESSION['accor'] : 'pen';
 	$is_adviser=($_SESSION['teacher']['num_advisories']>0)? true:false;
@@ -45,13 +50,16 @@
 
 <!--- tracelogin --->
 <?php $this->shovel('hdpdiv'); ?>
+<div style="position:relative;" >	<!-- wrapper -->
+	<div style="width:30%;position:absolute;right:2px;z-index:-2;"  >
+		<?php 
+			$incs = SITE.'views/teachers/includes/reminder_teacher.php';
+			include_once($incs);		
+		?>
+	</div>
 
-<div style="float:right;width:30%;"  >
-	<?php 
-		$incs = SITE.'views/teachers/includes/reminder_teacher.php';
-		include_once($incs);		
-	?>
-</div>
+
+
 
 
 
@@ -308,6 +316,7 @@
 
 
 
+</div>	<!-- wrapper -->
 
 
 

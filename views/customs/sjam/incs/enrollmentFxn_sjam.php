@@ -116,10 +116,15 @@ function adjustPayablesSjam($student){
 			$initial_periodic=number_format($initial_periodic,2,'.','');
 
 			$total_adjusted_amount=$adjusted_periodic*4;						
-			return array('adjusted_periodic'=>$adjusted_periodic,'initial_periodic'=>$initial_periodic,
+			$retval=array('adjusted_periodic'=>$adjusted_periodic,'initial_periodic'=>$initial_periodic,
 			'interest'=>$interest,'period'=>4,
-			'total_adjusted_amount'=>$total_adjusted_amount);break;				
+			'total_adjusted_amount'=>$total_adjusted_amount);
+			return $retval;			
+			break;				
+			
 	}
+	
+	
 	
 }	/* fxn */
 

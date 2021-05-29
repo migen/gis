@@ -5,6 +5,9 @@
 // pr($_SESSION['q']);
 $srid=$_SESSION['srid'];
 
+$limit=isset($_GET['limit'])? $_GET['limit']:30;
+
+
 ?>
 
 
@@ -66,11 +69,12 @@ $srid=$_SESSION['srid'];
 
 <script>
 var gurl = "http://<?php echo GURL; ?>";
-var limits='20';
+var limits="<?php echo $limit; ?>";
 // var lady=charmee();
 
 
 $(function(){
+	// alert(limits);
 	$('#names').hide();
 	$('html').live('click',function(){ $('#names').hide(); });
 	

@@ -56,7 +56,7 @@
 		<a href="<?php echo URL.'grades'; ?>" >Grades</a>
 	</td></tr>
 		
-	<tr><td>--------</td></tr>
+	<tr><td>--- Divider -----</td></tr>
 	
 
 	<tr><td>
@@ -171,9 +171,17 @@
 
 
 
-<tr><td>&nbsp;</td></tr>
-<tr><td>&nbsp;</td></tr>
 <tr><td><a href="<?php echo URL.'schedules/rcards'; ?>" >Rcard Schedule</a></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr><td>--- Divider -----</td></tr>
+
+<tr><td>
+	  <a href="<?php echo URL.'sectioning/crid'; ?>" >Class Sectioning</a>
+	| <a href="<?php echo URL.'sectioning/level'; ?>" >Level</a>
+</td></tr>
+
 
 
 <tr><td>&nbsp;</td></tr>

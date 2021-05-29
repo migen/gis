@@ -2,6 +2,8 @@
 // pr($grades[13]); 
 // pr($subfont);
 
+
+
 ?>
 
 <table class="tbl-print tbp table-center table-vcenter <?php echo $subfont.' '.$tblwidth; ?> " 
@@ -9,7 +11,8 @@
 
 <tr class="<?php echo $headrowfont; ?>" ><th class="<?php echo $subwidth; ?>" >SUBJECTS</th><th>1st</th><th>2nd</th>
 <th>3rd</th><th>4th</th>
-<th class="vc60" >FINAL</th><th class="vc100 <?php echo $hd; ?>" >REMARKS</th>
+	<th class="vc60" >FINAL</th>
+	<th class="vc100 " >REMARKS</th>
 </tr>
 
 
@@ -38,7 +41,7 @@
 			$pf = "Passed";		
 		}		
 	?>		
-	<td class="<?php echo $hd; ?>" ><?php echo ($qtr>3)? $pf:NULL; ?></td>	
+	<td class="" ><?php echo ($qtr>3)? $pf:NULL; ?></td>	
 	
 <?php else: ?>
 	<td><?php echo $grades[$g]['dg1']; ?></td>
@@ -54,7 +57,7 @@
 
 <?php else: ?>
 <tr class="<?php echo $blankfont; ?>" > <td>&nbsp;</td><td></td><td></td><td></td><td></td>
-		<td></td><td class="<?php echo $hd; ?>" ></td>
+		<td></td><td class="" ></td>
 </tr>
 <?php endif; ?>	
 <?php endfor; ?>
@@ -62,7 +65,7 @@
 
 
 <tr class="<?php echo $blankfont; ?>" > <td>&nbsp;</td><td></td><td></td><td></td><td></td>
-		<td></td><td class="<?php echo $hd; ?>" ></td>
+		<td></td><td class="" ></td>
 </tr>
 <tr class="" >
 	<th style="text-align:left;" >GENERAL AVERAGE</th>
@@ -71,7 +74,7 @@
 	<th><?php $s3 = number_format($students[$i]['summary']['ave_q3'],$decifgenave); echo ($qtr>2 )? $s3:NULL; ?></th>
 	<th><?php $s4 = number_format($students[$i]['summary']['ave_q4'],$decifgenave); echo ($qtr>3 )? $s4:NULL; ?></th>
 	<th><?php $s5 = number_format($students[$i]['summary']['ave_q5'],$decifgenave); echo ($qtr>3 )? $s5:NULL; ?></th>
-	<th class="<?php echo $hd; ?>" >
+	<th class="" >
 		<?php $spf = ($students[$i]['summary']['ave_q5']<$passing)?'Failed':'Passed'; echo ($qtr>3 )? $spf:NULL; ?></th>	
 </tr>
 </table>

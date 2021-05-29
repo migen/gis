@@ -14,13 +14,10 @@
 
 <tr><td>
 	<a href="<?php echo URL.'ranks'; ?>" >Rankings</a>
-</td></tr>
-
-
-<tr><td>
-	  <a href="<?php echo URL.'clearance/one'; ?>" >Clearance</a>
 	| <a href="<?php echo URL.'transcripts/scid'; ?>" >Transcript</a>
 </td></tr>
+
+
 
 <?php if($_SESSION['settings']['trsgrades']==1): ?>
 <tr><td>
@@ -33,6 +30,14 @@
 </td></tr>
 <?php endif; ?>
 
+<?php if($_SESSION['settings']['trsgrades']==1): ?>
+	<tr><td>
+		<a class="" href="<?php echo URL.'trs/tir'; ?>" >Trs Index (TIR)</a>
+	</td></tr>
+<?php endif; ?>	
+
+
+
 <tr><td>
 	  <a href="<?php echo URL.'clubs/all'; ?>" >Clubs</a>
 	| <a href="<?php echo URL.'foundation'; ?>" >Foundation</a>
@@ -40,9 +45,6 @@
 
 </td></tr>
 
-<tr><td>
-	  <a href="<?php echo URL.'fix/lsa'; ?>" >Juxtapose</a>
-</td></tr>
 
 
 

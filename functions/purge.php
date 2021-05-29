@@ -1,8 +1,9 @@
 <?php
 
 
-function purge($db,$dbg,$scid){
+function purge($db,$sy,$scid){
 $dbo=PDBO;
+$dbg=VCPREFIX.$sy.US.DBG;
 require_once(SITE."functions/logs.php");
 /* contacts,profiles,students,ctp,summaries,grades,scores,attendance */
 $dbo=PDBO;$dbp=PDBP;
@@ -59,14 +60,16 @@ $_SESSION['qp']='purgeFxn: '.$q1;
 debug($q1,"PurgeFxn: purge");
 	
 /* 3 */	
-$axn = $_SESSION['axn']['purge_contact'];
-$details = $user['code']." | ".$user['name']." Parent: ".$user['parent_id']." Role: ".$user['role_id']." purged.";
-$ucid = $_SESSION['user']['ucid'];
-$more['qtr'] = $_SESSION['qtr'];
-$more['crid'] = $user['crid'];
-$more['scid'] = $user['id'];
-logThis($db,$ucid,$axn,$details,$more);	
+// $axn = $_SESSION['axn']['purge_contact'];
+// $details = $user['code']." | ".$user['name']." Parent: ".$user['parent_id']." Role: ".$user['role_id']." purged.";
+// $ucid = $_SESSION['user']['ucid'];
+// $more['qtr'] = $_SESSION['qtr'];
+// $more['crid'] = $user['crid'];
+// $more['scid'] = $user['id'];
+// logThis($db,$ucid,$axn,$details,$more);	
 
+$details = $user['code']." | ".$user['name']." Parent: ".$user['parent_id']." Role: ".$user['role_id']." purged.";
+textlog($db,$module_id=5,$details,$sy);
 
 	
 }	/* fxn */

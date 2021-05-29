@@ -6,13 +6,11 @@
 <table class="purger accordion gis-table-bordered table-altrow" >
 	<tr><th class="accorHeadrow" onclick="accordionTable('purger');" >Purger</th></tr>
 
-<tr><td>
-	<tr><td><a href="<?php echo URL.'mis/purger'; ?>" >Contacts</a></td></tr>
-</td></tr>
 
-<tr><td>
-	<tr><td><a href="<?php echo URL.'purge/logbooks'; ?>" >Logbook <?php echo (DBYR-2); ?></a></td></tr>
-</td></tr>
+<tr><td><a href="<?php echo URL.'purgestudents/one'; ?>" >PurgeStudent</a></td></tr>
+
+<tr><td><a href="<?php echo URL.'mis/purger'; ?>" >Contacts</a></td></tr>
+<tr><td><a href="<?php echo URL.'purge/logbooks'; ?>" >Logbook <?php echo (DBYR-2); ?></a></td></tr>
 
 <tr><td>
 	<a href="<?php echo URL.'purge/cir'; ?>" >Purge CIR</a>

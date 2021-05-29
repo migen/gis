@@ -24,6 +24,8 @@
 <?php 
 
 
+// prx($data);
+
 
 $failedsub = ""; 
 $applgrades = array(); 	/* applied */
@@ -123,7 +125,8 @@ if($grades[$g]['position']>100){
 	<?php 
 		$genave1=$student['summary']['ave_'.$sqa];
 		$genave2=$student['summary']['ave_'.$sqb];
-		$genave_sem=($genave1+$genave2)/2; 		
+		// $genave_sem=($genave1+$genave2)/2; 		
+		$genave_sem=$student['summary']['ave_q'.$fqtr]; 		
 	?>
 	<?php if(isset($_GET['showgenave'])): ?>
 		<th><?php echo $genave1; ?></th>
@@ -132,8 +135,24 @@ if($grades[$g]['position']>100){
 		<th></th><th></th>
 	<?php endif; ?>
 		
-	<th><?php echo ($qtr%2)? '':number_format($genave_sem,$decigenave); // echo $student['summary']['ave_q'.$fqtr]; ?></th>
-	<td></td>
+	<th>
+		<?php 
+			
+			echo ($qtr%2)? '':number_format($genave_sem,$decigenave); 
+			// echo $student['summary']['ave_q'.$fqtr]; 
+		?>
+	</th>
+	<th>
+		<?php 
+			echo ($qtr%2)? '':round($genave_sem); 
+
+		?>
+		<?php 
+			// pr($sqa);
+			// pr($sqb);
+			// pr($fqtr);
+		?>
+	</th>
 </tr>
 
 

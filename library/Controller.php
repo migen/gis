@@ -77,7 +77,9 @@ public function only($actions=array()){ $axn=$this->axn();if(in_array($axn,$acti
 public function flashRedirect($url="index",$message="Not allowed."){ $_SESSION['message']=$message;$u=URL.$url; header("Location: $u"); exit;}
 
 public function methods($params=NULL){
-	require_once(SITE."functions/reflections.php");$db=&$this->model->db;$data['class']=$class=get_called_class();	
+	require_once(SITE."functions/reflections.php");
+	$db=&$this->baseModel->db;
+	$data['class']=$class=get_called_class();	
 	$data=reflectMethods($class);$data['rows']=&$data['methods'];		
 	$vfile="controllers/methodsControllers";vfile($vfile);
 	$class_name=$data['class'];$controller_name=str_replace("Controller","",$class_name);$controller_name=strtolower($controller_name);

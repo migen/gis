@@ -122,13 +122,13 @@ $this->view->render($data,'mis/query');
 
 
 public function one($params=NULL){		/* eradicate */
-$dbo=PDBO;
+	$dbo=PDBO;
 	sudo();
 	require_once('functions/purge.php');	
 	$data['scid']=$scid=isset($params[0])? $params[0]:false;
 	$data['sy']=$sy=isset($params[1])? $params[1] : DBYR;
 	$db=&$this->model->db;$dbg=VCPREFIX.$sy.US.DBG;
-	if($scid){ purge($db,$dbg,$scid); 
+	if($scid){ purge($db,$sy,$scid); 
 		// flashRedirect('purge/contact',"Purged #{$scid}."); 
 	}	
 	// $this->view->render($data,'purge/contactPurge');
@@ -146,8 +146,9 @@ $dbo=PDBO;
 	$ucid 	= isset($params[0])? $params[0]:false;
 	$data['ucid']=&$ucid;
 	$dbo=PDBO;$dbg=PDBG;$dbg=PDBG;
+	$sy=DBYR;
 	if($ucid){ 
-		purge($db,$dbg,$ucid);	
+		purge($db,$sy,$ucid);	
 		flashRedirect("purge/user",'Purged '.$ucid.' '.$user['name']);
 	}	/* ucid */	
 	$this->view->render($data,'purge/user');
@@ -433,7 +434,8 @@ public function doRange($params=NULL){
 	$dbo=PDBO;$db=&$this->baseModel->db;$dbg=PDBG;
 	require_once('functions/purge.php');
 	$a=$params[0];$b=$params[1];
-	for($i=$a;$i<=$b;$i++){ purge($db,$dbg,$i);	}
+	$sy=DBYR;
+	for($i=$a;$i<=$b;$i++){ purge($db,$sy,$i);	}
 	echo "Purged done ucids #$a - #$b. ";
 	
 	
@@ -444,7 +446,8 @@ public function doRange($params=NULL){
 public function logbooks($params=NULL){
 	if(!isset($params[0])){ pr("Param Year required."); exit; }
 	$data['year']=$year=$params[0];
-	$db=&$this->baseModel->db;$dbo=PDBO;$dbtable="{$dbo}.50_logbooks";
+	$db=&$this->baseModel->db;$dbo=PDBO;
+	$dbtable="{$dbo}.50_logbooks";
 	
 	$q="DELETE FROM {$dbtable} WHERE YEAR(datetime) = '$year'; ";
 	pr("&exe");

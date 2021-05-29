@@ -179,7 +179,7 @@ for($i=0;$i<$num_students;$i++):
 	$grades=$student['grades'];
 	ob_start();	
 	
-	if($qtr>3){ include('rptincs/status.php'); }
+	// if($qtr>3){ include('rptincs/status.php'); }
 
 ?>
 

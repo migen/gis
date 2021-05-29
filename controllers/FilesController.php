@@ -76,12 +76,26 @@ $filename = isset($params[0])?$params[0]:false;
 if(!$filename){ redirect('index'); }
 $file = SITE."views/files/{$filename}.php";
 
-if (file_exists($file)) {
+$sch=VCFOLDER;
+$cfile=SITE."views/customs/{$sch}/files/{$filename}_{$sch}.php";
+
+if(file_exists($cfile)){ $file=$cfile; }
+
+
+if(file_exists($file)) {
     $data[$filename] = file_get_contents($file);
 }
 
-$data = isset($data)? $data : NULL;
-$this->view->render($data,"files/$filename");
+	$data = isset($data)? $data : NULL;
+	$vfile="files/$filename";
+
+	if(file_exists($cfile)){ 
+		$vfile="customs/{$sch}/files/{$filename}_{$sch}";
+	} 
+
+	vfile($vfile);
+	$this->view->render($data,$vfile);
+
 
 }	/* fxn */
 

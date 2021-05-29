@@ -11,6 +11,8 @@
 </select> &nbsp; Go
 </td></tr>
 
+
+
 <tr><td style="width:250px;" >
 	  <a href="<?php echo URL.'mgt/contacts'; ?>" >Contacts</a> 
 	  <a href="<?php echo URL.'contacts'; ?>" >All</a> 
@@ -22,6 +24,31 @@
 	 New - <a href="<?php echo URL.'setup/contacts'; ?>" >Employees</a> 
 	| <a href="<?php echo URL.'setup/students'; ?>" >Students</a> 
 </td></tr>
+
+<tr><td>
+	<a class="" href="<?php echo URL.'students/links'; ?>" >Student</a>
+  | <a href="<?php echo URL.'misc/teachers?sort=c.name&order=ASC'; ?>" >Teachers</a>
+	| <a class="" href="<?php echo URL.'misc/advisers'; ?>" >Advisers</a>
+</td></tr>
+
+
+<tr><td>
+	Edit - <a href="<?php echo URL.'codename/one'; ?>" >Code</a>&nbsp;
+	<a href="<?php echo URL.'codename/name'; ?>" >Name</a>
+</td></tr>
+
+<tr><td>
+	<a class="b" href="<?php echo URL.'passwords/resets'; ?>" >ResetPass</a>
+	| <a class="b" href="<?php echo URL.'students/reps'; ?>" >Reps</a>
+</td></tr>
+
+
+<tr><td class="" >
+	<a href="<?php echo URL.'students/links'; ?>" >Students</a>
+	| <a href="<?php echo URL.'scid/promoter'; ?>" >Promoter</a>	
+	| <a href="<?php echo URL.'summary/edit'; ?>" >Summary</a>	
+</td></tr>
+
 <tr><td>
 	  <a href="<?php echo URL.'persons/one'; ?>" >Person</a>
 	| <a href="<?php echo URL.'speed/informant'; ?>" > Informant </a>
@@ -29,9 +56,7 @@
 </td></tr>
 <tr><td>
 	<a href="<?php echo URL.'nonteachers?sort=c.name&order=ASC'; ?>" >Empl</a>
-  | <a href="<?php echo URL.'registrars/sxns'; ?>" >Stud </a>
-  | <a href="<?php echo URL.'misc/teachers?sort=c.name&order=ASC'; ?>" >Teac</a>
-  | <a href="<?php echo URL.'misc/advisers'; ?>" >Advi</a>
+  | <a href="<?php echo URL.'registrars/sxns'; ?>" >All Students </a>
 </td></tr>
 <tr><td>
 </td></tr>

@@ -15,7 +15,7 @@ function canViewClasslist($db,$acid,$crid){
 function getClasslist($db,$dbg,$crid,$order,$fields=NULL,$is_active=NULL){
 	$cond=NULL; if($is_active){ $cond="AND c.is_active=1"; }
 	$dbo=PDBO;
-	$q=" SELECT $fields summ.scid,c.code,c.name,c.is_male,c.position,c.lrn 
+	$q=" SELECT $fields summ.scid,c.code,c.name,c.is_male,c.position,c.lrn,c.sy AS ensy
 		FROM {$dbo}.`00_contacts` AS c 
 		INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
 		WHERE summ.crid='$crid' $cond

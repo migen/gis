@@ -16,12 +16,22 @@ function syncLevelConducts($db,$params){
 			INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
 			INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
 			INNER JOIN {$dbg}.50_grades AS g ON g.scid=c.id
-			WHERE g.course_type_id=5 AND cr.level_id=$lvl	
+			WHERE g.crstype_id=5 AND cr.level_id=$lvl	
 		) AS b ON a.id = b.summid
 		SET a.conduct_q{$qtr}=b.grade		
 		
 		
 	";
+	
+	if(isset($_GET['debug'])){ pr('<h1>Remove &debug to execute.</h1>'); prx($q); }	
+	$sth=$db->query($q);
+	echo ($sth)? "Success":"Fail";		
+	shovel('return');
+	
+	
+	
+	
+/* 	
 	pr($q);
 	if(isset($_GET['exe'])){
 		$sth=$db->query($q);
@@ -29,27 +39,6 @@ function syncLevelConducts($db,$params){
 	} else {
 		pr("&exe to process");
 	}
-	
-	// debug
-	$q="
-		SELECT
-			cr.name AS classroom,c.id AS scid,c.code AS studcode,c.name AS student,g.q{$qtr} AS grade,
-			summ.conduct_q{$qtr} AS summgrade
-		FROM {$dbo}.`00_contacts` AS c
-		INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
-		INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
-		INNER JOIN {$dbg}.50_grades AS g ON g.scid=c.id
-		WHERE g.course_type_id=5 AND cr.level_id=9
-		ORDER BY cr.id,c.name		
-
-	";
-	if(isset($_GET['debug'])){
-		pr($q);
-		$sth=$db->querysoc($q);
-		$data['rows']=$sth->fetchAll();
-		$data['count']=$sth->rowCount();	
-		return $data;
-	}	/* debug */
-	
-	
-}
+ */	
+		
+}	/* fxn */

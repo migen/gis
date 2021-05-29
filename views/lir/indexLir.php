@@ -18,7 +18,7 @@ $prevsy_code=substr($prevsy,2,2);
 	
 </h5>
 
-<table class="gis-table-bordered table-altrow" >
+<table class="gis-table-bordered table-altrow table-fx" >
 <tr>
 	<th>#</th>
 	<th>Level</th>
@@ -29,7 +29,7 @@ $prevsy_code=substr($prevsy,2,2);
 	<th>Honors</th>
 	<th>H&C</th>
 	<th>Honors<br />Cert</th>
-	<th>Best<br />In</th>
+	<th>Best<br />In<br>Subject</th>
 	<th>MCA<br />Locks</th>
 </tr>
 <?php 
@@ -45,3 +45,5 @@ if($is_dual){
 ?>
 
 </table>
+
+<div class="ht100" ></div>

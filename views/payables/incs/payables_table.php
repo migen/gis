@@ -7,7 +7,15 @@
 ?>
 
 
-<?php $total=0; ?>
+<?php 
+
+	// $total=0; 
+	$total_amount=0; 
+	$total_paid=0; 
+	$total_balance=0; 
+
+
+?>
 
 <table id="tblExport" class="gis-table-bordered table-fx table-altrow" >
 <tr>
@@ -29,7 +37,11 @@
 
 <?php for($i=0;$i<$count;$i++): $j=$i+1; ?>
 <tr>
-<?php $total+=$rows[$i]['amount']; ?>
+<?php 
+	$total_amount+=$rows[$i]['amount']; 
+	$total_paid+=$rows[$i]['paid']; 
+	$total_balance+=$rows[$i]['balance']; 
+?>
 	<td><?php echo $i+1; ?></td>
 	<td><?php echo $rows[$i]['pkid']; ?></td>
 	<td><?php echo $rows[$i]['scid']; ?></td>
@@ -48,14 +60,15 @@
 <?php endfor; ?>
 
 <tr>
-	<th colspan="9" >Total</th>
-	<th class="right" ><?php echo number_format($total,2); ?></th>
+	<th colspan="10" >Total</th>
+	<th class="right" ><?php echo number_format($total_amount,2); ?></th>
+	<th class="right" ><?php echo number_format($total_paid,2); ?></th>
+	<th class="right" ><?php echo number_format($total_balance,2); ?></th>
 	<th></th>
 </tr>
 
 </table>
 
-<h3>Total: <?php echo number_format($total,2); ?></h3>
 
 <div class="ht50" ></div>
 

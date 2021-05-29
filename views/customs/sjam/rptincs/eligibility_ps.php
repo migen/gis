@@ -24,18 +24,19 @@
 	<tr><th colspan=2>CERTIFICATE OF TRANSFER</th></tr>
 	<tr><td class="left" >Eligible for transfer and admission to</td><td class="u" >
 		__<?php print($student['summary']['promlevel']); ?>__</td></tr>
-	<tr><td class="left" >Has advanced credits in</td><td class="u" ></td></tr>
-	<tr><td class="left" >Lacks credits in </td><td class="u" ></td></tr>
+	<!-- <tr><td class="left" >Has advanced credits in</td><td class="u" ></td></tr>
+	<tr><td class="left" >Lacks credits in </td><td class="u" ></td></tr> -->
+	<tr><td colspan="2"><br></td></tr>
 	<tr>
-<td class="left" >Date printed &nbsp; __<span class="u" ><?php echo date("F d, Y",strtotime($_SESSION['today'])); ?></span>__</td>
-<td class="" >
-	__<span class="u" >
-		<!-- <?php echo $_SESSION['settings']['school_principal']; ?>	 -->	
-		<?php echo $_SESSION['settings']['school_director']; ?>
-	</span>__
-</td>	
+		<td class="left" >Date printed &nbsp; __<span class="u" ><?php echo date("F d, Y",strtotime($_SESSION['today'])); ?></span>__</td>
+		<td class="" >
+			__<span class="u" >
+				<?php echo $_SESSION['settings']['school_principal']; ?>
+				<!-- <?php echo $_SESSION['settings']['school_director']; ?> -->
+			</span>__
+		</td>	
 	</tr>
-	<tr><td></td><td>Principal / Director</td></tr>	
+	<tr><td></td><td>School Principal</td></tr>	
 </table>
 <?php endif; ?>
 </div>

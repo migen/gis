@@ -4,7 +4,7 @@
 	GSET (GIS Setup)
 	| <?php $this->shovel('homelinks'); ?>
 	| <a href="<?php echo URL.'gset/syncboard'; ?>" >Syncboard</a>
-		
+	| <a href="<?php echo URL.'devlinks'; ?>" >Dev Links</a>		
 </h5>
 
 <div class="third" >

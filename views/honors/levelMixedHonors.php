@@ -1,5 +1,5 @@
 <h5>
-	<?php echo $level['name']; ?> Honors (<?php echo $count; ?>)
+	<?php echo $level['name']; ?> Honors Q<?php echo $qtr; ?> (<?php echo $count; ?>)
 	| <?php $this->shovel('homelinks'); ?>
 	| <a class="u" id="btnExport" >Excel</a> 
 	| <a href="<?php echo URL.'lir'; ?>" >L I R</a>	
@@ -16,10 +16,6 @@
 	<?php endif; ?>
 	| <a href="<?php echo URL.'honors/levelReport/'.$lvl.DS.$sy.DS.$qtr; ?>" >Report</a>
 
-<?php 
-
-
-?>
 
 <?php if($lvl>13): ?>
 	<?php if($qtr<5): ?>
@@ -35,6 +31,21 @@
 		| <a href="<?php echo URL.'honors/level/'.$lvl.DS.$sy.DS.$_SESSION['qtr']; ?>" >Current</a>
 	<?php endif; ?>
 <?php endif; ?>
+
+
+<?php 
+	$sqtr=$_SESSION['qtr'];
+	$get=sages($_GET);
+
+?>
+
+	
+  | <?php for($q=1;$q<=$sqtr;$q++): ?>	
+	<?php if($q!=$qtr): ?>
+		<a href="<?php echo URL.'honors/level/'.$lvl.DS.$sy.DS.$q.$get; ?>" >Q<?php echo $q; ?></a> | 
+	<?php endif; ?>  
+  <?php endfor; ?>			
+	
 	
 </h5>
 

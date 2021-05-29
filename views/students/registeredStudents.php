@@ -7,6 +7,12 @@
 		
 </h3>
 
+<?php 
+
+// pr($rows[0]);
+
+?>
+
 <table id="tblExport" class="gis-table-bordered table-altrow table-fx" >
 <tr>
 	<th>#</th>
@@ -18,6 +24,8 @@
 	<th>Birthdate</th>
 	<th>Student</th>
 	<th>Leveler</th>
+	<th>Axn</th>
+	<th>Edit</th>
 </tr>
 <?php for($i=0;$i<$count;$i++): ?>
 <tr>
@@ -30,6 +38,10 @@
 	<td><?php echo $rows[$i]['birthdate']; ?></td>
 	<td><?php echo $rows[$i]['studname']; ?></td>
 	<td><a href="<?php echo URL.'students/leveler/'.$rows[$i]['scid'].DS.$sy; ?>" >Leveler</a></td>
+	<td><a onclick="return confirm('Dangerous! Sure?');" 
+		href="<?php echo URL.'purgestudents/one/'.$rows[$i]['scid'].DS.$sy; ?>" >Purge</a></td>
+	<td><a href="<?php echo URL.'profiles/scid/'.$rows[$i]['scid']; ?>" >Profile</a></td>
+	
 </tr>
 <?php endfor; ?>
 </table>

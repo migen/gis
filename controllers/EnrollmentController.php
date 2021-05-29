@@ -338,10 +338,13 @@ public function ledger($params=NULL){	// tuition assessment and other fees
 	$data['scid']=$scid=isset($params[0])? $params[0]:false;
 	$year_start_enrollment=$_SESSION['settings']['year_start_enrollment'];	
 	$data['ucid']=$_SESSION['ucid'];
-	$sy=isset($params[1])? $params[1]:DBYR;
+	$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
 	$sy=isset($_GET['sy'])? $_GET['sy']:$sy;	
+	$data['dbyr']=$dbyr=DBYR;	
+	$data['sy_enrollment']=$sy_enrollment=$_SESSION['settings']['sy_enrollment'];	
 	if($sy<$year_start_enrollment){ flashRedirect("enrollment/ledger/$scid/$year_start_enrollment","Previous year's records DO NOT exist."); }
-	$data['sy']=$sy;$sch=VCFOLDER;
+	$data['sy']=$sy;
+	$sch=VCFOLDER;
 	$data['today']=$_SESSION['today'];
 	$data['db']=$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
 		
@@ -354,9 +357,10 @@ public function ledger($params=NULL){	// tuition assessment and other fees
 		include_once(SITE.'functions/ornoFxn.php');		
 		include_once(SITE.'functions/syncFxn.php');		
 		include_once(SITE.'functions/enrollmentFxn.php');		
+		include_once(SITE.'functions/enstepsFxn.php');		
 		
-		$star=scidAssessment($db,$sy,$scid,$fields=NULL);			
-		$data['student']=$star['student'];
+		$star=scidAssessment($db,$sy,$scid,$fields=NULL);					
+		$data['student']=$star['student'];		
 		$data['payables']=$star['payables'];
 		$data['payments']=$star['payments'];
 			
@@ -369,6 +373,7 @@ public function ledger($params=NULL){	// tuition assessment and other fees
 		$data['tfeePayables']=getTfeesFromPayables($db,$sy,$scid);
 		
 		// prevaccts		
+		// prx($data);
 		$data['prevaccts']=checkPreviousAccounts($db,$sy,$scid);
 		
 		
@@ -379,12 +384,15 @@ public function ledger($params=NULL){	// tuition assessment and other fees
 	
 	$data['feetypes']=$_SESSION['feetypes'];
 	$data['paytypes']=$_SESSION['paytypes'];
+	
+	
 	$data['lvl']=($scid)? $data['student']['level_id']:4;
 
 	$vfile=($_SESSION['settings']['filter_dropdown']==0)? "enrollment/ledgerEnrollmentFilter":"enrollment/ledgerEnrollment";	
 	vfile($vfile);
 	
 
+	
 	
 	$this->view->render($data,$vfile);	
 	

@@ -16,26 +16,47 @@ div.left{border:1px solid fff; margin-right:10px; width:auto; width:75%; }
  
 extract($user);
 $is_admin=(($role_id==RMIS) || ($role_id==RAXIS && $privilege_id==0))? true:false;
+$sy_enrollment=$_SESSION['settings']['sy_enrollment'];
 
+
+
+// prx($data);
 
 ?>
 
 <?php if($scid): 
 	$sch=VCFOLDER;
+
+	
 	extract($student);
 	
 
-	
-
-	
 	// $studname=$student['studname']; 
 	$tfee_total=$total; 
-	$incfile=SITE."views/customs/{$sch}/incs/enrollmentFxn_{$sch}.php";
+	$incfile=SITE."views/customs/{$sch}/incs/enrollmentFxn_{$sch}.php";	
 	if(is_readable($incfile)){ include_once($incfile); $getAssessment="getAssessmentSjam"; } else { $getAssessment="getAssessment"; }
+
+
+	/* checkEnsteps */
+	$num_ensteps=$_SESSION['settings']['num_ensteps'];
+	$enRow=getStudentEnsteps($db,$sy,$scid);
+	$enstepPtr=$enRow['enstep'];
+	$flashMsg=null;
+	$_SESSION['ensteps'][$scid]['is_completed']=true;
+	if($enstepPtr!=$num_ensteps){
+		// $_SESSION['message']=$flashMsg="Warning! Ensteps NOT YET completed.";
+		$_SESSION['ensteps'][$scid]['is_completed']=false;
+	}
+
+	// echo ($_SESSION['ensteps'][$scid]['is_completed']==1)? 'completed':'NOT completed';
+	// pr($_SESSION['ensteps']);
 
 	/* process */
 	$payarr=parsePayables($payables);	
+	
 	extract($payarr);	
+	
+	// prx($payarr);
 	// $student['total_discount']=$total_discount=$payarr['total_discount'];
 	// $student['total_nondiscount']=$total_nondiscount=$payarr['total_nondiscount'];
 	// $student['total_adjustment']=$total_adjustment=$total_nondiscount-$total_discount;
@@ -44,6 +65,9 @@ $is_admin=(($role_id==RMIS) || ($role_id==RAXIS && $privilege_id==0))? true:fals
 	
 	
 	$data['arp']=$arp=adjustPayablesSjam($student); 	
+	
+	// prx($student);
+	// pr($arp);
 	extract($arp);
 		$student['resfee_paid']=$resfee_paid=getResfee($payments);
 	$has_resfee=($resfee_paid>0)? true:false;	
@@ -98,13 +122,13 @@ $is_admin=(($role_id==RMIS) || ($role_id==RAXIS && $privilege_id==0))? true:fals
 	
 	
 	
-	
 
 ?>
 
 <script>
 	var scid="<?php echo $scid; ?>";
 	var studname="<?php echo $studname; ?>";
+	var flashMsg="<?php echo $flashMsg; ?>";
 </script>
 <?php else: ?>
 	<?php  
@@ -148,14 +172,18 @@ $dbpayments="{$dbo}.30_payments";
 		<?php if($_SESSION['settings']['sy_enrollment']>DBYR): ?>
 			<option value="<?php echo (DBYR+1); ?>" 
 				<?php echo ($sy==(DBYR+1))? 'selected':NULL; ?>
-			><?php echo (DBYR+1); ?></option>
-		
+			><?php echo (DBYR+1); ?></option>		
+		<?php else: ?>
+			<option value="<?php echo (DBYR-1); ?>" 
+				<?php echo ($sy==(DBYR-1))? 'selected':NULL; ?>
+			><?php echo (DBYR-1); ?></option>		
 		<?php endif; ?>
 	</select>
 	
 	| <?php $this->shovel('homelinks'); ?>
 	| <a href='<?php echo URL."students/tuitions/$scid/$sy"; ?>' >Tuition</a>
 	| <a href='<?php echo URL."students?scid=$scid"; ?>' >Student</a>
+	| <a href='<?php echo URL."ensteps/student/$scid/$sy"; ?>' >Ensteps</a>
 	| <a href='<?php echo URL."students/paymode/$scid/$sy"; ?>' >Paymode</a>
 	<?php if($scid): ?>
 		| <a href='<?php echo URL."students/balances/$scid/$sy?feetype_id=3"; ?>' >Balances</a>	
@@ -163,7 +191,7 @@ $dbpayments="{$dbo}.30_payments";
 		| <a href='<?php echo URL."students/balances?feetype_id=3"; ?>' >Balances</a>	
 	<?php endif; ?>
 	| <a href='<?php echo URL."students/assessment/$scid/$sy"; ?>' >Assessment</a>
-	| <a href='<?php echo URL."students/bills/$scid"; ?>' >Bills</a>
+	| <a href='<?php echo URL."students/bills/$scid/$sy"; ?>' >Bills</a>
 	| <a href='<?php echo URL."students/payments/$scid"; ?>' >Payments</a>
 	| <span class="u" onclick="traceshd()" >SHD</span>
 
@@ -186,18 +214,33 @@ $dbpayments="{$dbo}.30_payments";
 <div class="divleft" >
 <?php if($scid): ?>	
 
+<?php 
+
+
+
+// prx($student);
+
+?>
+
 
 <table class="gis-table-bordered" >
 	<tr><th>ID No.</th><td><?php echo $student['studcode']; ?></td>
 		<th>Classroom</th><td><?php echo $student['classroom'].' #'.$student['crid']; ?></td>	
+		<th>Tuition Amount</th><td><?php echo number_format($tuition_amount,2); ?></td>	
 	</tr>
 	<tr><th>Student</th><td><?php echo $student['studname']; ?></td>
 		<th>Paymode</th><td><?php $paymode=$student['paymode']; echo ucfirst($paymode); ?></td>	
+		<th>Fees Total</th><td><?php echo number_format($total,2); ?></td>	
 	</tr>
 		
 
-</table><br />
+</table>
 
+
+
+<?php if(!$_SESSION['ensteps'][$scid]['is_completed']): ?>
+	<h3 class="red" >*Student <a href='<?php echo URL."ensteps/student/$scid/$sy"; ?>' >Ensteps</a> NOT completed yet.</h3>
+<?php endif; ?>
 
 
 
@@ -418,7 +461,7 @@ $dbpayments="{$dbo}.30_payments";
 ?>
 <?php if($has_prevsy): ?>
 <?php $total_balance+=$prevsy_balance; ?>
-<tr>
+<tr class="red" >
 	<th colspan=3>SY<?php echo $prevsy; ?> Old Accounts 		
 	| <a href="<?php echo URL.'enrollment/ledger/'.$scid.DS.$prevsy; ?>" >Check</a>
 	</th>
@@ -458,13 +501,12 @@ $dbpayments="{$dbo}.30_payments";
 
 <?php 
 
-// pr($payments);
 
 ?>
 
 
 <h5>Payments</h5>
-<table class="gis-table-bordered"  >
+<table class="gis-table-bordered table-altrow table-fx"  >
 <tr>
 	<th>#</th>
 	<th>Date</th>
@@ -551,6 +593,7 @@ $dbpayments="{$dbo}.30_payments";
 	<th colspan=6>
 		Received <input id="received-2" onchange="getChange();return false;"  >
 		Change <input id="change-2"  >
+		
 		<input type="submit" id="btnAdd-2" value="Pay" onclick="putPayment(dbpayments,2);return false;" />
 	
 	</th>
@@ -571,6 +614,8 @@ $dbpayments="{$dbo}.30_payments";
 <input type="hidden" id="feetypeLabel" value="origFeetypeLabel" />
 
 
+<div class="clear ht100" ></div>
+
 
 
 <script>
@@ -579,6 +624,7 @@ var gurl="http://<?php echo GURL; ?>";
 var limit=20;
 var feetype;
 var sy="<?php echo $sy; ?>";
+var sy_enrollment="<?php echo $sy_enrollment; ?>";
 var ecid="<?php echo $ucid; ?>";
 var dbcontacts="<?php echo $dbcontacts; ?>";
 var dbfeetypes="<?php echo $dbfeetypes; ?>";
@@ -589,6 +635,7 @@ var tuition_amount="<?php echo $tuition_amount; ?>";
 $(function(){
 	// shd();
 	// alert(`${studname} #${scid}`);
+	// if(flashMsg){ alert(flashMsg); }
 	$('html').live('click',function(){ $('#names').hide(); });
 	$('#names').hide();
 	selectFocused();
@@ -645,8 +692,8 @@ function xsetFeetype(feetype_id){
 function discountPromiseOne(feetype_id){
 	var vurl = gurl+'/ajax/xdata.php';	
 	var task="xgetRowById";
-	var pdata='task='+task+'&id='+feetype_id+'&dbtable='+dbfeetypes+'&sy='+sy;
-	
+	var pdata='task='+task+'&id='+feetype_id+'&dbtable='+dbfeetypes+'&sy='+sy_enrollment;
+		
 	$.ajax({
 		url:vurl,dataType:"json",type:"POST",
 		data:pdata,async:true,
@@ -686,7 +733,8 @@ function enterStudcode(dbtable){
 }	/* fxn */
 
 function pasteAmount(i,num){
-	var amount=$('#amount-'+i+'-'+num).val();
+	// var amount=$('#amount-'+i+'-'+num).val();
+	var amount=$('#balance-'+i+'-'+num).val();
 	amount=amount.replace(",", "");		
 	amount=parseFloat(amount).toFixed(2);
 	var feetype=$('#feetype-'+i+'-'+num).val();	

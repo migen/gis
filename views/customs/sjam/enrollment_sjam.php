@@ -29,6 +29,7 @@ function redirContact(ucid){
 
 <?php 
 
+
 if($subject_is_student){ $promlvl=$student['promlvl']; }
 
 ?>

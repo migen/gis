@@ -349,13 +349,17 @@ public function levelConductsToSummaries($params){
 	$db=&$this->baseModel->db;	
 	$data=syncLevelConducts($db,$params);
 	if(isset($_GET['debug'])){
-		$this->view->render($data,"syncs/levelConductsToSummariesSyncs");			
+		
+		
+		// $this->view->render($data,"syncs/levelConductsToSummariesSyncs");			
 	}
 	
 }	/* fxn */
 
 
 public function promlvl($params=NULL){
+	/* 20150311 */
+	pr('20150311');
 	$sy=isset($params[0])? $params[0]:DBYR;
 	$db=&$this->model->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
 	$ndbg=VCPREFIX.($sy+1).US.DBG;

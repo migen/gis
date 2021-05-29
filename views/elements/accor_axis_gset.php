@@ -11,6 +11,8 @@
 ?>
 <tr><td> <a href="<?php echo URL.'syncaxis/showTfeedetails'.$year; ?>" >Show tfeedetails<?php echo $year; ?></a></td></tr>
 
+<tr><td> <a href="<?php echo URL.'setupTfees/syncDetails/'.($year); ?>" >Sync TfeeDetails from <?php echo ($year); ?></a></td></tr>
+
 
 
 <tr><td> <a href="<?php echo URL.'files/read/transition'; ?>" >New SY</a></td></tr>

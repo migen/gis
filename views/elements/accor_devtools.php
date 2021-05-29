@@ -5,21 +5,59 @@
 
 
 
-<table class="dev accordion gis-table-bordered table-altrow" >
-	<tr><th class="accorHeadrow" onclick="accordionTable('dev');" >Dev</th></tr>	
+
+<table class="tools accordion gis-table-bordered table-altrow" >
+	<tr><th class="accorHeadrow" onclick="accordionTable('tools');" >Tools</th></tr>	
+		
+
 	<tr><td class="vc250" >
+		<a href='<?php echo URL."tests/levelCrid/4/".DBYR; ?>' >*Level Crid</a>
+	</td></tr>
+	
+	<tr><td><a href='<?php echo URL."syncaxis/showTfeedetails/".$_SESSION['year']; ?>' >Show Tfeedetails</a></td></tr>
+	<tr><td><a href='<?php echo URL."classfees/level/4/".$_SESSION['year']; ?>' >Classfees</a></td></tr>
+	
+	<tr><td>
 		<a  href='<?php echo URL."tests/levelCrid/4/".DBYR; ?>' >*Level Crid</a>
 		| <a href='<?php echo URL."students/encrid"; ?>' >Student Encrid</a>	
 	</td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+</table>
+
+<br>
+
+<table class="dev accordion gis-table-bordered table-altrow" >
+	<tr><th class="accorHeadrow" onclick="accordionTable('dev');" >Dev</th></tr>	
+
 
 	<tr><td>
 		<a href="<?php echo URL.'abc'; ?>" >Abc</a>
+		| <a href="<?php echo URL.'mini'; ?>" >Mini</a>
+	</td></tr>
+
+	<tr><td>
+		<a href="<?php echo URL.'ensteps/student'; ?>" >Ensteps</a>
+	</td></tr>
+
+
+	<tr><td>
+		<a href="<?php echo URL.'syncs/levelConductsToSummaries/14/'.DBYR.'/'.$_SESSION['qtr'].'&debug'; ?>" >SyncCondSumm - G11</a>
+		| <a href="<?php echo URL.'syncs/levelConductsToSummaries/15/'.DBYR.'/'.$_SESSION['qtr'].'&debug'; ?>" >G12</a>
+	</td></tr>
+
+
+	<tr><td>
+		<a href="<?php echo URL.'studentpromotions/year'; ?>" >Student promotions</a>
+	</td></tr>
+
+	<tr><td>
+		<a href="<?php echo URL.'promlevels/year'; ?>" >Promotion Level</a>
 	</td></tr>
 
 	<tr><td>
 		<a href="<?php echo URL.'genave/shsLevels'; ?>" >SHS Level Genave Index</a>
 	</td></tr>
-
 
 	<tr><td>
 		<a href="<?php echo URL.'classroomLevel/index'; ?>" >Classroom Level Index</a>
@@ -32,7 +70,12 @@
 		<a href="<?php echo URL.'clearance/one'; ?>" >Clearance Status</a>
 	</td></tr>
 	<tr><td>
-		<a href="<?php echo URL.'schedules/rcards'; ?>" >Rcard Schedule</a>
+		Schedules - <a href="<?php echo URL.'schedules/rcards'; ?>" >Rcard</a>
+		| <a href="<?php echo URL.'schedules/ensteps'; ?>" >Ensteps</a>
+	</td></tr>
+
+	<tr><td>
+		  <a href="<?php echo URL.'fix/lsa'; ?>" >Juxtapose (Lvl Single Aggregate)</a>
 	</td></tr>
 
 	<tr><td>
@@ -78,7 +121,6 @@
 		<a href='<?php echo URL."data/traits/4"; ?>' >Traits by Level</a>	
 	</td></tr>
 
-
 	<tr><td>
 		<a href='<?php echo URL."sy/level/4"; ?>' >SY Registered</a>	
 	</td></tr>
@@ -92,6 +134,9 @@
 		<a href='<?php echo URL."prevbal"; ?>' >Previous Balance</a>	
 	</td></tr>
 
+	<tr><td>
+		<a href="<?php echo URL.'pupils/rfid'; ?>" >RFID</a>
+	</td></tr>
 
 
 	<tr><td>
@@ -113,6 +158,8 @@
 		| <a href='<?php echo URL."students/leveler"; ?>' >Leveler</a>	
 		| <a href='<?php echo URL."students/sectioner"; ?>' >Sectioner</a>	
 	</td></tr>
+
+
 	
 	<tr><td>
 		<a href='<?php echo URL."students/bills"; ?>' >Bills</a>
@@ -153,9 +200,7 @@
 		| <a href='<?php echo URL."data/students"; ?>' >All Students</a>
 	</td></tr>	
 
-	
-
-	
+		
 	<tr><td>
 		<a href='<?php echo URL."finance"; ?>' >Finance</a>	
 		| <a href='<?php echo URL."finance/search"; ?>' >Search</a>	
@@ -176,6 +221,7 @@
 		Payables - 
 		<a href='<?php echo URL."payables/setup"; ?>' >Setup</a>	
 		| <a href='<?php echo URL."payables/batch"; ?>' >Batch</a>	
+		| <a href='<?php echo URL."syncPayables/batchUpdate"; ?>' >Update</a>	
 	</td></tr>
 
 	<tr><td>

@@ -13,10 +13,18 @@
 ?>
 
 <h5>
-	Tuition Table <span class="b" ><?php echo $sy; ?></span> | <?php $this->shovel('homelinks'); ?>
+	Tuition Table <span class="b" ><?php echo $sy; ?></span> (<?php echo $count; ?>)
+	| <?php $this->shovel('homelinks'); ?>
 	<?php if($sy!=$_SESSION['year']): ?>
 		| <a href="<?php echo URL.'tuitions/table/'.$_SESSION['year'];?>" ><?php echo $_SESSION['year']; ?></a>
 	<?php endif; ?>
+		| <a href="<?php echo URL.'tfees/table/'.$sy;?>" >Tuitions1</a>
+
+	<?php if($_SESSION['srid']==RMIS): ?>
+		| <a href="<?php echo URL.'setupTfees/lockTuitionLevels/'.$sy;?>" >Lock All</a>
+		| <a href="<?php echo URL.'setupTfees/openTuitionLevels/'.$sy;?>" >Open All</a>	
+	<?php endif; ?>
+
 
 <?php 
 	$d['sy']=$sy;$d['repage']="tuitions/table";
@@ -43,6 +51,8 @@
 	<th>Num</th>
 	<th>Label</th>
 	<th>Total</th>
+	<th>Status</th>
+	<th></th>
 	<th></th>
 	<th></th>
 </tr>
@@ -57,8 +67,11 @@
 	<td><?php echo $rows[$i]['num']; ?></td>
 	<td><?php echo $rows[$i]['label']; ?></td>	
 	<td class="right" ><?php echo number_format($rows[$i]['total'],2); ?></td>
-	<td><a href="<?php echo URL.'tuitions/level/'.$rows[$i]['level_id'].DS.$sy; ?>" >Details</a></td>		
+	<td><?php echo ($rows[$i]['is_finalized']==1)? 'Locked':'Open'; ?></td>		
+	<?php $num_suffix=($rows[$i]['num']>1)? '&num='.$rows[$i]['num']:NULL; ?>
+	<td><a href="<?php echo URL.'tuitions/level/'.$rows[$i]['level_id'].DS.$sy.$num_suffix; ?>" >Details</a></td>		
 	<td><a href="<?php echo URL.'tuitions/edit/'.$pkid.DS.$sy; ?>" >Edit</a></td>		
+	<td><a href="<?php echo URL.'tuitions/view/'.$rows[$i]['level_id'].DS.$sy.$num_suffix; ?>" >View</a></td>			
 </tr>
 <?php endfor; ?>
 

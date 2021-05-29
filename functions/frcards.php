@@ -3,7 +3,7 @@
 
 
 
-function checkRcardSchedule($db,$scid){
+function checkRcardSchedule($db,$scid){	
 	$dbg=PDBG;$dbo=PDBO;
 	$q="SELECT summ.crid,rs.is_open
 		FROM {$dbg}.05_summaries AS summ 

@@ -164,9 +164,12 @@ public function report($params=NULL){
 	if(isset($_GET['filter'])){
 		// require_once(SITE."functions/payables.php");
 		$params = $_GET;	
+		$balance_option = $params['balance_option'];
+		$balance = $params['balance'];
 		$sort = $params['sort'];
 		$order = $params['order'];
-		$page = $params['page'];
+		// $page = (isset($params['page']) && $params['page']<1)? $params['page']:1;
+		$page = (empty($params['page']))? 1:$params['page'];
 		$limits = $params['limits'];	
 		$offset = ($page-1)*$limits;
 		$condlimits = ($limits>0)? "LIMIT $limits OFFSET $offset":NULL; 
@@ -175,9 +178,12 @@ public function report($params=NULL){
 		$cond .= "";
 		if (!empty($params['sy'])){ $cond .= " AND p.sy = '".$params['sy']."'"; }				
 		if (!empty($params['lvlid'])){ $cond .= " AND cr.level_id = '".$params['lvlid']."'"; }					
-		if (!empty($params['crid'])){ $cond .= " AND cr.id = '".$params['crid']."'"; }						
-		
+		if (!empty($params['crid'])){ $cond .= " AND cr.id = '".$params['crid']."'"; }		
 		if (!empty($params['feetype_id'])){ $cond .= " AND p.feetype_id = '".$params['feetype_id']."'"; }				
+		if($balance_option==1){ 
+			$cond.=" AND p.balance > $balance AND ft.is_discount<>1 "; 
+		}
+		
 		$where=" WHERE 1=1 $cond ORDER BY $sort $order $condlimits";	
 			
 		$q=" SELECT p.*,p.id AS pkid,p.amount,c.code AS studcode,c.name AS studname,
@@ -187,8 +193,10 @@ public function report($params=NULL){
 				LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid = c.id
 				LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid = cr.id 
 				LEFT JOIN {$dbo}.03_feetypes AS ft ON p.feetype_id = ft.id
-			$where; ";	
-		debug($q);
+			$where ; ";	
+		debug($_REQUEST);
+		debug($q);		
+		pr($q);
 		$sth=$db->querysoc($q);
 		$data['rows']=$sth->fetchAll();
 		$data['count']=$sth->rowCount();
@@ -220,9 +228,31 @@ $data['levels'] = fetchRows($db,"{$dbo}.`05_levels`","id,code,name","id");
 $data['classrooms'] = fetchRows($db,"{$dbg}.05_classrooms","id,code,name","level_id,section_id");
 $data['today'] = $today = $_SESSION['today'];
 
+if(isset($_POST['delete'])){
+	$fee=$_POST['fee'];
+	extract($fee);
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$cond=($lvl>0)? "cr.level_id=$lvl":false; 
+	$cond=($crid>0)? "cr.id=$crid":$cond; 
+	
+	$q="DELETE p FROM {$dbo}.30_payables AS p 
+		INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=p.scid
+		INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+		WHERE $cond AND p.sy=$sy AND p.feetype_id=$feetype_id AND p.ptr=$ptr; ";	
+	pr($q);
+	$sth=$db->query($q);
+	echo ($sth)? "success":"fail";echo "<br />";
+	echo "<a href='".URL."/payables/batch'>Payables Batch</a>";
+	exit;	
+	
+
+}	/* delete */
+
+
 if(isset($_POST['submit'])){
 $post=$_POST['fee'];
 extract($post);
+// pr($post);
 $feetype_id=($feetype_id>0)? $feetype_id:false;
 $today=$_SESSION['today'];
 $due_on=isset($due_on)? $due_on:$today; 
@@ -237,24 +267,25 @@ if($feetype_id && $amount){
 			AND p.feetype_id=$feetype_id)
 		WHERE $cond 
 		ORDER BY summ.scid; ";
-	pr($q);
+	// pr($q);
 	$sth=$db->querysoc($q);
 	$rows=$sth->fetchAll();	
-	$q="INSERT INTO {$dbo}.30_payables(sy,scid,feetype_id,amount,due_on)VALUES";	
+	$q="INSERT INTO {$dbo}.30_payables(sy,scid,feetype_id,amount,ptr,due_on,in_tuition)VALUES";	
 	foreach($rows AS $row){
 		if(empty($row['pscid'])){
-			$q.="($sy,".$row['summscid'].",$feetype_id,'$amount','$due_on'),";			
+			$q.="($sy,".$row['summscid'].",$feetype_id,'$amount',$ptr,'$due_on',$in_tuition),";			
 		}
 		
 	}				
 	$q=rtrim($q,",");
 	$q.=";";
 }
-pr($q); 
+
+// prx($q);
 $sth=$db->query($q);
 echo ($sth)? "success":"fail";echo "<br />";
 echo "<a href='".URL."/payables/batch'>Payables Batch Add</a>";
-exit;
+exit;	
 
 }	/* post */
 

@@ -1,19 +1,24 @@
 <h5>
-Edit Feetype
+	Edit Fee
+	| <?php echo $row['name']; ?>
+	| <?php $this->shovel('homelinks'); ?>	
+	| <a href="<?php echo URL.'tfeetypes/table'; ?>">Fees</a>
 
 
 </h5>
 
 
 <?php 
+
+// pr($_SESSION['q']);
+
 ?>
+
 
 <form method="POST" >
 <table class="gis-table-bordered" >
 
-<tr><th>ID</th><td>
-<input class="pdl05" type="text" name="ID" value="<?php echo $ftid; ?>" readonly />
-</td></tr>
+<tr><th>ID</th><td><?php echo $row['id']; ?></td></tr>
 
 <tr><th>Parent</th><td>
 <select class="full" name="parent_id" >
@@ -29,6 +34,10 @@ Edit Feetype
 <input class="pdl05" type="text" name="name" value="<?php echo $row['name']; ?>" />
 </td></tr>
 
+<tr><th>Label</th><td>
+<input class="pdl05" type="text" name="label" value="<?php echo $row['label']; ?>" />
+</td></tr>
+
 <tr><th>Is Disc.</th><td>
 <input class="pdl05" type="number" min="0" max="1" name="is_discount" value="<?php echo $row['is_discount']; ?>" />
 </td></tr>
@@ -38,23 +47,22 @@ Edit Feetype
 <input class="pdl05" type="text" name="amount" value="<?php echo $row['amount']; ?>" />
 </td></tr>
 
-<tr><th>Percentage</th><td>
-<input class="pdl05" type="text" name="percentage" value="<?php echo $row['percentage']; ?>" />
+<tr><th>Is Percent</th><td>
+<input class="pdl05" type="number" min=0 max=1 name="is_percent" value="<?php echo $row['is_percent']; ?>" />
+</td></tr>
+
+<tr><th>Percent</th><td>
+<input class="pdl05" type="text" name="percent" value="<?php echo $row['percent']; ?>" />
 </td></tr>
 
 <tr><th>Position</th><td>
 <input class="pdl05" type="number" name="position" value="<?php echo $row['position']; ?>" />
 </td></tr>
 
-<tr><th>Combo</th><td>
-<input class="pdl05" type="" name="combo" value="<?php echo $row['combo']; ?>" />
-</td></tr>
 
-<?php if($row['is_fixed']!=1): ?>
 <tr><td colspan="2" >
 <input type="submit" name="submit" value="Save"  />
 </td></tr>
-<?php endif; ?>
 
 </table>
 

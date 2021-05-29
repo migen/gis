@@ -1,0 +1,23 @@
+Carl, 
+
+ito instructions for datasheet
+
+1. go to datasheet > click DS - 
+
+2. download and edit the file from live server 
+- views/customs/sjam/ds_sjam.php
+
+3. references mo:
+a. datasheet_fields sql file
+b. sa ds_sjam file, mga fields ng table contacts ang sample
+<input name="contact[is_male]" value="<?php echo $is_male; ?>" />
+- sa table profiles na fields 
+<input name="profile[address]" value="<?php echo $address; ?>" />
+
+4. then test mo sa live kung nag update pag 1) save and 2) finalize
+- again, navigate to datasheet > "DS", wag sa datasheet 
+
+5. pag na finalize mo na, sa student account bawal na mag edit, 
+pero sa MIS account - pwede mo toggle ang access / finalized value 1 or 0
+
+6. pag okay na yan, ako na mag check and convert sa datasheet, at mag add ng php controls

@@ -13,7 +13,7 @@
 
 </style>
 
-<div id="watermark" >
+<div id="watermark" >	<!-- watermark -->
 	<?php 
 		switch($student['is_active']){
 			case 0: echo 'Dropped'; break;

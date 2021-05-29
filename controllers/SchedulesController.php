@@ -23,6 +23,8 @@ $dbo=PDBO;
 	$data['home']	= $_SESSION['home'];
 	$limits = isset($_GET['limits'])? $_GET['limits']:$this->limits;
 
+	prx('<h1>Schedules</h1>');
+
 	if(ONEDB){
 		$dbg = PDBG;
 	} else {
@@ -251,12 +253,13 @@ $dbo=PDBO;
 
 
 
-public function rcards(){
-	$acl = array([4,0],[5,0],[9,0]);
+public function rcards($params=NULL){
+	$data['sy']=$sy=isset($params[0])? $params[0]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$acl = array([4,0],[5,0],[9,0],[2,0]);
 	$this->permit($acl,false);
 	$db=&$this->baseModel->db;
 	$dbo=PDBO;
-	$dbg=PDBG;
 	$data['dbtable']="{$dbo}.05_rcards_schedules";
 	
 	if(isset($_POST['submit'])){
@@ -267,14 +270,17 @@ public function rcards(){
 		flashRedirect('schedules/rcards');
 	}	/* post */
 
+	$cond=isset($_GET['lvl'])? " AND cr.level_id=".$_GET['lvl']:null;
+
 	// getData
-	$q="SELECT rs.id AS pkid,cr.id AS crid,rs.crid AS rscrid,rs.is_open,cr.name,cr.id,cr.num,
+	$q="SELECT rs.id AS pkid,cr.id AS crid,rs.crid AS rscrid,rs.is_open,cr.name,cr.id,cr.num,cr.section_id,
 			l.name AS level,l.code AS lvlcode,l.id AS lvl
 		FROM {$dbg}.05_classrooms AS cr 
 		LEFT JOIN {$dbo}.05_rcards_schedules AS rs ON rs.crid=cr.id
 		LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
-		WHERE cr.section_id>2 
+		WHERE cr.section_id<>2 $cond
 		ORDER BY cr.level_id,cr.num,cr.name; ";
+	debug($q);
 	$sth=$db->querysoc($q);
 	$data['rows']=$rows=$sth->fetchAll();
 	$data['count']=$sth->rowCount();
@@ -294,6 +300,7 @@ public function rcards(){
 	}	/* sync */
 	
 	
+	$data['levels']=isset($_SESSION['levels'])? $_SESSION['levels']:fetchRows($db,"{$dbo}.05_levels","id,code,name","id");
 	
 	$this->view->render($data,"schedules/rcardsSchedules");
 	
@@ -301,8 +308,185 @@ public function rcards(){
 
 
 
+public function ensteps($params=NULL){
+	$data['sy']=$sy=isset($params[0])? $params[0]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$acl = array([4,0],[5,0],[9,0],[2,0]);
+	$this->permit($acl,false);
+	$db=&$this->baseModel->db;
+	$dbo=PDBO;
+	$data['dbtable']="{$dbo}.05_rcards_schedules";
+	$data['num_ensteps']=$_SESSION['settings']['num_ensteps'];
+	
+	if(isset($_POST['submit'])){
+		$posts=$_POST['posts'];
+		foreach($posts AS $post){
+			$db->update("{$dbo}.05_rcards_schedules",$post,"id=".$post['id']);
+		}
+		flashRedirect('schedules/rcards');
+	}	/* post */
+
+	$cond=isset($_GET['lvl'])? " AND cr.level_id=".$_GET['lvl']:null;
+
+	// getData
+	$q="SELECT rs.id AS pkid,cr.id AS crid,rs.crid AS rscrid,rs.enstep,cr.name,cr.id,cr.num,
+			l.name AS level,l.code AS lvlcode,l.id AS lvl
+		FROM {$dbg}.05_classrooms AS cr 
+		LEFT JOIN {$dbo}.05_rcards_schedules AS rs ON rs.crid=cr.id
+		LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+		WHERE cr.section_id<>2 $cond
+		ORDER BY cr.level_id,cr.num,cr.name; ";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$rows=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+
+	
+	
+	// sync
+	if(isset($_GET['sync'])){
+		$q="INSERT INTO {$dbo}.05_rcards_schedules(crid) VALUES";
+		foreach($rows AS $row){
+			if(!$row['rscrid']){ $q.="(".$row['crid']."),"; }
+		}
+		$q=rtrim($q,',');$q.=";";
+		$sth=$db->query($q);
+		$msg = ($sth)? "Success":"Fail";
+		flashRedirect('schedules/rcards',$msg);
+	}	/* sync */
+		
+	$data['levels']=isset($_SESSION['levels'])? $_SESSION['levels']:fetchRows($db,"{$dbo}.05_levels","id,code,name","id");
+	
+	$this->view->render($data,"schedules/enstepsSchedules");
+	
+}	/* fxn */
 
 
+
+public function booklists($params=NULL){
+	$data['sy']=$sy=isset($params[0])? $params[0]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$acl = array([4,0],[5,0],[9,0],[2,0]);
+	$this->permit($acl,false);
+	$db=&$this->baseModel->db;
+	$dbo=PDBO;
+	$data['dbtable']="{$dbo}.05_rcards_schedules";
+	// $data['num_ensteps']=$_SESSION['settings']['num_ensteps'];
+	
+	if(isset($_POST['submit'])){
+		$posts=$_POST['posts'];
+		foreach($posts AS $post){
+			$db->update("{$dbo}.05_rcards_schedules",$post,"id=".$post['id']);
+		}
+		flashRedirect('schedules/booklists');
+	}	/* post */
+
+	$cond=isset($_GET['lvl'])? " AND cr.level_id=".$_GET['lvl']:null;
+
+	// getData
+	$q="SELECT rs.id AS pkid,cr.id AS crid,rs.crid AS rscrid,rs.booklist,cr.name,cr.id,cr.num,
+			l.name AS level,l.code AS lvlcode,l.id AS lvl
+		FROM {$dbg}.05_classrooms AS cr 
+		LEFT JOIN {$dbo}.05_rcards_schedules AS rs ON rs.crid=cr.id
+		LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+		WHERE cr.section_id<>2 $cond
+		ORDER BY cr.level_id,cr.num,cr.name; ";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$rows=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+
+	
+	
+	// sync
+	if(isset($_GET['sync'])){
+		$q="INSERT INTO {$dbo}.05_rcards_schedules(crid) VALUES";
+		foreach($rows AS $row){
+			if(!$row['rscrid']){ $q.="(".$row['crid']."),"; }
+		}
+		$q=rtrim($q,',');$q.=";";
+		$sth=$db->query($q);
+		$msg = ($sth)? "Success":"Fail";
+		flashRedirect('schedules/rcards',$msg);
+	}	/* sync */
+		
+	$data['levels']=isset($_SESSION['levels'])? $_SESSION['levels']:fetchRows($db,"{$dbo}.05_levels","id,code,name","id");
+	
+	$this->view->render($data,"schedules/booklistsSchedules");
+	
+}	/* fxn */
+
+
+
+public function tuitions($params=NULL){
+	$data['sy']=$sy=isset($params[0])? $params[0]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$acl = array([4,0],[5,0],[9,0],[2,0]);
+	$this->permit($acl,false);
+	$db=&$this->baseModel->db;
+	$dbo=PDBO;
+	$data['dbtable']="{$dbo}.05_rcards_schedules";
+	
+	if(isset($_POST['submit'])){
+		$posts=$_POST['posts'];
+		foreach($posts AS $post){
+			$db->update("{$dbo}.05_rcards_schedules",$post,"id=".$post['id']);
+		}
+		flashRedirect('schedules/tuitions');
+	}	/* post */
+
+	$cond=isset($_GET['lvl'])? " AND cr.level_id=".$_GET['lvl']:null;
+
+	// getData
+	$q="SELECT rs.id AS pkid,cr.id AS crid,rs.crid AS rscrid,rs.tuition,cr.name,cr.id,cr.num,
+			l.name AS level,l.code AS lvlcode,l.id AS lvl
+		FROM {$dbg}.05_classrooms AS cr 
+		LEFT JOIN {$dbo}.05_rcards_schedules AS rs ON rs.crid=cr.id
+		LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+		WHERE cr.section_id<>2 $cond
+		ORDER BY cr.level_id,cr.num,cr.name; ";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$rows=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+
+	
+	
+	// sync
+	if(isset($_GET['sync'])){
+		$q="INSERT INTO {$dbo}.05_rcards_schedules(crid) VALUES";
+		foreach($rows AS $row){
+			if(!$row['rscrid']){ $q.="(".$row['crid']."),"; }
+		}
+		$q=rtrim($q,',');$q.=";";
+		$sth=$db->query($q);
+		$msg = ($sth)? "Success":"Fail";
+		flashRedirect('schedules/rcards',$msg);
+	}	/* sync */
+		
+	$data['levels']=isset($_SESSION['levels'])? $_SESSION['levels']:fetchRows($db,"{$dbo}.05_levels","id,code,name","id");
+	
+	$this->view->render($data,"schedules/tuitionsSchedules");
+	
+}	/* fxn */
+
+
+public function classroom($params=NULL){
+	$data['crid']=$crid=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
+	$data['sy_enrollment']=$sy_enrollment=$_SESSION['settings']['sy_enrollment'];
+	$db=&$this->baseModel->db;$dbg=VCPREFIX.$sy.US.DBG;
+
+	$data['cr']=NULL;
+	$data['lvl']=4;
+	if($crid){
+		$data['cr']=fetchRow($db,"{$dbg}.05_classrooms",$crid,"id AS crid,code AS crcode,name AS crname,level_id AS lvl");
+	}
+
+	$this->view->render($data,"schedules/classroomSchedules");
+	
+	
+}	/* fxn */
 
 
 

@@ -33,7 +33,10 @@
 	</td></tr>	
 
 	<tr><td><a href="<?php echo URL.'cdt'; ?>" >Conduct Tally Index</a></td></tr>
-	<tr><td><a href="<?php echo URL.'schedules/rcards'; ?>" >Rcard Schedule</a></td></tr>
+	<tr><td>Schedule - 
+		<a href="<?php echo URL.'schedules/rcards'; ?>" >Rcard</a>
+		| <a href="<?php echo URL.'schedules/ensteps'; ?>" >Ensteps</a>
+	</td></tr>
 	<tr><td><a href="<?php echo URL.'employeeChild/status'; ?>" >Employee Child Status</a></td></tr>
 	<tr><td><a href="<?php echo URL.'whichclub/student'; ?>" >Which Club</a></td></tr>
 	

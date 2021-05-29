@@ -152,13 +152,18 @@ if($scid){
 			<?php 				
 				$qtrSem1=($_SESSION['qtr']>1)? 2:1;
 				$qtrSem2=($_SESSION['qtr']>3)? 4:3;
+				
 			?>
+			
+			
+		<?php if($_SESSION['qtr']<3): ?>
+			<a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtrSem1}/1?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem1</a> 
 		
-			<a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtrSem1}/1?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem1</a>
+		<?php endif; ?>
 			
 			
 			<?php if($qtr>2): ?>			
-				| <a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtrSem2}/2?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem2</a>
+				<a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtrSem2}/2?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem2</a>
 			<?php endif; ?>	<!-- sem2 -->				
 		</td></tr>
 		

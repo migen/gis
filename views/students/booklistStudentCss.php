@@ -4,17 +4,30 @@
 	$dbg=VCPREFIX.$sy.US.DBG;
 	$dbcontacts="{$dbo}.00_contacts";
 	$dbstudbooks="{$dbg}.50_students_books";
+	$today=$_SESSION['today'];
 	
 	// pr($data);
 
 ?>
-<!-- <h3>
+<h3 class="screen" >
 	Student Booklist | <?php $this->shovel('homelinks'); ?>
-<?php if($scid && (!$student['booklist_finalized'])): ?>	
-	| <a href='<?php echo URL."booklists/syncStudent/$scid"; ?>' >Sync</a>
-<?php endif; ?>
+</h3>
 
-</h3> -->
+<div class="screen" >
+<?php 
+
+/* navigation controls */
+echo $controls."<div class='clear'>&nbsp;</div>";
+
+?>
+</div>
+
+<?php 
+/* locking */
+$is_locked=($srid==RSTUD)? isFinalizedEnstep($db,$scid,$enstep=3):false;
+// echo "<br>";echo ($is_locked)? "locked":"open";echo "<br>";
+
+?>
 
 <?php if($srid!=RSTUD): ?>
 
@@ -34,13 +47,19 @@
 <?php if($scid): ?>
 
 <?php 
-$is_finalized=($student['booklist_finalized']==1)? true:false;
 
 ?>
 
-<form method="POST" >
+<form method="POST" id="form" >
 
 <style type="text/css" media="screen">
+	.btn-wrapper {
+		margin: auto;
+		padding-top: 15px;
+		width: 600px;
+		text-align:center;
+		
+	}
 	.booklist-wrapper {
 		margin: auto;
 		padding-top: 15px;
@@ -99,7 +118,7 @@ $is_finalized=($student['booklist_finalized']==1)? true:false;
 				<th width="150">COMPANY</th>
 				<th width="100">AMOUNT</th>
 			</tr>
-			<?php if(($srid==RSTUD) && ($is_finalized)): ?>
+			<?php if(($srid==RSTUD) && ($is_locked)): ?>
 				<?php $total=0; ?>
 				<?php for($i=0;$i<$count;$i++): ?>
 				<?php $total+=$rows[$i]['amount']; ?>
@@ -136,24 +155,31 @@ $is_finalized=($student['booklist_finalized']==1)? true:false;
 	</div>
 </div>
 
-<!-- 
-<?php if(($srid==RSTUD) && (!$is_finalized)): ?>
-	<p><input type="submit" name="submit" value="Finalize" ></p>
-<?php endif; ?>
+<div class="btn-wrapper" >
+<div class="screen clear action-btn">
+	<div class="form-group">
+		<div class="input-group">								
 
-<?php if($srid!=RSTUD): ?>
-	<?php if($is_finalized): ?>
-		<p><input type="submit" name="unlock" value="Unlock" ></p>
-	<?php else: ?>
-		<p><input type="submit" name="submit" value="Finalize On" ></p>
-	<?php endif; ?>
-<?php endif; ?>
- -->
+		<?php if(($srid==RSTUD) && (!$is_locked)): ?>
+			<br />
+			<div class="" ><br />
+			<input class="btn datasheet-btn" id="btnFinalize"
+				 type="submit" name="submit" value="Finalize" 
+				onclick="return confirm('Sure?');" >
+			</div>
+		<?php endif; ?>
+				
+				
+		</div>
+	</div>
+</div>
+</div>
+
 </form>
 <?php endif; ?>	<!-- scid -->
 
 	
-	
+<div class="clear screen ht100" ></div>	
 
 
 
@@ -164,12 +190,22 @@ var sy = "<?php echo $sy; ?>";
 var dbcontacts = "<?php echo $dbcontacts; ?>";
 var dbstudbooks = "<?php echo $dbstudbooks; ?>";
 var limit=20;
+var today="<?php echo $today; ?>";
+
+
 			
 $(function(){
 	$('html').live('click',function(){ $('#names').hide(); });
 	$('#names').hide();
 
-})
+	$('#btnFinalize').click(function(){
+		var lock = "<input name='contact[enstep]' value=4 >";
+		lock+="<input name='step[finalized_s3]' value='"+today+"' >";
+		$('#form').append(lock);
+	})
+
+
+})	/* fxn */
 
 
 

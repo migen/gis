@@ -1,0 +1,175 @@
+today, May 16, fri
+ok - 1. tmp strands for g11 while all for g12
+ok - 2. ledger hide <Pay> if ensteps not completed
+ok - 3. fix portal
+ok - 4. misdata/classlist - 
+ok - 5. video for "Payables Batch"
+
+
+
+-----------------------------------------------------------------------
+
+1. zafra new sy
+2. 
+3. 
+4. payroll - P3,500, P5k, P8k
+5. 
+
+
+
+
+
+-----------------------------------------------------------------------
+
+1. forfeiture - sjam fee, scid#3568
+2. sync payables by fee
+3. 
+
+
+buildeee
+- app
+- 
+
+
+
+----------------------------
+
+
+
+
+
+
+-----------------------------------------------------------------------
+
+Forfeiture - loss of reservation or other payments made due to default
+1. go to ledger
+2. add a "forfeiture payable", put the amount equal to forfeited "payment" amount, 
+- say P500 for reservation made but failed to enroll for that schoolyear
+3. at the ledger, edit the payment and change the fee to "forfeiture"
+ 
+
+
+-----------------------------------------------------------------------
+
+Enrollments Steps (guide / manual / documentation / process)
+
+By Admin
+
+1. Pre-enrollment steps are 1) tuitions viewing 2) booklist viewing 
+2. Open and lock the viewing schedules - 1 (open) | 0 - lock
+3. Scheduling Modules - Rcards (report cards), Tuition Fees, Booklist, Ensteps (Enrollment Steps)
+
+Individual student "Enstep Ptr" (enrollment steps pointer) - tracks and redirects where a student is on their enrollment process (1, 2, 3...)
+
+By Student
+1. Check with school for the schedule for performing enrollment steps
+2. Login
+3. Pre-enrollment steps: 1) view tuitions 2) view booklist
+4. Enrollment steps are sequential as follows:
+- Step 1: datasheet (fill up required fields or else cannot proceed to next step)
+- Step 2: mode of payment
+> for shs (senior high) - choose strand too
+- Step 3: view assessement
+- Step 4: make payment
+
+
+Other Modules of Registration and Enrollment
+By Admin
+1. Register - add new student record to the database
+2. Leveler - adjusts / assigns a student to a specific grade level - to tmp or temporary section
+3. Sectioner - adjusts / assigns a student to a specific section in a particular grade level
+4. Classroom - is a term for a combination of grade level and section, i.e. Grade Level 1 - Section Alpha
+
+
+By Student
+1. Portal - home for student to login and access and manage their records
+2. View report card
+3. Perform Ensteps (Enrollment Steps)
+4. View certificates (if qualified)
+a. Academic Award
+b. Conduct Award
+5. View payments made (accounting)
+
+
+
+
+
+
+
+---------------------------------------------------
+
+ thur, May 7
+1. fees schedule - paymode
+2. new SY - sjam - documentation
+3. lock for tfeedetails and tuitions if past SY
+4. dry clothes
+5. ayala
+6. cebu - RG1WFJ
+
+
+
+thur, May 6
+ok - 1. datasheet - double btn
+ok - 2. sy tuitions
+ok - 4. buy water
+ok - 5. wash clothes
+ok - 6. test ensteps
+ok - 7. video ensteps
+ok - 8. per level payables summary report - excel - payables summary balance report 
+
+
+ok - 9. links/mis - all - divbox
+ok - 10. amazon docs
+ok - 12. SEC - atty ann - taguig property
+ok - 14. cut nails
+
+
+wed
+1. tuitions total
+2. enstep test - s3, s4
+3. documentation
+4. cnn
+5. datasheet
+6. buildeee zoom
+7. 
+
+
+---------------------------------------------------
+
+enstep
+
+
+
+
+
+enrollment stage / steps
+
+1. datasheet > save <prev> <next>
+
+2. mode of payment - <prev> <next>
+
+3. booklist - automatic from leveler / sectioner <prev> <next>
+
+4. assessment form - <prev> <next>
+
+5. please proceed to payment <thank you>
+
+
+--------
+
+
+1. 
+- change password
+- tuitions/ policies for viewing
+- booklist (viewing)
+- enrollment
+
+2. 
+
+
+--------------------------
+
+tuition fee setup
+1. settings.sy_end - 2021
+2. students multi-accor (home_sjam)
+3. 

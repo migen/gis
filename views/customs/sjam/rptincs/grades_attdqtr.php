@@ -65,12 +65,22 @@ $attendance = $students[$i]['attendance'];
 
 <tr class="<?php echo $blankfont; ?>" > <td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr class="" >
+	<th style="text-align:left;" ></th>
+	<th><?php $s1 = number_format($students[$i]['summary']['ave_q1'],$decigenave);  ?></th>
+	<th><?php $s2 = number_format($students[$i]['summary']['ave_q2'],$decigenave);  ?></th>
+	<th><?php $s3 = number_format($students[$i]['summary']['ave_q3'],$decigenave);  ?></th>
+	<th><?php $s4 = number_format($students[$i]['summary']['ave_q4'],$decigenave);  ?></th>
+	<th><?php $s5 = number_format($students[$i]['summary']['ave_q5'],$decifgenave); echo ($qtr>3)? $s5:NULL; ?></th>
+
+</tr>
+
+<tr class="" >
 	<th style="text-align:left;" >GENERAL AVERAGE</th>
 	<th><?php $s1 = number_format($students[$i]['summary']['ave_q1'],$decigenave);  ?></th>
 	<th><?php $s2 = number_format($students[$i]['summary']['ave_q2'],$decigenave);  ?></th>
 	<th><?php $s3 = number_format($students[$i]['summary']['ave_q3'],$decigenave);  ?></th>
 	<th><?php $s4 = number_format($students[$i]['summary']['ave_q4'],$decigenave);  ?></th>
-	<th><?php $s5 = number_format($students[$i]['summary']['ave_q5'],$decigenave); echo ($qtr>3 )? $s5:NULL; ?></th>
+	<th><?php $s5 = number_format($students[$i]['summary']['ave_q5'],$decigenave); echo ($qtr>3 )? round($s5):NULL; ?></th>
 
 </tr>
 

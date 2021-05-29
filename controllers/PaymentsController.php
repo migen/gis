@@ -221,6 +221,7 @@ public function edit($params=NULL){
 	if(isset($_POST['submit'])){
 		$post=$_POST['post'];
 		$post['amount']=str_replace(",","",$post['amount']);
+		// prx($post);
 		$db->update($dbtable,$post,"id=$pkid");
 		/* log */
 		require_once(SITE.'functions/logs.php');

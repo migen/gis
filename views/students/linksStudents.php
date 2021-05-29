@@ -84,7 +84,10 @@ $dbcontacts="{$dbo}.00_contacts";
 <tr><td><a href='<?php echo URL."students/register"; ?>' >Register</a></td></tr>
 <tr><td><a href='<?php echo URL."students/sectioner/$scid"; ?>' >Sectioner</a></td></tr>
 <tr><td><a href='<?php echo URL."students/leveler/$scid"; ?>' >Leveler</a></td></tr>
-<tr><td><a href='<?php echo URL."promotions/student/$scid"; ?>' >Promotions</a></td></tr>
+<tr><td>
+	<a href='<?php echo URL."promotions/student/$scid"; ?>' >Promotions</a>
+	| <a href='<?php echo URL."studentpromotions/year/$scid"; ?>' >Year</a>
+</td></tr>
 <tr><td><a href='<?php echo URL."codename/one/$scid"; ?>' >Code Name</a></td></tr>
 <tr><td><a href='<?php echo URL."clearance/one/$scid"; ?>' >Clearance</a></td></tr>
 

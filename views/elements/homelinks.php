@@ -3,7 +3,7 @@
 	$hometext=($controller)? $data:"Home";	
 ?>
 
-<?php if($_SESSION['settings']['has_branches']): ?>
+<?php if(isset($_SESSION['settings']) && $_SESSION['settings']['has_branches']): ?>
 	<?php echo $_SESSION['brcode']; ?>
 	<a href="<?php echo URL.$controller; ?>"><?php echo $hometext; ?></a>
 	<?php echo isset($_SERVER['HTTP_REFERER'])? '| <a href="'.$_SERVER['HTTP_REFERER'].'" >Back</a>' : ''; ?>				

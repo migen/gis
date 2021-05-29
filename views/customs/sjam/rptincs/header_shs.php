@@ -11,15 +11,15 @@
 		<tr><th>City of Malabon</th></tr>
 		<tr><th>BASIC EDUCATION DEPARTMENT</th></tr>
 		<tr><th>PAASCU LEVEL II ACCREDITED</th></tr>
-		<tr><th>SENIOR HIGH SCHOOL LEVEL</th></tr>
-		<tr><th><?php echo ($qtr<3)? "FIRST":"SECOND"; echo " SEMESTER"; ?> REPORT CARD</th></tr>
+		<tr><th>SENIOR HIGH SCHOOL LEVEL</th></tr>		
+		<tr><th><?php echo ($sem==1)? "FIRST":"SECOND"; echo " SEMESTER"; ?> REPORT CARD</th></tr>
 	</table>
 <?php else: ?>
 	<table class="center" >
 		<tr><th>BASIC EDUCATION DEPARTMENT</th></tr>
 		<tr><th>PAASCU LEVEL II ACCREDITED</th></tr>
 		<tr><th>SENIOR HIGH SCHOOL LEVEL</th></tr>
-		<tr><th><?php echo ($qtr<3)? "FIRST":"SECOND"; echo " SEMESTER"; ?> REPORT CARD</th></tr>
+		<tr><th><?php echo ($sem==1)? "FIRST":"SECOND"; echo " SEMESTER"; ?> REPORT CARD</th></tr>
 	</table>
 <?php endif; ?>
 

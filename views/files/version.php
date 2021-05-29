@@ -1,8 +1,24 @@
 <p><strong style="font-size: 1.17em;">GIS VERSION Controller</strong>&nbsp;</p>
 <p>&nbsp;</p>
-<p><strong>GISv5 - 20210301</strong></p>
+<p>&nbsp;</p>
+<p><strong>GISv5 - 20210515</strong></p>
 <ol>
+<li>contacts.enstep - enrollment step for sjam - 1) datasheet, 2) paymode, 3) booklist, 4) assessment, 5) payment</li>
+<li>datasheet multistep</li>
+<li>contacts.enstep</li>
+<li>dbo.05_steps</li>
+<li>SetupEnstepsController</li>
+<li>ensteps 1) datasheet, 2) paymode, 3) booklist, 4) assessment, 5) payment</li>
+<li>customs/sch/enstepFxn_sch.php</li>
+<li>dbo.steps - id,type (enum: enrollment),scid,finalized_s1 (s1 for step 1 -&gt; step 6)</li>
+<li>settings.num_ensteps</li>
 <li></li>
+</ol>
+<p><strong>GISv5 - 20210321</strong></p>
+<ol>
+<li>mini - multi (multirole users)</li>
+<li>modal,</li>
+<li>bootstrap,&nbsp;</li>
 <li>genave (default by process), genaveByAverage (i.e. q7 = (q5 + q6) / 2); mathFxn - getAverage func_get_args (dynamic argument list/ parameters)</li>
 <li>v539 - 20200219 - audit trails dbo.logs - textlog() as logfxn3</li>
 <li>v538 - previous accounts / old accounts / prevaccts</li>

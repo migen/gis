@@ -16,7 +16,7 @@ public function beforeFilter(){
 
 
 public function index(){ 
-	$dbo=PDBO;$dbg=PDBG;$db=&$this->model->db;
+	$dbo=PDBO;$dbg=PDBG;$db=&$this->baseModel->db;
 	$data['rows']=$keys=array_keys($_SESSION);
 	$data['count']=count($keys);
 	$data['sessions']=$_SESSION;

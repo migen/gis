@@ -20,6 +20,28 @@ extract($level);
 
 ?>
 
+<h3 class="screen" >
+	Schedule of Fees | <?php $this->shovel('homelinks'); ?>
+</h3>
+
+
+<div class="screen" >
+<?php 
+
+/* navigation controls */
+echo $controls."<div class='clear'>&nbsp;</div>";
+
+?>
+</div>
+
+<?php 
+/* locking */
+$is_locked=($srid==RSTUD)? isFinalizedEnstep($db,$scid,$enstep=3):false;
+// echo "<br>";echo ($is_locked)? "locked":"open";echo "<br>";
+
+?>
+
+
 <style>
 
 .indented{ text-indent:20px; }
@@ -89,7 +111,7 @@ extract($level);
 					<span style="font-size: 20px">ST. JAMES ACADEMY</span><br>
 					<span style="font-size: 20px">MALABON CITY</span><br>
 					<small>TUITION AND OTHER FEES AND TERMS OF PAYMENT</small><br>
-					<small>SCHOOL YEAR 2020-2021</small><br>
+					<small>SCHOOL YEAR <?php echo $sy.'-'.($sy+1); ?></small><br>
 					
 					<?php if($lvl==13 && $num==3): ?>					
 						<span style="font-size: 25px"><?php echo '5th Year'; ?></span>
@@ -114,7 +136,7 @@ extract($level);
 
 
 
-<table class="table-bordered" >
+<table class="" >
 <tr>
 	<th class="vc200" ></th>
 	<th class="right" ></th>

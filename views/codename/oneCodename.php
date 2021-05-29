@@ -8,6 +8,7 @@
 	Account | <?php $this->shovel('homelinks'); ?>
 	| <a href="<?php echo URL.'photos/one/'.$id; ?>">Photo</a> 
 	| <a href="<?php echo URL.'codename/name/'.$id; ?>">Name</a> 
+	| <a href="<?php echo URL.'codename/student/'.$id; ?>">SCN</a> 
 	| <a href="<?php echo URL.'contacts/ucis/'.$id; ?>">UCIS</a> 
 	<?php if($_SESSION['srid']==RMIS): ?>
 		| <a href="<?php echo URL.'mgt/pass/'.$id; ?>">Pass</a> 	

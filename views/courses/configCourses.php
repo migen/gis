@@ -12,7 +12,7 @@
 
 // pr($subjects[0]);
 
-$headrow="<tr><th colspan=5></th><th>Ctype</th><th>W/S</th><th>Rpt</th><th>Num</th><th>Disp</th><th>InGA</th><th>Wt</th><th>Prnt</th><th>Aggr</th><th>Pos</th><th>Indt</th><th>Sem</th><th class='btn'></th></tr>";
+$headrow="<tr><th colspan=5></th><th>Ctype</th><th>W/S</th><th>Rpt</th><th>Num</th><th>Disp</th><th>InGA</th><th>Wt</th><th>Prnt</th><th>Aggr</th><th>Pos</th><th>Indt</th><th>Sem</th><th>Pri</th><th class='btn'></th></tr>";
 
 ?>
 
@@ -84,10 +84,19 @@ $headrow="<tr><th colspan=5></th><th>Ctype</th><th>W/S</th><th>Rpt</th><th>Num</
 		<br /><input class="pdl05 vc30" id="isem" value="0" /><br />	
 		<input type="button" value="All" onclick="populateColumn('sem');" >								
 	</th>
+
+	<th>Pri
+		<br /><input class="pdl05 vc30" id="ipri" value="0" /><br />	
+		<input type="button" value="All" onclick="populateColumn('pri');" >								
+	</th>
+
 	
 	<th class="btn" >Action</th>
 </tr>
 <?php for($i=0;$i<$count;$i++): ?>
+<?php if(($i%10)==0): ?>
+	<?php echo $headrow; ?>
+<?php endif; ?>
 <tr>
 	<td><input type="checkbox" class="chka" name="posts[<?php echo $i; ?>][is_checked]" value="1" /></td>
 	<td><?php echo $i+1; ?></td>
@@ -127,6 +136,9 @@ $headrow="<tr><th colspan=5></th><th>Ctype</th><th>W/S</th><th>Rpt</th><th>Num</
 		
 	<td class="colshading" ><input class="vc50 sem" name="posts[<?php echo $i; ?>][semester]" tabindex="13"
 		value="<?php echo (isset($subjects[$i]['crssem']))? $subjects[$i]['crssem']: $subjects[$i]['subsem']; ?>" /></td>		
+
+	<td class="colshading" ><input class="vc50 pri" name="posts[<?php echo $i; ?>][is_primary]" tabindex="14"
+		value="<?php echo (isset($subjects[$i]['crspri']))? $subjects[$i]['crspri']: $subjects[$i]['subpri']; ?>" /></td>		
 		
 	<td class="btn" ><a href="<?php echo URL.'purge/levelCourses?lvl='.$lvl.'&sub='.$subjects[$i]['subject_id']; ?>" 
 		class="" onclick="return confirm('Dangerous! Sure?');" >PurgeLC</a></td>

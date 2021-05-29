@@ -267,7 +267,39 @@ $dbo=PDBO;
 
 
 
+public function v2(){
+	$data['sy']=$sy=isset($_GET['sy'])? $_GET['sy']:DBYR;
+	$dbo = PDBO;
+	$dbg = VCPREFIX.$sy.US.DBG;
+$data['count']=0;
+if(isset($_GET['filter'])){
+	$get = $_GET;	
+	$cond=NULL;
+	$cond.="";
+	if(!empty($_GET['details'])){  $cond .= " AND l.details LIKE '%".$_GET['details']."%'";  }
+	// $offset = ($get['page']-1)*$get['limits'];
+	$limit=isset($get['limit'])? $get['limit']:10;
+	$sort=(isset($get['sort']))?$get['sort']:'l.datetime';
+	$order=(isset($get['order']))?$get['order']:'DESC';
+		
+	$q = " SELECT l.* FROM {$dbo}.logs AS l ";			
+	$q .= "	WHERE 1=1 $cond ORDER BY $sort $order LIMIT $limit; ";
+	pr($q);
+	debug($q);
+	$sth = $this->model->db->querysoc($q);
+	$data['rows'] = $sth->fetchAll();
+	$data['count'] = count($data['rows']);
+	$data['empty'] = (isset($_GET['filter']))? false:true;	
+} 
+	
+	$vfile="logs/v2Logs";vfile($vfile);
+	$data=isset($data)? $data:NULL;
+	$this->view->render($data,$vfile);	
+	
 
+	
+	
+}	/* fxn */
 
 
 

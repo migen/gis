@@ -1,3 +1,13 @@
+<style>
+
+tr.blue th, tr.blue td{ color:blue; }
+tr.green th, tr.green td{ color:green; }
+
+
+</style>
+
+
+
 <h5>
 	SJAM Parent Online Portal | <?php $this->shovel('homelinks'); ?>
 	| <span onclick="traceshd();" class="u" >SHD</span>
@@ -16,6 +26,11 @@
 // $srid=9;
 // prx($data);
 
+
+// $checkBalance=false;
+$checkBalance=$_SESSION['settings']['check_balance'];
+
+
 $sch=isset($_GET['sch'])? $_GET['sch']:VCFOLDER;
 $year=$_SESSION['year'];
 $start_b1="2020-06-03";	// ps
@@ -28,7 +43,6 @@ $sy_payments=$_SESSION['settings']['sy_payments'];
 $sy_grading=$_SESSION['settings']['sy_grading'];
 
 
-// prx($_SESSION['enrollment']);
 unset($_SESSION['enrollment']);
 
 
@@ -37,6 +51,9 @@ if($scid){
 	if(isset($_GET['debug'])){ unset($_SESSION['enrollment']); }	
 	
 	$student_one=$student;
+	
+	
+	
 	if(isset($_SESSION['enrollment']) && $srid==RSTUD){
 		$student=$_SESSION['enrollment']['student'];	
 		$enrollment=$_SESSION['enrollment'];	
@@ -44,8 +61,8 @@ if($scid){
 		$scid=$scid;
 		$sy=DBYR;
 		$qtr=$_SESSION['qtr'];
-	$incs=SITE."functions/enrollmentFxn.php";require_once($incs);
-		$data_two=getAssessmentDataForClearance($db,$sy,$scid);
+	$incs=SITE."functions/enrollmentFxn.php";require_once($incs);	
+		$data_two=getAssessmentDataForClearance($db,$sy,$scid);		
 		extract($data_two);			
 		$student_two=$student;
 		$student=array_merge($student_one,$student_two);				
@@ -54,7 +71,16 @@ if($scid){
 		$allowance=$_SESSION['settings']['balance_cutoff'];			
 		$enrollment['period_factor']=$period_factor=getPeriodFactor($qtr,$paymode_id);		
 		$prevbal=$student['previous_balance'];
-		$enrollment=getStudentEnrollment($db,$sy,$scid,$student,$qtr,$period_factor,$arp,$payments,$allowance,$prevbal);
+		// $enrollment=getStudentEnrollment($db,$sy,$scid,$student,$qtr,$period_factor,$arp,$payments,$allowance,$prevbal);
+		$enrollment=getStudentEnrollment($db,$sy_grading,$scid,$student,$qtr,$period_factor,$arp,$payments,$allowance,$prevbal);
+		// prx($enrollment);
+
+		if(DBYR<$sy_enrollment){
+			$nextsyClassroomRow=getClassroomByStudent($db,$sy_enrollment,$scid);
+			$student=array_merge($nextsyClassroomRow,$student);
+			
+		}
+
 		
 		
 		
@@ -62,7 +88,7 @@ if($scid){
 		if($srid==RSTUD){
 			$_SESSION['enrollment']=$enrollment;
 			$_SESSION['student']=$student;
-			$_SESSION['message']="sessionize-enrollment";			
+			// $_SESSION['message']="sessionize-enrollment";			
 		}	
 	}	// session-condition
 
@@ -106,14 +132,20 @@ $allowed=checkStudlogin();
 
 
 function checkRcardScheduleSjam($db,$scid){
-	$dbg=PDBG;$dbo=PDBO;
+	$sy=DBYR;
+	$dbg=VCPREFIX.$sy.US.DBG;$dbo=PDBO;
+	$ret=checkEnsy($db,$sy,$scid);
+	$new_student=$ret['new_student'];
+	if($new_student){ return false; }
+	
+	// schedule for old student
 	$q="SELECT summ.crid,rs.is_open
 		FROM {$dbg}.05_summaries AS summ 
 		LEFT JOIN {$dbo}.05_rcards_schedules AS rs ON rs.crid=summ.crid
-		WHERE summ.scid=$scid LIMIT 1;
-	";
+		WHERE summ.scid=$scid LIMIT 1; ";
 	$sth=$db->querysoc($q);
 	$row=$sth->fetch();
+	
 	$allowed = ($row['is_open'])? true:false;
 	return $allowed;
 		
@@ -175,6 +207,25 @@ function isConductee($db,$scid,$sy=DBYR,$qtr=false){
 }	/* fxn */
 
 
+function checkForErrorBalance($enrollment){
+	
+	
+	
+	if($enrollment['error_minbal']){
+		echo "<tr class='red' ><th>".$enrollment['error_minbal']."</th></tr>";
+	}
+	
+	if($enrollment['error_prevbal']){
+		echo "<tr class='red' ><th>".$enrollment['error_prevbal']."</th></tr>";
+	}
+	
+	if($enrollment['error_otherbal']){
+		echo "<tr class='red' ><th>".$enrollment['error_otherbal']."</th></tr>";
+	}
+	
+}	/* fxn */
+
+
 ?>
 
 <?php if($scid): ?>
@@ -189,6 +240,8 @@ extract($student);
 $numcond=($num>1)? "&num=$num":null;
 $nextLvl=$level_id+1;
 $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_enrollment'])? $nextLvl:$level_id;
+
+
 
 
 // prx($enrollment);
@@ -251,9 +304,61 @@ $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_en
 <?php endif; ?>	<!-- user_is_student -->
 
 
+<table class="one accordion gis-table-bordered table-altrow" >
+	<tr><th class="accorHeadrow" onclick="accordionTable('one');" >Enrollment</th></tr>	
+
+	<?php if(DBYR<$sy_enrollment): ?>
+		<tr>
+			<td class="center" >			
+				<a class="no-underline" href='<?php echo URL."students/encrid/$scid/$sy_enrollment"; ?>' >
+				<?php echo $student['nextclassroom']; ?></a>
+				<?php echo ' - SY'.$sy_enrollment; ?>
+			</td>
+		</tr>			
+	<?php endif; ?>		
+
+
+	<tr><th class="bg-blue2" >Tuition & Books</th></tr>
+	<tr><td class="vc250">
+		<a href='<?php echo URL."students/tuitions/$scid/".$sy_payments; ?>' >Tuitions</a>		
+		| <a href='<?php echo URL."students/feespolicies"; ?>' >Policies</a>		
+	</td></tr>	
+	<tr><td>
+		<a href='<?php echo URL."students/booklist/$scid/".$sy_payments; ?>' >Booklist</a>
+	</td></tr>		
+	<tr><td>&nbsp;</td></tr>
+
+	<tr><th class="bg-blue2" >Enrollment Steps</th></tr>
+
+	<tr><td class="">
+		1) <a href='<?php echo URL."students/datasheet/$scid"; ?>' >Datasheet</a>		
+	</td></tr>	
+	<tr><td>2) <a href='<?php echo URL."students/paymode/$scid/".$sy_payments; ?>' >Mode of Payment</a>
+	</td></tr>
+	<tr><td>
+		3) <a href='<?php echo URL."students/assessment/$scid/".$sy_payments; ?>' >Assessment Fees</a>
+	</td></tr>	
+	<tr><td>4) Payment > Thank you.</td></tr>
+	
+	
+	<tr><td>&nbsp;</td></tr>
+	
+
+</table>
+<br>
+
+
 <table class="studhome accordion gis-table-bordered table-altrow" >
+
 	<tr><th class="accorHeadrow" onclick="accordionTable('studhome');" >Student</th></tr>
-	<tr><td class="vc250 center" ><?php echo $student['classroom']; ?></td></tr>	
+	<tr><td class="vc250 center" >
+		<a class='no-underline' href='<?php echo URL."students/encrid/$scid/".DBYR; ?>' >
+		<?php echo $student['classroom']; ?></a>
+		<?php if(DBYR<$sy_enrollment): ?>
+			<?php echo ' - SY'.DBYR; ?>
+
+		<?php endif; ?>		
+	</td></tr>	
 
 	<tr><td class="vc250" >
 		<a href="<?php echo URL.$_SESSION['home']; ?>" >Home</a>
@@ -262,30 +367,18 @@ $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_en
 		<?php endif; ?>
 	</th></tr>
 	<tr><td><a href='<?php echo URL."portals/pass/$scid"; ?>' >Change Password</a></td></tr>
-	<tr><td><a href='<?php echo URL."students/paymode/$scid/".$sy_payments; ?>' >Mode of Payment</a></td></tr>
-	<?php $lvlcode=$student['lvlcode']; ?>
+	<?php $lvlcode=$student['lvlcode']; ?>	
 	
-	<tr><td>
-		<a href='<?php echo URL."students/tuitions/$scid/".$sy_payments; ?>' >Tuitions</a>
-		| <a href='<?php echo URL."students/feespolicies"; ?>' >Policies</a>		
-	</td></tr>
 	
-	<tr><td>
-		<a href='<?php echo URL."students/assessment/$scid/".$sy_payments; ?>' >Assessment Fees</a>
-	</td></tr>	
+
 	<tr><td>
 		<a href='<?php echo URL."students/payments/$scid"; ?>' >View Payments</a>
 	</td></tr>	
 
-	<tr><td>
-		<a href='<?php echo URL."students/booklist/$scid"; ?>' >Booklist</a>
-	</td></tr>	
-
-	<tr><td>
-		<a href='<?php echo URL."students/datasheet/$scid"; ?>' >Datasheet</a>		
-	</td></tr>	
 
 
+
+<?php if($hasRcard): ?>	
 <?php if($allowedByRcardSchedule): ?>	
 	<?php if($has_honors): ?>
 		<tr><td>
@@ -309,6 +402,7 @@ $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_en
 	
 <?php if($scid): ?>
 
+<?php if($checkBalance): ?>	
 	<?php if($allowedByRcardSchedule): ?>	
 
 	<?php 
@@ -322,79 +416,74 @@ $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_en
 				| <a target="_blank" href='<?php echo URL."frontcards/scid/$scid/$sy_grading/$qtr?{$rcget}&tpl=5"; ?>' >Front</a>		
 			</td></tr>	
 		<?php else: ?>
-			<?php if($enrollment['error_minbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_minbal']; ?></th></tr>			
-			<?php endif; ?>
-			<?php if($enrollment['error_prevbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_prevbal']; ?></th></tr>			
-			<?php endif; ?>			
+			<?php checkForErrorBalance($enrollment); ?>
 		<?php endif; ?>			
-	<?php elseif($currlvl<14): ?>
+	<?php elseif($currlvl<14): ?>		
 		<?php if($enrollment['can_view_rcard']): ?>
-			<tr><td><a target="_blank" href='<?php echo URL."rcards/scid/$scid/$sy_grading/$qtr?{$rcget}&tpl=$dept_id&deciave=0"; ?>' >Report Card - BED</a></td></tr>
-		<?php else: ?>
-			<?php if($enrollment['error_minbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_minbal']; ?></th></tr>			
-			<?php endif; ?>
-			<?php if($enrollment['error_prevbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_prevbal']; ?></th></tr>			
-			<?php endif; ?>			
+			<tr><td><a target="_blank" href='<?php echo URL."rcards/scid/$scid/$sy_grading/$qtr?{$rcget}&tpl=$dept_id"; ?>' >Report Card - BED</a></td></tr>
+		<?php else: ?>		
+			<?php checkForErrorBalance($enrollment); ?>				
 		<?php endif; ?>	
 	<?php else: ?>
 		<?php 
 			$half=($qtr<3)? 1:2;		
 			$both=$_SESSION['settings']['srcard_both'];			
 		?>
+
 		
 		<?php if($enrollment['can_view_rcard']): ?>
 			<tr><td>
-				<a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtr}/1?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem1</a>
+				<a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtr}/1?{$rcget}&both=$both"; ?>' >SHS Sem1</a>
 				<?php if($qtr>2): ?>			
-					| <a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtr}/2?{$rcget}&both=$both&deciave=0"; ?>' >SHS Sem2</a>
+					| <a target="_blank" href='<?php echo URL."srcards/scid/$scid/$sy_grading/{$qtr}/2?{$rcget}&both=$both"; ?>' >SHS Sem2</a>
 				<?php endif; ?>
 			</td></tr>
 		<?php else: ?>
-			<?php if($enrollment['error_minbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_minbal']; ?></th></tr>			
-			<?php endif; ?>
-			<?php if($enrollment['error_prevbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_prevbal']; ?></th></tr>			
-			<?php endif; ?>			
+			<?php checkForErrorBalance($enrollment); ?>
+			<?php if($qtr>3 && $enrollment['total_balance']>0): ?>
+				<tr class="red" ><th>Total balance: <?php echo number_format($enrollment['total_balance'],2); ?></th></tr>			
+			<?php endif; ?>									
 		<?php endif; ?>	
+		
 		
 	<?php endif; ?>	
 	
 	<?php else: ?>	<!-- allowedByRcardSchedule -->
 		<tr><th>Rcard Schedule Closed</th></tr>
-	
 
 		<?php if($enrollment['can_view_rcard']): ?>
 		<?php else: ?>
-			<?php if($enrollment['error_minbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_minbal']; ?></th></tr>			
-			<?php endif; ?>
-			<?php if($enrollment['error_prevbal']): ?>
-				<tr class="red" ><th><?php echo $enrollment['error_prevbal']; ?></th></tr>			
-			<?php endif; ?>			
+			<?php checkForErrorBalance($enrollment); ?>
+			<?php if($qtr>3 && $enrollment['total_balance']>0): ?>
+				<tr class="red" ><th>Total balance: <?php echo number_format($enrollment['total_balance'],2); ?></th></tr>			
+			<?php endif; ?>												
 		<?php endif; ?>				
 	
 	<?php endif; ?>		<!-- allowedByRcardSchedule -->
+	<?php endif; ?>		<!-- hasRcard  -->
+	
 <?php endif; ?>		<!-- if($srid!=RAXIS ) -->
+
 	
 
 <?php else: ?>
-	<tr><td><a href='<?php echo URL."students/enrollment/$scid"; ?>' >Enrollment</a>
-		<?php if(!$user_is_student): ?>
-			| <a href='<?php echo URL."students/sectioner/$scid"; ?>' >Sectioner</a>
-		<?php endif; ?>	
-	</td></tr>
+
+	<?php if(!$user_is_student): ?>
+		<tr><td><a href='<?php echo URL."students/enrollment/$scid/".$sy_enrollment; ?>' >Enrollment</a></td></tr>
+		<tr><td><a href='<?php echo URL."students/sectioner/$scid/".$sy_enrollment; ?>' >Sectioner</a></td></tr>
+	<?php endif; ?>	
 	
-	
-	
+		
+<?php endif; ?>	<!-- checkBalance -->
 <?php endif; ?>	<!-- scid -->
+
+
+
 	<tr><td>&nbsp;</td></tr>
 	
 </table>
+
+<div class="ht100" ></div>
 
 
 <?php if($srid==RMIS): ?>	<!-- or admin -->
@@ -406,8 +495,8 @@ $enrollmentLvl=($_SESSION['settings']['sy_grading']<$_SESSION['settings']['sy_en
 			| <a href='<?php echo URL."students/clearance/$scid/$year"; ?>' >Clearance</a>
 		</td></tr>
 		<tr><td>
-			<a href='<?php echo URL."students/leveler/$scid/$year"; ?>' >Leveler</a>
-			| <a href='<?php echo URL."students/sectioner/$scid/$year"; ?>' >Sectioner</a>		
+			<a href='<?php echo URL."students/leveler/$scid/$sy_enrollment"; ?>' >Leveler</a>
+			| <a href='<?php echo URL."students/sectioner/$scid/$sy_enrollment"; ?>' >Sectioner</a>		
 		</td></tr>
 		<tr><td>
 			<a href='<?php echo URL."students/enrollment/$scid/$year"; ?>' >Enrollment</a>		

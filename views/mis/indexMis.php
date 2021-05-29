@@ -77,9 +77,6 @@ th.accorHeadrow{ color:#555; }
 <?php 
 	$sch=VCFOLDER;
 
-	$clinks=SITE."views/customs/".VCFOLDER."/accor_registrar_{$sch}.php"; 
-	if(is_readable($clinks)){ include_once($clinks); }
-
 	$clinks=SITE."views/customs/".VCFOLDER."/accor_mis_{$sch}.php"; 
 	if(is_readable($clinks)){ include_once($clinks); }
 
@@ -88,7 +85,7 @@ th.accorHeadrow{ color:#555; }
 
 <?php 
 
-	$incs = SITE."views/elements/accor_misfaves.php";include_once($incs); 
+	$incs = SITE."views/elements/accor_misfaves.php";include_once($incs); echo '<br>';
 	if((isset($_SESSION['settings']['has_college'])) && ($_SESSION['settings']['has_college']==1)){ 
 		$incs = SITE."views/elements/accor_college.php";include_once($incs); }
 	if($_SESSION['settings']['has_library']==1){ $incs = SITE."views/elements/accor_library.php";include_once($incs); }
@@ -100,12 +97,11 @@ th.accorHeadrow{ color:#555; }
 
 <div class="oneGroup" >
 <?php 
-	$incs=SITE."views/elements/accor_dev.php";include_once($incs); 		
-	$incs=SITE."views/elements/accor_tools.php";include_once($incs); 		
 	$incs=SITE."views/elements/accor_grading.php";include_once($incs); 		
 	$incs=SITE."views/elements/accor_attd.php";include_once($incs); 		
 	$incs=SITE."views/elements/accor_enrollment_college.php";include_once($incs);	
 	// $incs=SITE."views/elements/accor_enrollment.php";include_once($incs);	
+	echo '<br>';
 	$incs=SITE."views/elements/accor_contacts.php";include_once($incs);	
 	// $incs=SITE."views/elements/accor_stats.php";include_once($incs); 
 ?>
@@ -122,17 +118,8 @@ th.accorHeadrow{ color:#555; }
 <div class="oneGroup" >
 	<?php // $incs=SITE."views/elements/accor_grades.php";include_once($incs); ?>
 	<?php // $incs=SITE."views/elements/accor_gset.php";include_once($incs); ?>
-	<?php $incs=SITE."views/elements/accor_mislinks.php";include_once($incs); ?>
 </div>	<!-- oneGroup -->
 
-<?php if($_SESSION['settings']['has_axis']==1): ?>
-<div class="oneGroup" >
-	<?php $incs=SITE."views/elements/accor_stocks.php";include_once($incs); ?>
-	<?php $incs=SITE."views/elements/accor_pos.php";include_once($incs); ?>
-	<?php $incs=SITE."views/elements/accor_invis.php";include_once($incs); ?>
-	<?php $incs=SITE."views/elements/accor_axis.php";include_once($incs); ?>
-</div>	<!-- oneGroup -->	
-<?php endif; ?>	<!-- has_axis -->
 
 
 <div style="float:left;width:20%" class="hd" id="names" > </div>

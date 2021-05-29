@@ -17,6 +17,41 @@ public function beforeFilter(){
 }
 
 
+public function lockAllPaymodes($params=NULL){
+	$sy=isset($params[0])? $params[0]:DBYR;
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$db=&$this->baseModel->db;
+	$q="UPDATE {$dbg}.05_summaries SET paymode_finalized=1;";
+	echo "<br> append \"&exe\" to url to execute.";
+	pr($q);
+	if(isset($_GET['exe'])){
+		$sth=$db->query($q);
+		echo "<br >";
+		echo $sth? "Success":"Fail";
+	}
+	
+	
+}	/* fxn */
+
+
+public function openAllPaymodes($params=NULL){
+	$sy=isset($params[0])? $params[0]:DBYR;
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$db=&$this->baseModel->db;
+	$q="UPDATE {$dbg}.05_summaries SET paymode_finalized=0;";
+	echo "<br> append \"&exe\" to url to execute.";
+	pr($q);
+	if(isset($_GET['exe'])){
+		$sth=$db->query($q);
+		echo "<br >";
+		echo $sth? "Success":"Fail";
+	}
+	
+	
+}	/* fxn */
+
+
+
 public function index(){ 
 	$data['home']	= $_SESSION['home'];
 	$this->view->render($data,'tests/index');

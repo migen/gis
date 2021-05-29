@@ -10,11 +10,19 @@
 
 </style>
 
+
+
 <h3>
-	Level Tuition Fees | <?php $this->shovel('homelinks'); ?>
+
+	SY<?php echo $sy; ?> Level Tuition Fees | <?php $this->shovel('homelinks'); ?>
 	| <a href='<?php echo URL."tuitions/table/$sy"; ?>' >Table</a>
-	| <a href='<?php echo URL."tuitions/level/$lvl/$sy?edit"; ?>' >Edit</a>
-	| <a href='<?php echo URL."enrollment/ledger?sy=$sy"; ?>' >Ledger</a>
+	
+	<?php if(($_SESSION['srid']==RMIS) || ($level['is_finalized']==0)): ?>
+		| <a href='<?php echo URL."tuitions/level/$lvl/$sy?edit"; ?>' >Edit</a>
+	<?php endif; ?>
+	| <a href="<?php echo URL.'tfeetypes/table'; ?>">Fees</a>
+
+
 
 <?php if($lvl>13): ?>	
 	| <span>&num= (SHAG)</span>
@@ -22,6 +30,8 @@
 </h3>
 
 <?php 
+
+// pr($data);
 
 // pr($_SERVER);
 // pr($level);
@@ -60,11 +70,18 @@
 	<th>Indent</th>
 	<th>Pos</th>
 	<th>Hd<br />Amt</th>
-	<th>In<br />Total</th>
+	<th class="center" >In<br />Total</th>
 </tr>
 <?php $total=0; ?>
+<?php $total_tuition=0; ?>
+<?php $total_nontuition=0; ?>
+
 <?php for($i=0;$i<$count;$i++): ?>
-<?php $total+=($rows[$i]['in_total'])? $rows[$i]['amount']:0; ?>
+<?php $total+=$rows[$i]['amount']; ?>
+<?php $total_tuition+=($rows[$i]['in_total'])? $rows[$i]['amount']:0; ?>
+<?php $total_nontuition+=(!$rows[$i]['in_total'])? $rows[$i]['amount']:0; ?>
+
+
 <?php $is_child=($rows[$i]['parent_id']>0)? true:false; ?>
 <?php $is_indented=($rows[$i]['indent']>0)? true:false; ?>
 <?php $indent=$rows[$i]['indent']; ?>
@@ -80,12 +97,31 @@
 	<td><?php echo $rows[$i]['indent']; ?></td>
 	<td><?php echo $rows[$i]['position']; ?></td>
 	<td><?php echo ($rows[$i]['amount_hidden']==1)? 'Y':''; ?></td>
-	<td><?php echo ($rows[$i]['in_total']==1)? 'Y':''; ?></td>
+	<td class="center" ><?php echo ($rows[$i]['in_total']==1)? 'Y':''; ?></td>
 </tr>
 <?php endfor; ?>
+
+
+<tr><th colspan=8>&nbsp;</th></tr>
+
+<tr>
+	<th colspan=4>Total Tuition</th>
+	<th class="right" ><?php echo number_format($total_tuition,2); ?></th>
+	<th colspan=5 class="shd" ></th>
+</tr>
+
+<tr>
+	<th colspan=4>Total Non-Tuition</th>
+	<th class="right" ><?php echo number_format($total_nontuition,2); ?></th>
+	<th colspan=5 class="shd" ></th>
+</tr>
+
+
 <tr>
 	<th colspan=4>Total</th>
 	<th class="right" ><?php echo number_format($total,2); ?></th>
-	<th colspan=4></th>
+	<th colspan=5 class="shd" ></th>
 </tr>
+
+
 </table>

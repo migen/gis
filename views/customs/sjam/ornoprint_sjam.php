@@ -97,7 +97,7 @@ $logo_src = URL."public/images/weblogo_".VCFOLDER.".png";
 							<div class="stud-info-details"><?php echo ($payer_is_student)? $studcode:null; ?></div>
 						</td>
 						<td colspan="3">
-							<div class="stud-info-details">2020 - 2021</div>
+							<div class="stud-info-details"><?php echo $sy.' - '.($sy+1); ?></div>
 						</td>
 					</tr>
 					<tr>

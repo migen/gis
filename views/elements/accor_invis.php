@@ -19,8 +19,10 @@
 	| <a href="<?php echo URL.'fpos'; ?>" >Find Student</a>
 </td></tr>
 
+
+
 <?php if($user['privilege_id']>0): ?>	<!-- not invad -->
-	<tr><td class="vc250" > 
+	<tr><td class="vc250" > 	
 		    <a href="<?php echo URL.'cash/denominations'; ?>" >Denominations</a>
 		  | <a href="<?php echo URL.'npos/reprint'; ?>" >Reprint</a>
 	</td></tr>	

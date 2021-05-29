@@ -26,6 +26,9 @@ public function level($params=NULL){
 	$data['lvl']=$lvl=isset($params[0])? $params[0]:4;
 	$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
 	$db=&$this->baseModel->db;$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
+	$data['sy_payments']=$sy_payments=$_SESSION['settings']['sy_payments'];
+	$data['sy_enrollment']=$sy_enrollment=$_SESSION['settings']['sy_enrollment'];
+	$data['is_current']=$is_current=($sy==$sy_enrollment)? true:false;
 	if(isset($_POST['submit'])){
 		$posts=$_POST['posts'];
 		$total=0;
@@ -36,6 +39,7 @@ public function level($params=NULL){
 			$amount=str_replace(",","",$post['amount']);			
 			$in_total=$post['in_total'];
 			$total+=($in_total)? $amount:0;
+			// $total+=($in_total && $is_active)? $amount:0;
 			$db->update("{$dbo}.03_tfeedetails",$post,"id=$id");
 		}
 		/* two - total summary */ 
@@ -59,10 +63,11 @@ public function level($params=NULL){
 	$data['count']=$sth->rowCount();
 	
 	// $data['level']=fetchRow($db,"{$dbo}.05_levels",$lvl);
-	$q="SELECT l.name,t.level_id,t.num,l.id,t.total AS amount,t.id AS pkid
+	$q="SELECT l.name,t.level_id,t.num,l.id,t.total AS amount,t.total,t.id AS pkid,t.is_finalized,t.id AS tuition_id,t.sy
 		FROM {$dbo}.05_levels AS l
 		INNER JOIN {$dbo}.`03_tuitions` AS t ON l.id=t.level_id
 		WHERE t.sy=$sy AND t.level_id=$lvl AND t.num=$num;";
+	
 	debug($q);		
 	$sth=$db->querysoc($q);
 	$data['level']=$sth->fetch();
@@ -132,6 +137,8 @@ public function edit($params){
 		WHERE t.id=$id LIMIT 1;";
 	$sth=$db->querysoc($q);
 	$data['row']=$sth->fetch();
+	debug($q);
+	debug($data);
 	
 	$this->view->render($data,"tuitions/editTuition");
 	
@@ -211,9 +218,62 @@ public function nextSyTuitions($params=NULL){
 		
 				
 	}
-
 	
-}
+}	/* fxn */
+
+
+
+public function view($params=NULL){
+	$dbo=PDBO;$db=&$this->model->db;$sch=VCFOLDER;
+	$srid=$_SESSION['srid'];
+	$data['lvl']=$lvl=isset($params[0])? $params[0]:false;
+	$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	
+	$schema=$dbo;
+	$table="03_tuitions";
+	
+	if(!$lvl){ pr("<h3>Parameter level_id required.</h3>"); exit; }
+	// 1
+/* 	$q="SELECT cr.level_id,cr.num
+		FROM {$dbg}.05_summaries AS summ 
+		INNER JOIN {$dbg}.05_classrooms AS cr ON cr.id=summ.crid
+		WHERE summ.scid=$scid LIMIT 1;";
+	$sth=$db->querysoc($q);
+	$data['student']=$student=$sth->fetch();
+	$data['lvl']=$lvl=$student['level_id']; 
+*/
+	// $num=$student['num'];
+	
+	// 2
+	$data['num']=$num=isset($_GET['num'])? $_GET['num']:1;
+	$q="SELECT d.*,d.id AS pkid,f.name AS feetype,f.parent_id
+		FROM {$dbo}.03_tfeedetails AS d
+		LEFT JOIN {$dbo}.03_feetypes AS f ON d.feetype_id=f.id
+		WHERE d.sy=$sy AND d.level_id=$lvl AND d.num=$num AND d.is_displayed=1 
+		ORDER BY d.position;";
+	debug($q);
+	$sth=$db->querysoc($q);
+	$data['rows']=$sth->fetchAll();
+	$data['count']=$sth->rowCount();
+	
+	// $data['level']=fetchRow($db,"{$dbo}.05_levels",$lvl);
+	$q="SELECT l.name,t.level_id,t.num,l.id,t.total AS amount,t.id AS pkid,t.notes,t.num,t.major
+		FROM {$dbo}.05_levels AS l
+		LEFT JOIN {$dbo}.`03_tuitions` AS t ON l.id=t.level_id
+		WHERE t.sy=$sy AND t.level_id=$lvl AND t.num=$num;";
+	$sth=$db->querysoc($q);
+	$data['level']=$sth->fetch();
+	$data['total']=$data['level']['amount'];
+	debug($q);debug($data['level']);
+
+	$sch=VCFOLDER;$one="tuitions_{$sch}";$two="students/tuitionsStudent";
+	$vfile=cview($one,$two,$sch);vfile($vfile);
+	
+	$this->view->render($data,$vfile,'blank');
+
+}	/* fxn */
+
 
 
 

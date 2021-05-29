@@ -1,14 +1,26 @@
 <?php 
 
+$lvl=isset($_GET['lvl'])? $_GET['lvl']:4;
+
 ?>
 
 <h3>
-	Rcard Schedule (Student Viewing)| <?php $this->shovel('homelinks'); ?>
+	Rcard Schedule SY<?php echo $sy; ?> (Student Viewing) (<?php echo $count; ?>) 
+	| <?php $this->shovel('homelinks'); ?>
 	| <a href="<?php echo URL.'schedules/rcards&sync'; ?>" >Sync</a>
+	| <a href="<?php echo URL.'schedules/ensteps?lvl='.$lvl; ?>" >Ensteps</a>
 	
 	
 	
 </h3>
+
+<div class="clear" >
+	<a href="<?php echo URL.'schedules/rcards'; ?>" >All</a> |
+<?php foreach($levels AS $sel): ?>
+	<a href="<?php echo URL.'schedules/rcards?lvl='.$sel['id']; ?>" ><?php echo $sel['code']; ?></a> | 
+<?php endforeach; ?>
+</div>
+<br>
 
 <table class="gis-table-bordered" >
 	<tr><th colspan=3>Status</th></tr>
@@ -31,6 +43,9 @@
 	<th></th>
 </tr>
 <?php foreach($rows AS $i=>$row): ?>
+<?php 
+if($row['section_id']<3) continue;
+?>
 <tr>
 	<td><?php echo $i+1; ?></td>
 	<td><?php echo $row['crid']; ?></td>

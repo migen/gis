@@ -149,7 +149,7 @@ $logo_src = URL."public/images/weblogo_".VCFOLDER.".png";
 				</tr>
 				<tr>
 					<td><b><small>GR/YR/SECTION:</small></b></td>
-					<td><?php echo ($payer_is_student)? $classroom:NULL; ?></td>
+					<td><?php echo ($payer_is_student)? $crname:NULL; ?></td>
 					<td><b><small>TIN:</small></b></td>
 					<td></td>
 					<td><b><small>BUS.NAME/STYLE:</small></b></td>

@@ -77,7 +77,10 @@ include_once('incs/notes_courses.php');
 		<td>
 			<?php 
 				echo 'T - '.$courses[$j][$i]['teacher'];
+
+				
 				echo '<br />Wt - '; echo $courses[$j][$i]['course_weight'];
+
 				echo ($courses[$j][$i]['course_weight']>0)? ' | Sup: #'.$courses[$j][$i]['supsubject_id'].'-'.$courses[$j][$i]['supsubject']:NULL;
 				echo '<br />Num - '; echo ($courses[$j][$i]['is_num'])? 'Y':NULL;
 				echo '<br />InGA - '; echo ($courses[$j][$i]['in_genave'])? 'Y':NULL;

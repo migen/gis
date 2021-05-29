@@ -1,5 +1,161 @@
 <?php
 
+function syScidAccess($db,$scid){
+	$dbo=PDBO;
+	$data['scid']=$scid;
+	$data['srid']=$srid=$_SESSION['srid'];
+	$data['dbyr']=$dbyr=DBYR;
+	$data['sy_enrollment']=$sy_enrollment=$_SESSION['settings']['sy_enrollment'];
+	$data['sy_grading']=$sy_grading=$_SESSION['settings']['sy_grading'];
+	$data['sy_payments']=$sy_payments=$_SESSION['settings']['sy_payments'];
+
+	/* student-ensy */
+	
+	if($scid){
+		$row=fetchRow($db,"{$dbo}.00_contacts",$scid,"sy AS ensy,id AS scid,role_id");
+		extract($row);
+		
+		$data['new_student']=$new_student=($ensy>=$dbyr)? true:false;
+		$data['sy']=$new_student?$ensy:$dbyr;	
+
+		/* sy_grading = sy_enrollment */
+		$data['grensame']=$grensame=($sy_grading==$sy_enrollment)? true:false;
+		
+		$hasRcard=true;
+		if($new_student && !$grensame){ $hasRcard=false; }	
+
+
+		$data['hasRcard']=$hasRcard;
+		$data['role_is_student']=($srid==RSTUD)? true:false;
+		$data['scid_is_student']=($role_id==RSTUD)? true:false;
+		
+	} 
+	return $data;
+	
+	
+}	/* fxn */
+
+
+
+
+function checkEnsy($db,$sy,$scid){
+	$dbo=PDBO;
+	$row=fetchRow($db,"{$dbo}.00_contacts",$scid,"sy AS ensy");
+	$ensy=$row['ensy'];	
+	// if($ensy>$sy){ $sy=$ensy; }
+	$new_student=($ensy>$sy)? true:false;
+	$data['sy']=$new_student?$ensy:$sy;	
+	$data['new_student']=$new_student;
+	return $data;	
+}	/* fxn */
+
+
+function getAssessmentDataForClearance($db,$sy,$scid){
+	$dbo=PDBO;
+	$ret=checkEnsy($db,$sy,$scid);
+	$sy=$ret['sy'];
+	$dbg=VCPREFIX.$sy.US.DBG;		
+	
+	/* 1 */
+	$q="SELECT cr.level_id,cr.num FROM {$dbg}.05_summaries AS summ 
+		INNER JOIN {$dbg}.05_classrooms AS cr ON cr.id=summ.crid WHERE summ.scid=$scid LIMIT 1;";
+	$sth=$db->querysoc($q);
+	$row=$sth->fetch();
+	$lvl=$row['level_id'];
+	$num=$row['num'];
+	$data['num']=$num=isset($_GET['num'])? $_GET['num']:$num;	
+
+	/* 2 */	
+	$star=scidAssessment($db,$sy,$scid,$fields=NULL);		
+	$data['student']=$student=$star['student'];
+	$data['payables']=$star['payables'];
+	$data['payments']=$star['payments'];
+	
+	
+	$data['paydates_array']=$paydates_array=getTfeeDuedates($db,$sy,$data['student']['paymode_id']);
+	$data['tfee_duedates']=$paydates_array['duedates'];
+	$data['tfee_grace_period']=$paydates_array['grace_period'];
+	$data['duedates_count']=$paydates_array['count'];
+
+	$data['tfee_duedates_arr']=explode(",",$data['tfee_duedates']);
+	$data['tfee_grace_period_arr']=explode(",",$data['tfee_grace_period']);
+	
+	$data['paymode_id']=$paymode_id=$student['paymode_id'];	
+	$data['paydates']=$paydates=getPaydatesByPaymodeId($db,$paymode_id,$sy);
+	$data['pdr']=$pdr=explodePaydatesToArray($paydates);
+	$data['paydates']=$pdr['rows'];
+	$data['paydates_count']=$pdr['count'];
+
+	$tfd_arr=scidTfeedetails($db,$sy,$scid,$num);		
+	$data['tfeedetails']=$tfd_arr['rows'];		
+	$data['tfeedetails_count']=$tfd_arr['count'];	
+	
+
+	return $data;
+	
+}	/* fxn */
+
+
+function scidAssessment($db,$sy,$scid,$fields=NULL){	
+	$dbo=PDBO;
+	$ret=checkEnsy($db,$sy,$scid);
+	$sy=$ret['sy'];
+	$dbg=VCPREFIX.$sy.US.DBG;
+	
+	$q = "SELECT cr.name AS classroom,c.name AS studname,c.code AS studcode,
+				summ.paymode_id,pm.name AS paymode,
+				cr.level_id,cr.section_id,cr.id AS crid,cr.num,l.name AS level,t.total,
+				d.amount AS tuition_amount
+			FROM {$dbo}.`00_contacts` AS c
+			LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
+			LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+			LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
+			LEFT JOIN {$dbo}.03_paymodes AS pm ON summ.paymode_id=pm.id
+			LEFT JOIN {$dbo}.`03_tuitions` AS t ON (cr.level_id=t.level_id AND cr.num=t.num)
+			LEFT JOIN {$dbo}.`03_tfeedetails` AS d ON (d.sy=$sy AND d.level_id=t.level_id AND d.num=t.num AND d.feetype_id=1)
+			WHERE c.id=$scid AND t.sy=$sy; ";
+	$sth=$db->querysoc($q);
+	$row=$sth->fetch();	
+
+	debug("EnrollmentFxn: assessmentStudent: ".$q);	debug($row);
+	$num=$row['num'];$level_id=$row['level_id'];	
+	if(empty($row)){ echo "<h3>Please check <a href='".URL."students/leveler/{$scid}' >Leveler</a></h3>"; exit; }
+	
+	$q="SELECT sum(amount) AS previous_balance FROM {$dbo}.30_payables WHERE scid=$scid AND feetype_id=3;  ";
+	// pr($q);
+	$sth=$db->querysoc($q);
+	$row1=$sth->fetch();	
+
+	$q="SELECT sum(amount) AS paid_previous_balance FROM {$dbo}.30_payments WHERE scid=$scid AND feetype_id=3;  ";
+	$sth=$db->querysoc($q);
+	$row2=$sth->fetch();		
+
+	// 2021-jan todo
+	
+	$row=array_merge($row,$row1,$row2);	
+
+	
+	if(($num>1) AND ($level_id>13)){
+		$q="SELECT total FROM {$dbo}.03_tuitions WHERE sy=$sy AND level_id=$level_id AND num=$num LIMIT 1;";
+		$sth=$db->querysoc($q);$brow=$sth->fetch();$row['total']=$brow['total'];		
+	}	/* shs */	
+	
+	// payablesArray
+	$data['payables']=$payables=scidPayables($db,$sy,$scid,$fields=NULL);
+	$data['payments']=$payments=scidPayments($db,$sy,$scid,$fields=NULL);				
+	// $payarr=parsePayables($payables);	
+	$payableRow=parsePayables($payables);	
+	extract($payableRow);
+	
+	$row['total_adjustment']=$total_nondiscount-$total_discount;
+	
+	$row=array_merge($row,$payableRow);	
+	$data['student']=$row;
+
+	
+	return $data;
+}	/* fxn */
+
 
 
 function updatePayableBalance($db,$payable,$payments){	
@@ -286,65 +442,6 @@ function parsePayments($payments){
 }	/* fxn */
 
 
-function scidAssessment($db,$sy,$scid,$fields=NULL){	
-	$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;				
-	$q = "SELECT cr.name AS classroom,c.name AS studname,c.code AS studcode,
-				summ.paymode_id,pm.name AS paymode,
-				cr.level_id,cr.section_id,cr.id AS crid,cr.num,l.name AS level,t.total,
-				d.amount AS tuition_amount
-			FROM {$dbo}.`00_contacts` AS c
-			LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
-			LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
-			LEFT JOIN {$dbo}.05_levels AS l ON cr.level_id=l.id
-			LEFT JOIN {$dbo}.03_paymodes AS pm ON summ.paymode_id=pm.id
-			LEFT JOIN {$dbo}.`03_tuitions` AS t ON (cr.level_id=t.level_id AND cr.num=t.num)
-			LEFT JOIN {$dbo}.`03_tfeedetails` AS d ON (d.level_id=t.level_id AND d.num=t.num AND d.feetype_id=1)
-			WHERE c.id=$scid AND t.sy=$sy; ";
-	$sth=$db->querysoc($q);
-	$row=$sth->fetch();	
-	debug("EnrollmentFxn: assessmentStudent: ".$q);	debug($row);
-	$num=$row['num'];$level_id=$row['level_id'];	
-	if(empty($row)){ echo "<h3>Please check <a href='".URL."students/leveler/{$scid}' >Leveler</a></h3>"; exit; }
-		
-	$q="SELECT sum(amount) AS previous_balance FROM {$dbo}.30_payables WHERE scid=$scid AND feetype_id=3;  ";
-	// pr($q);
-	$sth=$db->querysoc($q);
-	$row1=$sth->fetch();	
-
-	$q="SELECT sum(amount) AS paid_previous_balance FROM {$dbo}.30_payments WHERE scid=$scid AND feetype_id=3;  ";
-	$sth=$db->querysoc($q);
-	$row2=$sth->fetch();		
-
-	// 2021-jan todo
-	
-	$row=array_merge($row,$row1,$row2);	
-	// $row['remaining_previous_balance']=$row['previous_balance']-$row['paid_previous_balance'];
-
-	
-	if(($num>1) AND ($level_id>13)){
-		$q="SELECT total FROM {$dbo}.03_tuitions WHERE sy=$sy AND level_id=$level_id AND num=$num LIMIT 1;";
-		$sth=$db->querysoc($q);$brow=$sth->fetch();$row['total']=$brow['total'];		
-	}	/* shs */	
-	
-	// payablesArray
-	$data['payables']=$payables=scidPayables($db,$sy,$scid,$fields=NULL);
-	$data['payments']=$payments=scidPayments($db,$sy,$scid,$fields=NULL);				
-	// $payarr=parsePayables($payables);	
-	$payableRow=parsePayables($payables);	
-	extract($payableRow);
-	
-	// discounts and nondiscounts
-	// $row['previous_balance']=$previous_balance;
-	// $row['has_previous_balance']=$has_previous_balance;
-	$row['total_adjustment']=$total_nondiscount-$total_discount;
-	
-	$row=array_merge($row,$payableRow);	
-	$data['student']=$row;
-	
-	
-	return $data;
-}	/* fxn */
-
 function scidTfeedetails($db,$sy,$scid,$num=1){	
 	$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;
 	$q = "SELECT d.*,f.name AS feetype,f.id AS tfid,f.parent_id AS tfsupid
@@ -383,8 +480,9 @@ function scidPayables($db,$sy,$scid,$fields=NULL){
 			LEFT JOIN {$dbo}.03_feetypes AS ft ON p.feetype_id=ft.id
 			WHERE p.scid=$scid AND p.sy=$sy ORDER BY ft.position,p.ptr; ";
 	debug("EnrollmentFxn: scidPayables: ".$q);
+	// pr("EnrollmentFxn: scidPayables: ".$q);
 	$sth=$db->querysoc($q);
-	$rows=$sth->fetchAll();
+	$rows=$sth->fetchAll();	
 	debug("&payables");
 	if(isset($_GET['payables'])){ pr($rows); }	
 	return $rows;
@@ -530,49 +628,6 @@ function scidSiblings($db,$scid,$sy=DBYR){
 
 
 
-function getAssessmentDataForClearance($db,$sy,$scid){
-	$dbo=PDBO;$dbg=VCPREFIX.$sy.US.DBG;	
-
-	/* 1 */
-	$q="SELECT cr.level_id,cr.num FROM {$dbg}.05_summaries AS summ 
-		INNER JOIN {$dbg}.05_classrooms AS cr ON cr.id=summ.crid WHERE summ.scid=$scid LIMIT 1;";
-	$sth=$db->querysoc($q);
-	$row=$sth->fetch();
-	$lvl=$row['level_id'];
-	$num=$row['num'];
-	$data['num']=$num=isset($_GET['num'])? $_GET['num']:$num;	
-
-	/* 2 */
-	$star=scidAssessment($db,$sy,$scid,$fields=NULL);		
-	$data['student']=$student=$star['student'];
-	$data['payables']=$star['payables'];
-	$data['payments']=$star['payments'];
-	
-	
-	$data['paydates_array']=$paydates_array=getTfeeDuedates($db,$sy,$data['student']['paymode_id']);
-	$data['tfee_duedates']=$paydates_array['duedates'];
-	$data['tfee_grace_period']=$paydates_array['grace_period'];
-	$data['duedates_count']=$paydates_array['count'];
-
-	$data['tfee_duedates_arr']=explode(",",$data['tfee_duedates']);
-	$data['tfee_grace_period_arr']=explode(",",$data['tfee_grace_period']);
-	
-	$data['paymode_id']=$paymode_id=$student['paymode_id'];	
-	$data['paydates']=$paydates=getPaydatesByPaymodeId($db,$paymode_id,$sy);
-	$data['pdr']=$pdr=explodePaydatesToArray($paydates);
-	$data['paydates']=$pdr['rows'];
-	$data['paydates_count']=$pdr['count'];
-
-	$tfd_arr=scidTfeedetails($db,$sy,$scid,$num);		
-	$data['tfeedetails']=$tfd_arr['rows'];		
-	$data['tfeedetails_count']=$tfd_arr['count'];	
-	
-
-	return $data;
-	
-}	/* fxn */
-
-
 function getPeriodFactor($qtr,$paymode_id){
 	$period_factor=1;	
 	
@@ -615,9 +670,9 @@ function isEmployeeChild($db,$sy,$scid){
 }	/* fxn */
 
 
-
-function canViewRcard($isEmployeeChild,$hasNoMinimumBalance,$hasNoPreviousBalance){
-	$hasNoBalance=(!$hasNoMinimumBalance && !$hasNoPreviousBalance)? true:false;
+function canViewRcard($isEmployeeChild,$totalBalance,$allowance){
+	// $hasNoBalance=(!$hasMinimumBalance && !$hasPreviousBalance && !$hasOtherBalance)? true:false;
+	$hasNoBalance=(($totalBalance-$allowance)<=0)? true:false;
 	$allowed=($isEmployeeChild || $hasNoBalance)? true:false;
 	return $allowed;	
 }	/* fxn */
@@ -634,9 +689,17 @@ function getTotalPaymentByFeetype($payments,$feetype_id){
 	return $total;
 }	/* fxn */
 
+function getOtherBalance($nondiscount_payables){
+	$otherBalance=0;
+	foreach($nondiscount_payables AS $row){
+		$otherBalance+=$row['balance'];
+	}
+	return $otherBalance;
+}	/* fxn */
 
 
 function getStudentEnrollment($db,$sy,$scid,$student,$qtr,$period_factor,$arp,$payments,$allowance,$prevbal){
+	// prx($sy);
 	$enrollment['qtr']=&$qtr;
 	$enrollment['paymode_id']=&$student['paymode_id'];
 	$enrollment['student']=&$student;
@@ -656,24 +719,52 @@ function getStudentEnrollment($db,$sy,$scid,$student,$qtr,$period_factor,$arp,$p
 	$enrollment['prevbal_left']=$prevbal_left=$prevbal-$paid_prevbal;
 	$enrollment['minimum_balance']=$minimum_balance=$required_payable-$total_payment;	
 	
+	// pr($enrollment);
+	// prx($enrollment);
 
 	$isEmployeeChild=isEmployeeChild($db,$sy,$scid);	
 	$enrollment['is_employee_child']=&$isEmployeeChild;
+				
+	$enrollment['tuition_balance']=$required_payable-$total_payment;	
+	$enrollment['previous_balance']=$prevbal-$paid_prevbal;		
+	$enrollment['other_balance']=0;	
+	if($qtr>3){ 
+		$nondiscount_payables = $student['nondiscounts'];	
+		$enrollment['other_balance']=getOtherBalance($nondiscount_payables);		
+	}
+	
+	$enrollment['hasOtherBalance']=$hasOtherBalance=($enrollment['other_balance']>0)? $enrollment['other_balance'] : false;
 	
 	$enrollment['hasMinimumBalance']=$hasMinimumBalance=hasBalance($total_payment,$required_payable,$allowance);			
 	$enrollment['hasPreviousBalance']=$hasPreviousBalance=hasBalance($paid_prevbal,$prevbal,$allowance);			
 	
-	$can_view_rcard=canViewRcard($isEmployeeChild,$hasMinimumBalance,$hasPreviousBalance);
-	$enrollment['can_view_rcard']=$can_view_rcard;
+	$enrollment['total_balance']=$enrollment['tuition_balance']+$enrollment['previous_balance']+$enrollment['other_balance'];
 	
+	// $can_view_rcard=canViewRcard($isEmployeeChild,$hasMinimumBalance,$hasPreviousBalance,$hasOtherBalance);
+	// canViewRcard($isEmployeeChild,$totalBalance,$allowance)
+	// echo "allowance: $allowance <br>";
+	// echo "total_balance: ".$enrollment['total_balance']." <br>";
+	
+	$can_view_rcard=canViewRcard($isEmployeeChild,$enrollment['total_balance'],$allowance);
+	$enrollment['can_view_rcard']=$can_view_rcard;
+
+	// echo 'can view rcard: ';
+	// echo ($can_view_rcard)? 'yes':'no';
+	// echo '<br>';
+	
+	$enrollment['error_otherbal']=$error_otherbal=($hasOtherBalance)? "Other Balance: ".number_format($enrollment['other_balance'],2):false; 
 	$enrollment['error_minbal']=$error_minbal=($hasMinimumBalance)? "Minimum Balance: ".number_format($enrollment['minimum_balance'],2):false; 
 	$enrollment['error_prevbal']=$error_prevbal=($hasPreviousBalance)? "Previous Balance: ".number_format($prevbal_left,2):false; 
+
+	// pr($enrollment['can_view_rcard']);
+	// prx($enrollment['total_balance']);
+	
 
 	return $enrollment;
 	
 }	/* fxn */
 
-
+ 
 function getTfeesFromPayables($db,$sy,$scid){
 	$dbo=PDBO;
 	$q="SELECT * FROM {$dbo}.30_payables WHERE sy=$sy AND scid=$scid AND feetype_id=1 ORDER BY ptr; ";
@@ -693,10 +784,14 @@ function getTfeesFromPayables($db,$sy,$scid){
 function checkPreviousAccounts($db,$sy,$scid){
 	$dbo=PDBO;
 	$start_ensy=$_SESSION['settings']['year_start_enrollment'];
-	
+	$stud=fetchRow($db,"{$dbo}.00_contacts",$scid,"sy");
+	$stud_ensy=$stud['sy'];
+		
 	$prevsy_balance=0;
 	$prevsy=($sy-1);	
-	$has_prevsy=($sy>$start_ensy)? true:false;
+	$check_stud_prevsy=($stud_ensy<$sy)? true:false;
+	$has_prevsy=(($sy>$start_ensy) && ($check_stud_prevsy))? true:false;
+	
 	
 	if($has_prevsy){	
 		$prevsy_payables=scidPayables($db,$prevsy,$scid,$fields=NULL);
@@ -707,8 +802,20 @@ function checkPreviousAccounts($db,$sy,$scid){
 	$data['prevsy_balance']=$prevsy_balance;
 	$data['has_prevsy']=$has_prevsy;
 	$data['prevsy']=$prevsy;
-	
+		
 	return $data;	
+	
+}	/* fxn */
+
+function getClassroomByStudent($db,$sy,$scid){
+	$dbg=VCPREFIX.$sy.US.DBG;
+	$q="SELECT summ.crid AS nextcrid,cr.name AS nextclassroom
+		FROM {$dbg}.05_summaries AS summ
+		LEFT JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+		WHERE summ.scid=$scid LIMIT 1;";
+	$sth=$db->querysoc($q);
+	$row=$sth->fetch();
+	return $row;
 	
 }	/* fxn */
 

@@ -153,8 +153,10 @@ public function view($params=NULL){
 	// $sth=$db->querysoc($q);
 	// $
 	
+	$dbg=PDBG;
 
 	$q="SELECT 
+		summ.crid,
 		s.role_id AS payer_role_id,
 		p.*,p.sy AS paysy,p.id AS pkid,s.code AS studcode,s.name AS studname,e.name AS emplname,pr.address, 
 		sum(p.amount) AS total,sum(p.received) AS total_received,sum(p.change) AS total_change
@@ -162,18 +164,18 @@ public function view($params=NULL){
 	LEFT JOIN {$dbo}.00_contacts AS s ON p.scid=s.id
 	LEFT JOIN {$dbo}.00_contacts AS e ON p.ecid=e.id
 	LEFT JOIN {$dbo}.00_profiles AS pr ON p.scid=pr.contact_id
+	LEFT JOIN {$dbg}.05_summaries AS summ ON summ.scid=p.scid
 	WHERE p.orno = '$orno' LIMIT 1; ";
 	debug($q);
 	$sth=$db->querysoc($q);
 	$or=$sth->fetch();
-	
 	
 	$data['payer_is_student']=$payer_is_student=($or['payer_role_id']==1)? true:false;
 	
 	$or=($or['orno']!='')? $or:false;
 	if(!$or){ prx("<h1>OR not found.</h1>"); }
 	
-	$sy=$or? $or['paysy']:DBYR;
+	$sy=$or? $or['paysy']:$_SESSION['settings']['sy_enrollment'];
 	$data['sy']=$sy;	
 	$data['scid']=$scid=$or['scid'];
 		
@@ -187,8 +189,9 @@ public function view($params=NULL){
 				WHERE summ.scid=$scid LIMIT 1;";
 			debug($q);
 			$sth=$db->querysoc($q);
-			$or2=$sth->fetch();
-			$or=array_merge($or,$or2);			
+			$data['or2']=$or2=$sth->fetch();
+			$data['crname']=$crname=($or2)?$or2['classroom']:false;			
+			$or=(is_array($or2))?array_merge($or,$or2):$or;			
 		}
 		$data['or']=$or;		
 	}	/* found OR */

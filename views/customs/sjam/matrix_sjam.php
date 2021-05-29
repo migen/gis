@@ -89,7 +89,8 @@ $get=sages($_GET);
 		| <a href='<?php echo URL."mis/syncer"; ?>' />Syncer</a>	
 		| <a href='<?php echo URL."classrooms/courses/".$classroom['id']; ?>' />ClsCrs</a>	
 		| <a href='<?php echo URL."syncers/syncGrades/".$classroom['id']; ?>' />Sync</a>	
-		| <a href='<?php echo URL."syncs/levelConductsToSummaries/".$classroom['level_id']; ?>' />SyncCond-Summ</a>	
+		| <a href='<?php echo URL."syncconducts/toSummariesByLevel/".$classroom['level_id'].DS.$sy.DS.$qtr; ?>' >
+			Conduct-To-Summary</a>			
 		| <a href='<?php echo URL."purge/outcastGrades/".$classroom['id']; ?>' />Purge Outcast</a>			
 	<?php endif; ?>
 		<span class="hd" >| <a href='<?php echo URL."syncers/syncGrades/".$classroom['id']; ?>' />Sync</a></span>
@@ -171,8 +172,8 @@ $get=sages($_GET);
 		</th>
 	<?php endforeach; ?>
 	
-	<th class="center" >GAve<br />Q<?php echo $qtr; ?></th>
-	<th class="center" >Cond<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Gen<br>Ave<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Cond<br />Summ<br>Q<?php echo $qtr; ?></th>
 		<?php  
 			if($attdtype==1){		
 				$total_days=0;  	

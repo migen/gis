@@ -1,3 +1,10 @@
+<h2>USEFUL COMMANDS</h2>
+<ol>
+<li>sudo grep -rl "httpd" /etc - recursive find / search within subdirectories - file</li>
+<li></li>
+<li></li>
+</ol>
+<h2>&nbsp;</h2>
 <h2>CONFIG SETUP - Checklist</h2>
 <ol>
 <li>CD Installer / pendrive</li>

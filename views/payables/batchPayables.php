@@ -1,6 +1,7 @@
 <h5>
 	Batch Add Payables | <?php $this->shovel('homelinks'); ?>
 	| <a href="<?php echo URL.'payables/batch'; ?>">Clear</a> 
+	| <a href="<?php echo URL.'syncPayables/batchUpdate'; ?>">Update/Replace</a> 
 	
 </h5>
 
@@ -34,14 +35,16 @@
 </tr>
 
 <tr><th>Feetype</th><td>
-<select name="fee[feetype_id]" class="vc300" onchange="xgetFeeAmount(this.value);" >
-	<option value="0" >Choose</option>
-	<?php foreach($feetypes AS $sel): ?>
-		<option value="<?php echo $sel['id']; ?>" ><?php echo $sel['name'].' #'.$sel['id']; ?></option>
-	<?php endforeach; ?>
-</select>
-</td>
-</tr>
+	<select onchange="updateField('feetype_id',this.value)" >
+		<option value=0 >Select One</option>
+		<?php foreach($feetypes AS $sel): ?>
+			<option value="<?php echo $sel['id']; ?>" >
+				<?php echo $sel['name'].' - #'.$sel['id']; ?></option>
+		<?php endforeach; ?>	
+	</select>
+	<input onchange="xgetFeeAmount(this.value);" name="fee[feetype_id]" id="feetype_id" class="vc50" value="0" >
+</td></tr>
+
 
 
 <tr><th>SY</th>
@@ -50,12 +53,19 @@
 </td>
 </tr>
 
-<tr><th>Amount | Num (1) </th>
+<tr><th>Amount | Ptr (1) </th>
 <td>
 	<input class="pdl05 vc100" id="amount" name="fee[amount]" value="0.00" />
-	<input class="vc20" id="num" name="fee[num]" value="1" />
+	<input class="vc20" id="num" name="fee[ptr]" value="1" />
 </td>
 </tr>
+
+<tr><th>In Tuition </th>
+<td>
+	<input class="vc50" type="number" min=0 max=1 id="in_tuition" name="fee[in_tuition]" value="1" />
+</td>
+</tr>
+
 
 <tr><th>Due</th>
 <td><input class="pdl05 vc150" id="due" name="fee[due_on]" value="<?php echo $today; ?>" /></td>
@@ -72,7 +82,10 @@ Priority - Classroom over Level <br />
 
 </p>
 
-<p><input type="submit" name="submit" value="Submit" onclick="return confirm('Sure?');"  /></p>
+<p>
+	<input type="submit" name="submit" value="Submit" onclick="return confirm('Sure?');"  />
+	<input type="submit" name="delete" value="Destroy" onclick="return confirm('Dangerous! Sure?');"  />
+</p>
 
 </form>
 
@@ -86,6 +99,7 @@ var today="<?php echo $today; ?>";
 $(function(){
 	chkAllvar('a');
 	tickWithDue();
+	selectFocused();
 	
 })	/* fxn */
 
@@ -113,7 +127,12 @@ function tickWithDue(){
 			$('#due').val(null);				
 		}
 	});
+	
+}	/* fxn */
 
+
+function updateField(field,value){
+	$('#'+field).val(value);
 	
 	
 }	/* fxn */

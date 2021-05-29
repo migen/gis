@@ -15,9 +15,13 @@
 
 </style>
 
+<?php 
+// echo "status: "; pr($student['is_active']); 
+?>
 
 <table class="no-gis-table-bordered-print <?php echo $headerfont.' '.$tblwidth; ?>">
-	<tr><td style="font-size: 20px; " class="center" colspan="5" class=''><b><?php echo $student['student']; ?></b></td></tr>
+	<tr><td style="font-size: 26px; " class="center <?php echo ($student['is_active']!=1)? 'red':NULL; ?>" 
+		colspan="5" class=''><b><?php echo $student['student']; ?></b></td></tr>
 </table>
 
 <table class="no-gis-table-bordered-print <?php echo $headerfont.' '.$tblwidth; ?>">

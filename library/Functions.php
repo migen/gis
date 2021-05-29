@@ -9,6 +9,7 @@ function loggedin(){ if(isset($_SESSION['loggedin']) && ($_SESSION['loggedin']))
 function user(){ if(isset($_SESSION['user'])){ return $_SESSION['user']; } return false; }
 function flashRedirect($url="index",$message="Not allowed."){ $_SESSION['message'] = $message;$u=URL.$url;header("Location: $u");exit; }
 function redirect($url='index'){ $u = URL.$url; header("Location: $u");exit; }
+function flashRedirectUrl($url,$message='Not allowed.'){ $_SESSION['message'] = $message; header("Location: $url");exit; }	
 function redirectUrl($url){	header("Location: $url");exit; }	
 function buildArray($xs,$field){ $r=array();foreach($xs as $x){ $r[] = $x[$field];}return $r; } 
 function stringify($array){ $ids=null;foreach($array as $id){$ids.=$id.'/'; }  return rtrim($ids,'/'); }
@@ -59,7 +60,7 @@ function hdpass($db,$key){ $dbo=PDBO;$q=" SELECT `value` FROM {$dbo}.`00_secrets
 	$sth=$db->querysoc($q);$row = $sth->fetch();return $row['value']; }	
 
 function fetchRecord($db,$table,$where,$fields="*"){
-	$q=" SELECT $fields FROM $table WHERE $where LIMIT 1; ";$sth=$db->querysoc($q);return $sth->fetch(); }	
+	$q=" SELECT $fields FROM $table WHERE $where LIMIT 1; ";debug($q);$sth=$db->querysoc($q);return $sth->fetch(); }	
 
 function fetchRow($db,$table,$id,$field="*"){
 	$q=" SELECT $field FROM $table WHERE `id` = '$id' LIMIT 1; "; $sth=$db->querysoc($q);return $sth->fetch(); }	
@@ -89,14 +90,13 @@ function pia($part,$arr,$col,$getrow=true){ $rows=buildArray($arr,$col);$found=a
 			$found[]=($getrow)? $arr[$i]:$rows[$i]; } } return (empty($found))? FALSE : $found; }
 
 function initSession($db,$index=false){
-	if(!isset($_SESSION[$index])){ require_once(SITE.'functions/sessionize_'.$index.'.php'); $func="sessionize_{$index}"; $func($db); } }	
-
+	if(!isset($_SESSION[$index])){ require_once(SITE.'functions/sessionize_'.$index.'.php'); $func="sessionize_{$index}"; $func($db); } 
+}	/* fxn */
 
 function in_record($db,$dbtable,$key,$value){
 	$q="SELECT id FROM $dbtable WHERE $key='$value' LIMIT 1;";$sth=$db->query($q);$row=$sth->fetch();
 	return ($row)? true:false;	
 }	/* fxn */
-
 
 function sessionizeColumnsOfDbtable($db,$schema,$table,$index,$except="null"){
 	if(!isset($_SESSION['cols'][$index])){
@@ -109,10 +109,13 @@ function sessionizeColumnsOfDbtable($db,$schema,$table,$index,$except="null"){
 }	/* fxn */
 
 function searchFromArray($array,$field, $value) {
-   foreach ($array AS $item) {
-       if ($item[$field] === $value) {
-           return $item;
-       }
-   }
-   return null;
-}
+   foreach ($array AS $item) { if ($item[$field] === $value) { return $item; } } return null;
+}	/* fxn */
+
+function requireIfReadable($file){
+	$incfile=SITE.$file;if(is_readable($incfile)){ require_once($incfile); } pr($incfile);	
+}	/* fxn */
+
+function dateIsFinalized($date){ 
+	return (isset($date) && ($date!=='0000-00-00'))? true:false;
+}	/* fxn */

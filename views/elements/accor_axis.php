@@ -5,7 +5,7 @@
 
 
 <table class="axis accordion gis-table-bordered table-altrow" >
-<tr><th style="widtd:250px;" class="accorHeadrow" onclick="accordionTable('axis');" >AXIS</th></tr>
+<tr><th style="widtd:250px;" class="accorHeadrow" onclick="accordionTable('axis');" >AXIS (Accounting)</th></tr>
 
 <tr><td class="vc250" >
 	<a href="<?php echo URL.'bills/add'; ?>" >Cashier</a>
@@ -34,22 +34,22 @@
 
 <tr><td>
 	  <a href="<?php echo URL.'enrollment/report'; ?>" >Enrollment</a>
+	 | <a href="<?php echo URL.'ensteps/student'; ?>" >Steps</a>	 
 	 | <a href="<?php echo URL.'clearance/one'; ?>" >Status</a>	 
 </td></tr>
 
 <tr><td class="center" >-Accounts Setup-</td></tr>
 <tr><td>
-	<a href="<?php echo URL.'tfees/table'; ?>" >Tuitions</a>
+	<a href="<?php echo URL.'tuitions/table/'.$_SESSION['settings']['sy_enrollment']; ?>" >Tuitions</a>	
 	| <a href="<?php echo URL.'tfees/details/4?num=1'; ?>" >Level</a>
-	| <a href="<?php echo URL.'tfeetypes/table'; ?>" >FeeTypes</a>
+	| <a href="<?php echo URL.'tfeetypes/table'; ?>" >Fees</a>
 </td></tr>
 
 <tr><td>
 	<?php 
 		$dbtuitions = PDBO.'.03_tuitions';
 	?>
-	<a href="<?php echo URL.'tuitions/table/'.$_SESSION['settings']['sy_enrollment']; ?>" >Tuitions</a>
-	| <a href="<?php echo URL.'seeders/addRecordsBySY/'.$dbtuitions.DS.$_SESSION['settings']['sy_enrollment']; ?>" >Seeders - NextSy</a>
+	<a href="<?php echo URL.'seeders/addRecordsBySY/'.$dbtuitions.DS.$_SESSION['settings']['sy_enrollment']; ?>" >Seeders - NextSy</a>
 </td></tr>
 
 <tr><td>
@@ -61,8 +61,7 @@
 </td></tr>
 
 <tr><td>
-	<a href="<?php echo URL.'tuitions/table'; ?>" >Tuitions2</a>
-	| <a href="<?php echo URL.'enrollment/ledger'; ?>" >Ledger2</a>
+	<a href="<?php echo URL.'enrollment/ledger'; ?>" >Ledger</a>
 	| <a href="<?php echo URL.'tfeetypes/table'; ?>" >FeeTypes</a>
 </td></tr>
 

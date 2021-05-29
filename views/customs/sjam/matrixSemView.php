@@ -57,8 +57,8 @@ $get=sages($_GET);
 <?php endif; ?>
 		
 	| <a href="<?php echo URL.'classlists/classroom/'.$data['classroom']['id'].DS.$sy; ?>" />Classlist</a>	
-	| <a href='<?php echo URL."syncs/levelConductsToSummaries/".$classroom['level_id']; ?>' />SyncCond-Summ</a>	
-
+	| <a href='<?php echo URL."syncconducts/toSummariesByLevel/".$classroom['level_id'].DS.$sy.DS.$qtr; ?>' >
+		Conduct-To-Summary</a>			
 	<?php $period=($_SESSION['settings']['attd_qtr']==1)? 'quarterly':'monthly'; ?>
 	| <a href="<?php echo URL.'attendance/'.$period.'/'.$data['classroom']['id'].DS.$sy.'?view'; ?>" />Attendance</a>	
 	| <a href='<?php echo URL."honors/records/".$classroom['id']; ?>' />Honors</a>	
@@ -138,19 +138,14 @@ $get=sages($_GET);
 				<?php if($row['supsubject_id']!=0): ?>
 					<?php echo $row['course_weight'].'%'; ?>
 				<?php endif; ?>			
-			<span class="hd" ><?php echo $row['course_id']; ?></span>
-			
-			
+			<span class="hd" ><?php echo $row['course_id']; ?></span>			
 			<span class="" ><?php echo ($row['is_aggregate'])? 'S#'.$row['subject_id']:NULL; ?><br /></span>
 				<?php echo ($row['supsubject_id']>0)? 'P#'.$row['supsubject_id']:NULL; ?>
-			
-			
-			
 		</th>
 	<?php endforeach; ?>
 	
-	<th class="center" >GAve<br />Q<?php echo $qtr; ?></th>
-	<th class="center" >Cond<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Gen<br>Ave<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Cond<br />Summ<br>Q<?php echo $qtr; ?></th>
 		
 	<th class="ht100" ><span class="vertical" >Days 
 	<?php // $sx_days_total=($qtr<4)? $months['q1_days_total']+$months['q2_days_total']:$months['q3_days_total']+$months['q4_days_total']; ?>

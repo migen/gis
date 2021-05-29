@@ -52,7 +52,7 @@ $get=sages($_GET);
 <?php endif; ?>
 		
 	| <a href="<?php echo URL.'classlists/classroom/'.$data['classroom']['id'].DS.$sy; ?>" />Classlist</a>	
-	| <a href='<?php echo URL."syncs/levelConductsToSummaries/".$classroom['level_id']; ?>' />SyncCond-Summ</a>	
+	| <a href='<?php echo URL."syncs/levelConductsToSummaries/".$classroom['level_id']; ?>' />Conducts-To-Summary</a>	
 	
 	<?php $period=($_SESSION['settings']['attd_qtr']==1)? 'quarterly':'monthly'; ?>
 	| <a href="<?php echo URL.'attendance/'.$period.'/'.$data['classroom']['id'].DS.$sy; ?>" />Attendance</a>	
@@ -83,6 +83,8 @@ $get=sages($_GET);
 		| <a href='<?php echo URL."purge/outcastGrades/".$classroom['id']; ?>' />Purge Outcast</a>			
 	<?php endif; ?>
 		<span class="hd" >| <a href='<?php echo URL."syncers/syncGrades/".$classroom['id']; ?>' />Sync</a></span>
+		| <a href='<?php echo URL."syncconducts/toSummariesByLevel/".$classroom['level_id'].DS.$sy.DS.$qtr; ?>' >
+			Conduct-To-Summary</a>					
 	<?php if($qtr>3): ?>
 		| <a href='<?php echo URL."promotions/k12/$crid"; ?>' />Promotions</a>		
 	<?php endif; ?>	
@@ -190,8 +192,8 @@ Q <input class="vc50" id="qtr" type="number" value="<?php echo $qtr; ?>" min=1 m
 		</th>
 	<?php endforeach; ?>
 	
-	<th class="center" >GAve<br />Q<?php echo $qtr; ?></th>
-	<th class="center" >Cond<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Gen<br>Ave<br />Q<?php echo $qtr; ?></th>
+	<th class="center" >Cond<br />Summ<br>Q<?php echo $qtr; ?></th>
 		<?php  
 			if($attdtype==1){		
 				$total_days=0;  	

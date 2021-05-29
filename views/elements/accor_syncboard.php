@@ -136,5 +136,30 @@
 
 </table>
 
+<br />
+<br />
+
+<table class="syncaxis accordion gis-table-bordered table-altrow" >
+	<tr><th class="accorHeadrow" onclick="accordionTable('syncaxis ');" >Sync Axis</th></tr>
+
+
+	<tr><td style="width:250px;" ><a href="<?php echo URL.'cir'; ?>" >Class Index Report (CIR)</a></td></tr>
+	<tr><td>Lock Paymodes 
+		<a href="<?php echo URL.'setaxis/lockAllPaymodes/'.(DBYR-1); ?>" ><?php echo (DBYR-1); ?></a>
+		| <a href="<?php echo URL.'setaxis/lockAllPaymodes/'.DBYR; ?>" ><?php echo DBYR; ?></a>
+		| <a href="<?php echo URL.'setaxis/lockAllPaymodes/'.(DBYR+1); ?>" ><?php echo (DBYR+1); ?></a>
+	</td></tr>	
+
+	<tr><td>Open Paymodes 
+		<a href="<?php echo URL.'setaxis/openAllPaymodes/'.(DBYR-1); ?>" ><?php echo (DBYR-1); ?></a>
+		| <a href="<?php echo URL.'setaxis/openAllPaymodes/'.DBYR; ?>" ><?php echo DBYR; ?></a>
+		| <a href="<?php echo URL.'setaxis/openAllPaymodes/'.(DBYR+1); ?>" ><?php echo (DBYR+1); ?></a>
+	</td></tr>	
+
+
+</table>
+
+<br />
+<br />
 
 

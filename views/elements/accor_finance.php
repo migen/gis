@@ -85,10 +85,28 @@ $sy_grading=$_SESSION['settings']['sy_grading'];
 
 	<tr><td>
 		<a href='<?php echo URL."audit/trails"; ?>' >Audit Trails</a>
+		| <a class="" href='<?php echo URL."students"; ?>' >Portal</a>		
 	</td></tr>
 
 
+<tr><td>
+	<a href='<?php echo URL."files/read/enrollment"; ?>' >Enrollment Guide</a>
+</td></tr>
+<tr><td>
+	<a href='<?php echo URL."ensteps/student"; ?>' >Ensteps (student locking)</a>
+</td></tr>
+<tr><td>
+	Schedules - 
+	<a class="" href='<?php echo URL."schedules/ensteps"; ?>' >Rcards</a>
+	| <a class="" href='<?php echo URL."schedules/ensteps"; ?>' >Ensteps</a>
+</td></tr>
 
+<tr><td>
+	Schedules - 
+	<a class="" href='<?php echo URL."schedules/tuitions"; ?>' >Tuitions</a>
+	| <a class="" href='<?php echo URL."schedules/booklists"; ?>' >Booklists</a>
+</td></tr>
+	
 	<tr><td>&nbsp;</td></tr>
 	
 </table>

@@ -15,7 +15,7 @@ public function __construct(){
 public function beforeFilter(){
 	$this->view->js = array('js/jquery.js','js/vegas.js');
 	parent::beforeFilter();
-	$acl = array(array(5,0),array(4,0));
+	$acl = array(array(5,0),array(4,0),array(9,0));
 	$this->permit($acl);					
 }
 
@@ -97,14 +97,16 @@ public function view($params){
 public function students($params=NULL){
 $dbo=PDBO;	
 $data['lvl']=$lvl=isset($params[0])? $params[0]:4;
-$data['sy']=$sy=isset($params[1])? $params[1]:DBYR;
+$data['sy']=$sy=isset($params[1])? $params[1]:$_SESSION['settings']['sy_enrollment'];
 $db=&$this->baseModel->db;$dbg=VCPREFIX.$sy.US.DBG;$dbo=PDBO;
 $classlist_order=$_SESSION['settings']['classlist_order'];
-$q="SELECT c.id,c.code,c.name,cr.name AS classroom,cr.section_id AS sxn 
+$q="SELECT c.id AS scid,c.id,c.code,c.name,cr.name AS classroom,cr.section_id AS sxn,c.account,ctp.ctp 
 FROM {$dbo}.`00_contacts` AS c 
 INNER JOIN {$dbg}.05_summaries AS summ ON summ.scid=c.id
 INNER JOIN {$dbg}.05_classrooms AS cr ON summ.crid=cr.id
+LEFT JOIN {$dbo}.00_ctp AS ctp ON summ.scid=ctp.contact_id
 WHERE c.role_id=1 AND c.is_active=1 AND cr.level_id='$lvl' ORDER BY cr.section_id,$classlist_order; ";
+// pr($q);
 debug($q);
 $sth=$db->querysoc($q);
 $data['rows']=$sth->fetchAll();

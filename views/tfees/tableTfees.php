@@ -5,9 +5,10 @@
 ?>
 
 <h5>
-	Tuition Fees Table	
+	Tuition Fees Table (<?php echo $count; ?>)
 	| <a href="<?php echo URL.$_SESSION['home']; ?>">Home</a>
 	<?php echo isset($_SERVER['HTTP_REFERER'])? '| <a href="'.$_SERVER['HTTP_REFERER'].'" >Back</a>' : ''; ?>
+	| <a href="<?php echo URL.'tuitions/table/'.$sy; ?>">Tuitions2</a>
 	
 
 <?php 

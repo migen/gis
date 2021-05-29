@@ -93,7 +93,11 @@ for($i=0;$i<$num_students;$i++):
 
 <div class="vspacer" style="height:0.2in;"  >&nbsp;</div>
 <div class="center" > 
-<?php include('rptincs/header_hs.php'); ?>	
+<?php 
+
+	include('rptincs/header_hs.php'); 
+	
+?>	
 </div>
 
 <div class="<?php echo $tblwidth; ?> clear" ><hr /></div>

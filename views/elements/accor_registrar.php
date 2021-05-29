@@ -54,6 +54,29 @@ select,input:not([type='submit']){ width:180px; }
 	  3) <a href="<?php echo URL.'rosters/classroom'; ?>" >Classlist</a> (Roster)	  
 </td></tr>
 
+<tr><td class="" >
+	  4) <a href="<?php echo URL.'studentpromotions/year'; ?>" >Student Promotions</a>	  
+</td></tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr><td>
+	<a href='<?php echo URL."files/read/enrollment"; ?>' >Enrollment Guide</a>
+</td></tr>
+<tr><td>
+	<a href='<?php echo URL."ensteps/student"; ?>' >Ensteps (student locking)</a>
+</td></tr>
+<tr><td>
+	Schedules - 
+	<a class="" href='<?php echo URL."schedules/ensteps"; ?>' >Rcards</a>
+	| <a class="" href='<?php echo URL."schedules/ensteps"; ?>' >Ensteps</a>
+</td></tr>
+
+<tr><td>
+	Schedules - 
+	<a class="" href='<?php echo URL."schedules/tuitions"; ?>' >Tuitions</a>
+	| <a class="" href='<?php echo URL."schedules/booklists"; ?>' >Booklists</a>
+</td></tr>
 
 
 <tr><td>&nbsp;</td></tr>

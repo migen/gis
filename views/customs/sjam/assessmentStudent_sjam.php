@@ -2,15 +2,14 @@
 
 // echo "sjam";
 
-// prx($payables);
-
-
 
 $dbo=PDBO;
 $dbcontacts="{$dbo}.00_contacts";
-
 // prx($data);
 
+/* locking */
+$is_locked=($srid==RSTUD)? isFinalizedEnstep($db,$scid,$enstep=1):false;
+// echo "<br>";echo ($is_locked)? "locked":"open";echo "<br>";
 
 
 if($scid){
@@ -35,8 +34,31 @@ if($scid){
 	<link rel="stylesheet" href="">
 </head>
 <body>
+
+<h3 class="screen" >
+	SJAM Assessment | <?php $this->shovel('homelinks'); ?>
+</h3>
+
+<div class="screen" >
+<?php 
+	/* navigation controls */
+	echo $controls."<div class='clear'>&nbsp;</div>";
+
+?>
+</div>
+
+
+</div>
+
+<style>
+
+
+@media print{ .screen{display:none;} } 
+
+</style>
 	
 	<style type="text/css" media="screen">
+
 
 .gis-table-bordered { border: 1px solid #ddd;  } .gis-table-bordered th {color:#181818; }
 .gis-table-bordered th, .gis-table-bordered td { border: 1px solid #ddd; padding:3px 10px; }
@@ -123,6 +145,8 @@ if($scid){
 
 <?php if($scid): ?>
 
+
+
 	<div class="assessement-form">
 		<div class="sch">
 			<table>
@@ -163,7 +187,7 @@ if($scid){
 				</tr>
 				<tr>
 					<th width="150">School Year</th>
-					<td><span class="colon">:</span>2020 - 2021</td>
+					<td><span class="colon">:</span><?php echo $sy.' - '.($sy+1); ?></td>
 					<td width="100"></td>
 					<th width="150">Mode of Payment</th>
 					<td><span class="colon">:</span> <?php echo ucfirst($student['paymode']); ?></td>
@@ -287,6 +311,7 @@ if($scid){
 			<div class="payment-schedule ">
 				<!-- payable -->
 				<p><b>Payment Schedule</b></p>
+				<p><?php // pr($payables); ?></p>
 				<table class="xgis-table-bordered" >
 					<tr>
 						<th width="150">Fees Description</th>
@@ -295,6 +320,50 @@ if($scid){
 						<th width="180">Due Date</th>
 						<th width="180">Grace Period</th>
 					</tr>				
+
+					<!-- prevbal_payable_start -->		
+						<?php 
+							if($has_previous_balance):	// from enrollmentFxn:scidAssessment-parsePayables
+								$row=$prevbal_payable;
+								$feetypeName=$row['feetype'];
+								$pbr=updatePayableBalance($db,$prevbal_payable,$payments); 							
+								
+							?>
+							<tr>
+								<td>
+									<?php 
+										// pr($prevbal_payable);
+										echo $feetypeName; 
+									?>
+								</td>
+								<td class="" ><?php echo number_format($row['amount'],2); ?></td>
+								<td class="" ><?php echo number_format($pbr['balance'],2); ?></td>
+								<td><?php echo ($pbr['balance']>0)? $row['due_on']:NULL; ?></td>
+								<td>
+									<?php 
+										echo ($pbr['balance']>0)? $tfee_grace_period_arr[$ptr-1]:NULL; 
+									?>
+								</td>
+							<tr>
+						<?php endif; ?>
+					<!-- prevbal_payable_end -->
+					
+
+					<!-- has_prevsy_start -->
+						<?php 
+							extract($prevaccts);
+						?>
+						<?php if($has_prevsy): ?>
+						<?php $total_payable+=$prevsy_balance; ?>
+						<?php $total_balance+=$prevsy_balance; ?>
+						<tr>
+							<th>SY<?php echo $prevsy; ?> Accounts</th>
+							<th class="right" ><?php echo number_format($prevsy_balance,2); ?></th>
+							<th class="right" ><?php echo number_format($prevsy_balance,2); ?></th>
+							<th><?php echo ($prevsy_balance>0)? 'Immediately':null; ?></th>
+						</tr>
+						<?php endif; ?>
+					<!-- has_prevsy_end -->
 					
 					<?php if($resfee_paid>0): ?>
 						<tr>
@@ -304,7 +373,11 @@ if($scid){
 						</tr>					
 					<?php endif; ?>	<!-- resfee -->
 					
+					<?php 
 					
+					// prx($payables);
+					
+					?>
 					
 
 					<?php foreach($payables AS $row): ?>						
@@ -345,57 +418,17 @@ if($scid){
 							<td><?php echo ($pbr['balance']>0)? $row['due_on']:NULL; ?></td>
 							<td>
 								<?php 
-									echo ($pbr['balance']>0)? $tfee_grace_period_arr[$ptr-1]:NULL; 
+									if($row['feetype_id']==1){
+										echo ($pbr['balance']>0)? $tfee_grace_period_arr[$ptr-1]:NULL; 										
+									}
 								?>
 							</td>
 						<tr>	
 
 						
-					<?php endforeach; ?>				
+					<?php endforeach; ?>	<!-- tfees payable -->
 						
-					<!-- prevbal_payable_start -->		
-						<?php 
-							if($has_previous_balance):	// from enrollmentFxn:scidAssessment-parsePayables
-								$row=$prevbal_payable;
-								$feetypeName=$row['feetype'];
-								$pbr=updatePayableBalance($db,$prevbal_payable,$payments); 							
-								
-							?>
-							<tr>
-								<td>
-									<?php 
-										// pr($prevbal_payable);
-										echo $feetypeName; 
-									?>
-								</td>
-								<td class="" ><?php echo number_format($row['amount'],2); ?></td>
-								<td class="" ><?php echo number_format($pbr['balance'],2); ?></td>
-								<td><?php echo ($pbr['balance']>0)? $row['due_on']:NULL; ?></td>
-								<td>
-									<?php 
-										echo ($pbr['balance']>0)? $tfee_grace_period_arr[$ptr-1]:NULL; 
-									?>
-								</td>
-							<tr>
-						<?php endif; ?>
-					<!-- prevbal_payable_end -->
-					
 
-					<!-- has_prevsy_start -->
-						<?php 
-							extract($prevaccts);
-						?>
-						<?php if($has_prevsy): ?>
-						<?php $total_payable+=$prevsy_balance; ?>
-						<?php $total_balance+=$prevsy_balance; ?>
-						<tr>
-							<th>SY<?php echo $prevsy; ?> Accounts</th>
-							<th class="right" ><?php echo number_format($prevsy_balance,2); ?></th>
-							<th></th>
-							<th>Immediately</th>
-						</tr>
-						<?php endif; ?>
-					<!-- has_prevsy_end -->
 					<?php if(isset($_GET['debug'])): ?>	<!-- debug -->
 						<tr>
 							<th><?php echo 'Total Amount'; ?></th>
@@ -404,6 +437,13 @@ if($scid){
 							<td><?php  ?></td>
 						</tr>					
 					<?php endif; ?>	<!-- debug -->
+
+						<tr>
+							<th><?php echo 'Total'; ?></th>
+							<th><?php echo number_format($total_payable,2); ?></th>
+							<th><?php echo number_format($total_balance,2); ?></th>
+							<td><?php  ?></td>
+						</tr>					
 					
 						
 												

@@ -194,22 +194,33 @@ public function levels(){
 	$this->view->render($data,$vfile,'bootstrap');	
 }	/* fxn */
 
-public function classrooms(){ 
+public function classrooms($params=NULL){ 
 	require_once(SITE.'functions/classrooms.php');
-	$db=&$this->model->db;$dbo=PDBO;$dbg=PDBG;	
+	$db=&$this->model->db;$dbo=PDBO;
+	$data['sy']=$sy=isset($params[0])? $params[0]:DBYR;
+	$dbg=VCPREFIX.$sy.US.DBG;	
 	$order=isset($_GET['order'])? $_GET['order']:"cr.branch_id,cr.level_id";
 	$brid=isset($_GET['brid'])? $_GET['brid']:$_SESSION['brid'];
-	$cond_brid=isset($_GET['all'])? NULL:"AND cr.branch_id=$brid";
-	$cond_sxn=isset($_GET['sxn'])? "AND cr.section_id=".$_GET['sxn']:"AND cr.section_id > 2";
+	
+	if(isset($_GET['all'])){
+		$cond_brid=NULL;
+		$cond_sxn=NULL;
+	} else {
+		$cond_brid=isset($_GET['all'])? NULL:"AND cr.branch_id=$brid";
+		$cond_sxn=isset($_GET['sxn'])? "AND cr.section_id=".$_GET['sxn']:"AND cr.section_id > 2";		
+	}
 
 	$q="SELECT cr.id AS crid,cr.code,cr.name,cr.level_id,cr.section_id,cr.acid,cr.branch_id AS brid,
-			cr.num,cr.major_id,
-			c.name AS adviser,l.name AS level,l.code AS lvlcode,s.name AS section,s.code AS sxncode,cr.is_active
+			cr.num,cr.major_id,c.name AS adviser,l.name AS level,l.code AS lvlcode,s.name AS section,
+			s.code AS sxncode,cr.is_active,count(summ.scid) AS num_students
 		FROM {$dbg}.`05_classrooms` AS cr 
 		LEFT JOIN {$dbo}.`05_levels` AS l ON l.id=cr.level_id
 		LEFT JOIN {$dbo}.`05_sections` AS s ON s.id=cr.section_id
 		LEFT JOIN {$dbo}.`00_contacts` AS c ON c.id=cr.acid
-		WHERE 1=1 $cond_sxn $cond_brid ORDER BY $order;";
+		LEFT JOIN {$dbg}.05_summaries AS summ ON cr.id=summ.crid 
+		WHERE 1=1 $cond_sxn $cond_brid 
+		GROUP BY cr.id ORDER BY $order;";
+	// pr($q);
 	debug($q);
 	$sth=$db->querysoc($q);
 	$data['rows']=$sth->fetchAll();	

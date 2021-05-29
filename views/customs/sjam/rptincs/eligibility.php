@@ -30,7 +30,8 @@
 			<?php print($student['summary']['promlevel']); ?>
 		</td>
 	</tr>
-	<tr>
+	<tr><td colspan="2"><br></td></tr>
+	<!-- <tr>
 		<td class="left" >Has advanced credits in: 
 		<?php if($level_id == 15): ?>
 			<u><?php echo (empty($student['incsubj']))? 'None':$student['incsubj'] ; ?></u>
@@ -43,7 +44,7 @@
 				<u><?php echo (empty($student['incsubj']))? 'None':$student['incsubj'] ; ?></u>
 			<?php endif; ?>
 		</td>
-	</tr>
+	</tr> -->
 	<tr>
 <?php if($signature_rcard): ?>	
 	<td class="left" ><br /><br /><br /><br /><br />
@@ -64,7 +65,7 @@
 				<?php echo $_SESSION['settings']['school_principal']; ?>
 			<?php else: ?>
 				<!-- <img src='<?php echo $src_signature_principal; ?>' alt="logo" height="80" width="220"><br /> -->
-				<?php echo $_SESSION['settings']['school_director']; ?>
+				<?php echo $_SESSION['settings']['school_principal']; ?>
 			<?php endif; ?>		
 		<?php endif; ?>
 		</span>
@@ -80,7 +81,8 @@
 				<?php echo $_SESSION['settings']['principal_ec']; ?>
 			<?php else: ?>
 				<!-- <img src='<?php echo $src_signature_principal; ?>' alt="logo" height="80" width="220"><br /> -->
-				<?php echo $_SESSION['settings']['school_director']; ?>
+				<!-- <?php echo $_SESSION['settings']['school_director']; ?> -->
+				<?php echo $_SESSION['settings']['principal_ec']; ?>
 			<?php endif; ?>	
 		<?php else: ?>
 			<?php if($qtr<4): ?>
@@ -88,14 +90,15 @@
 				<?php echo $_SESSION['settings']['school_principal']; ?>
 			<?php else: ?>
 				<!-- <img src='<?php echo $src_signature_principal; ?>' alt="logo" height="80" width="220"><br /> -->
-				<?php echo $_SESSION['settings']['school_director']; ?>
+				<!-- <?php echo $_SESSION['settings']['school_director']; ?> -->
+				<?php echo $_SESSION['settings']['school_principal']; ?>
 			<?php endif; ?>		
 		<?php endif; ?>
 		</span>
 	</td>	
 <?php endif; ?>
 	</tr>
-	<tr><td></td><td>Principal / Director <?php echo ($is_free)? "":NULL; ?></td></tr>
+	<tr><td></td><td>School Principal <?php echo ($is_free)? "":NULL; ?></td></tr>
 </table>
 <?php endif; ?>
 </div>

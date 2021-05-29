@@ -8,6 +8,7 @@
 	| <a href="<?php echo URL.'codename/one/'.$id; ?>">Account</a> 
 	| <a href="<?php echo URL.'photos/one/'.$id; ?>">Photo</a> 
 	| <a href="<?php echo URL.'contacts/ucis/'.$id; ?>">UCIS</a> 
+	| <a href="<?php echo URL.'codename/student/'.$id; ?>">SCN</a> 
 	<?php if($_SESSION['srid']==RMIS): ?>
 		| <a href="<?php echo URL.'mgt/pass/'.$id; ?>">Pass</a> 	
 	<?php endif; ?>

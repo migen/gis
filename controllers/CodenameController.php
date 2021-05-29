@@ -10,6 +10,9 @@ public function __construct(){
 }
 
 public function beforeFilter(){
+	$acl = array(array(RMIS,0),array(RAXIS,0),array(RREG,0));	
+	/* 2nd param is strict,default is false */	
+	$this->permit($acl,0);				
 	$this->view->js = array('js/jquery.js','js/vegas.js');
 	parent::beforeFilter();			
 }
@@ -110,6 +113,44 @@ if(isset($_POST['submit'])){
 
 $data=isset($data)? $data:NULL;
 $this->view->render($data,'codename/fullnameCodename');	/* from codename/one */
+
+}	/* fxn */
+
+
+
+
+public function student($params=NULL){
+$dbo=PDBO;
+require_once(SITE.'functions/contactsFxn.php');
+$data['id']=$id=(isset($params[0]))? $params[0]:false;
+$db=&$this->model->db;
+$data['ucid']=$_SESSION['ucid'];
+$data['srid']=$_SESSION['srid'];
+if($id){
+	
+	$fc="id,parent_id,code,name,account";
+	$fp="id,contact_id,first_name,middle_name,last_name";
+	$data['contact']=fetchRow($db,"{$dbo}.00_contacts",$id,$fc);
+	$data['profile']=fetchRecord($db,"{$dbo}.00_profiles","contact_id=$id",$fp);
+
+	// prx($data);
+	
+}
+
+if(isset($_POST['submit'])){
+	$contact=$_POST['contact'];	
+	$profile=$_POST['profile'];	
+	$db->update("{$dbo}.`00_contacts`",$contact,"`id`='$id'"); 
+	$db->update("{$dbo}.`00_profiles`",$profile,"`contact_id`='$id'"); 
+	$msg="SCN updated.";
+	flashRedirect("codename/student/$id",$msg);
+	exit;
+		
+}	/* post */
+
+$data=isset($data)? $data:NULL;
+$vfile='codename/studentCodename';vfile($vfile);
+$this->view->render($data,$vfile);	/* from codename/one */
 
 }	/* fxn */
 

@@ -1,6 +1,6 @@
 <?php 
 
-
+// pr($row);
 
 ?>
 
@@ -20,6 +20,11 @@
 <?php if($row['level_id']>13): ?>
 	<tr><th>Level</th><td><?php echo $row['num']; ?></td></tr>
 <?php endif; ?>
+<tr><th>Is Finalized</th><td>
+	<input type="number" min=0 max=1 name="tuition[is_finalized]" value="<?php echo $row['is_finalized']; ?>" >
+</td></tr>
+
+
 <tr><th>Total</th><td><?php echo $row['total']; ?></td></tr>
 <tr><th>Change</th><td>	
 	<input name="tuition[total]" value="<?php echo $row['total']; ?>" >
